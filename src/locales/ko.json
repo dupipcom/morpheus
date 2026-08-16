@@ -17,6 +17,7 @@
     "save": "저장",
     "cancel": "취소",
     "delete": "삭제",
+    "remove": "제거",
     "loading": "로딩 중...",
     "error": "오류",
     "success": "성공",
@@ -60,7 +61,8 @@
     "saving": "저장 중...",
     "decline": "거절",
     "friendRequest": "친구 요청",
-    "reverseOrder": "역순"
+    "reverseOrder": "역순",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "홈",
@@ -74,7 +76,8 @@
     "privacy": "개인정보 처리방침",
     "locale": "언어",
     "blog": "블로그",
-    "agenda": "의제"
+    "agenda": "의제",
+    "upgrade": "업그레이드"
   },
   "dashboard": {
     "title": "한눈에 보는 당신의 삶.",
@@ -125,11 +128,14 @@
         "FRIENDS": "친구",
         "CLOSE_FRIENDS": "가까운 친구",
         "PUBLIC": "공개",
-        "AI_ENABLED": "AI 활성화"
+        "AI_ENABLED": "AI 활성화",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "노트 게시",
       "publishing": "게시 중...",
-      "embedHint": "{provider} 임베드. 재생이 불가능한 경우 아래 원본 링크를 여세요."
+      "embedHint": "{provider} 임베드. 재생이 불가능한 경우 아래 원본 링크를 여세요.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI 분석 활성화"
     },
     "thirdParty": {
       "title": "제3자",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "위임된 분석가 추가",
       "adding": "추가 중...",
       "addError": "위임된 분석가를 추가할 수 없습니다",
-      "invitationDraft": "이 이메일에 대한 초대 초안을 준비했습니다."
+      "invitationDraft": "이 이메일에 대한 초대 초안을 준비했습니다.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "준비됨",
       "open": "열림",
       "done": "완료",
-      "ignored": "무시됨"
+      "ignored": "무시됨",
+      "completed": "Completed"
     },
     "edit": "편집",
     "loadingForDate": "선택한 날짜의 작업을 불러오는 중...",
     "initializingTasks": "작업을 설정하는 중...",
-    "noTasksForDate": "이 날짜에 예정된 작업이 없습니다"
+    "noTasksForDate": "이 날짜에 예정된 작업이 없습니다",
+    "delete": "삭제...",
+    "deleteTitle": "작업 삭제",
+    "deleteDescription": "이 작업의 어느 범위를 삭제할까요?",
+    "deleteScopes": {
+      "today": "오늘만",
+      "onwards": "오늘부터 이후",
+      "all": "모든 항목"
+    },
+    "requestTitle": "작업 요청",
+    "requestDescription": "이 작업을 맡고 싶은 이유를 설명하세요. 목록 소유자가 요청을 검토합니다.",
+    "submitTitle": "작업 제출",
+    "resubmitTitle": "수정 후 다시 제출",
+    "submitDescription": "작업 증거를 게시하세요. 곧 사진이나 동영상을 첨부할 수 있습니다.",
+    "reviewTitle": "작업 검토",
+    "reviewDescription": "작업을 승인하거나 변경을 요청하거나 거부합니다.",
+    "justificationLabel": "사유",
+    "justificationPlaceholder": "왜 이 작업을 해야 하나요?",
+    "evidenceLabel": "증거 / 메모",
+    "evidencePlaceholder": "무엇을 했는지 설명하세요...",
+    "selfReviewLabel": "자체 평가(0-100)",
+    "managerReviewLabel": "검토 점수(0-100)",
+    "reviewNoteLabel": "피드백(선택)",
+    "sendRequest": "요청 보내기",
+    "resubmit": "다시 제출",
+    "submit": "제출",
+    "accept": "승인",
+    "requestChanges": "변경 요청",
+    "reject": "거부",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "물을 마셨습니다",
@@ -243,7 +307,8 @@
     "cookies": "우리는 쿠키를 사용하며, 이 앱을 사용함으로써 이에 동의합니다.",
     "code": "코드",
     "terms": "서비스 약관",
-    "privacy": "개인정보 처리방침"
+    "privacy": "개인정보 처리방침",
+    "pricing": "요금"
   },
   "earningsTable": {
     "day": "일",
@@ -338,7 +403,9 @@
     "expectedNeedUtilities": "예상 필수 공과금 평균",
     "editAction": "작업 편집",
     "save": "저장",
-    "cancel": "취소"
+    "cancel": "취소",
+    "currency": "통화",
+    "selectCurrency": "통화 선택"
   },
   "agentChat": {
     "thinking": "생각 중...",
@@ -346,7 +413,8 @@
     "getInsights": "당신의 기분, 습관에 대해 질문하거나 개인화된 인사이트를 얻으세요",
     "placeholder": "채팅해요...",
     "error": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.",
-    "failedToSend": "메시지 전송에 실패했습니다. 다시 시도해주세요."
+    "failedToSend": "메시지 전송에 실패했습니다. 다시 시도해주세요.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
@@ -553,7 +621,34 @@
       "addTask": "작업 추가",
       "cancel": "취소",
       "editTitle": "작업 편집",
-      "saveTask": "작업 저장"
+      "saveTask": "작업 저장",
+      "premiumLabel": "프리미엄(선택)",
+      "premiumPercentHint": "목록 예산의 비율",
+      "cadenceLabel": "반복",
+      "cadence": {
+        "none": "반복 안 함",
+        "daily": "매일",
+        "weekly": "매주",
+        "monthly": "매월",
+        "yearly": "매년",
+        "every": "마다",
+        "day": "일",
+        "days": "일",
+        "week": "주",
+        "weeks": "주",
+        "month": "개월",
+        "months": "개월",
+        "year": "년",
+        "years": "년",
+        "onDay": "일에",
+        "onThe": "번째",
+        "inMonth": "월에",
+        "ends": "종료",
+        "never": "없음",
+        "after": "회 후",
+        "onDate": "날짜에",
+        "occurrences": "회"
+      }
     },
     "addListForm": {
       "titleCreate": "새 목록 만들기",
@@ -609,12 +704,24 @@
       },
       "areaDistributionLabel": "영역 예산",
       "areaPrizeDistributionLabel": "영역 상금",
+      "areaPremiumDistributionLabel": "영역별 상금 분배",
       "categoryDistributionLabel": "카테고리 예산",
       "categoryPrizeDistributionLabel": "카테고리 상금",
+      "categoryPremiumDistributionLabel": "카테고리별 상금 분배",
       "taskDistributionLabel": "예산",
       "premiumLabel": "상금",
       "totalLabel": "합계",
-      "addTaskTitle": "작업 추가"
+      "addTaskTitle": "작업 추가",
+      "editTitle": "목록 편집",
+      "visibilityLabel": "공개 범위",
+      "collaboratorsPlaceholder": "친구 검색...",
+      "budgetSourcesLabel": "내 예산의 비율:",
+      "noBudgets": "아직 예산이 없습니다 — 아래에서 추가하세요.",
+      "newBudgetName": "예산 이름",
+      "confirmDelete": "이 목록과 모든 작업을 삭제할까요? 되돌릴 수 없습니다.",
+      "delete": "삭제",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "새 템플릿 만들기",
@@ -679,6 +786,36 @@
       "after": "이후",
       "pickDate": "날짜 선택",
       "occurrences": "회"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -714,7 +851,15 @@
     "notice": "이 앱에서는 현재 실제 돈이 관리되지 않습니다. Dupip Invest는 아직 계획 단계에 있습니다. 이것은 시연 목적을 위한 테스트 환경일 뿐입니다.",
     "consentTitle": "투자 데모 동의",
     "consentCheckbox": "Dupip가 아직 투자 플랫폼이 아니며, 이 기능을 사용함으로써 Dupip Invest 공식 출시 전에 모든 데이터가 삭제될 수 있음을 인지합니다.",
-    "confirm": "확인"
+    "confirm": "확인",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT 생성이 완료되었습니다.",
@@ -879,7 +1024,10 @@
         "submitted": "작업이 검토를 위해 제출되었습니다",
         "resubmitted": "작업이 검토를 위해 다시 제출되었습니다"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "노트가 성공적으로 업데이트되었습니다",
@@ -889,6 +1037,7 @@
     "deleting": "삭제 중...",
     "confirmDelete": "이 노트를 삭제하시겠습니까?",
     "content": "노트 내용",
+    "recipient": "수신자",
     "visibilityUpdated": "공개 설정이 성공적으로 업데이트되었습니다",
     "visibilityUpdateFailed": "공개 설정 업데이트에 실패했습니다",
     "changeVisibility": "공개 설정 변경",
@@ -897,7 +1046,17 @@
       "date": "날짜",
       "mostRelevant": "가장 관련성 높은",
       "all": "전체"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "채팅",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "이 조직에 친구 초대",
     "inviteLinkCopied": "초대 링크가 복사되었습니다",
     "inviteSent": "초대가 전송되었습니다",
-    "inviteAccepted": "초대가 수락되었습니다"
+    "inviteAccepted": "초대가 수락되었습니다",
+    "sidebar": {
+      "directMessages": "다이렉트 메시지",
+      "organizations": "조직",
+      "sms": "SMS",
+      "virtualNumber": "가상 번호",
+      "searchDmPlaceholder": "DM을 시작할 친구 검색",
+      "createChannelPlaceholder": "채널 만들기",
+      "createOrgPlaceholder": "조직 만들기",
+      "refresh": "새로 고침",
+      "noOrgs": "아직 조직이 없습니다",
+      "noDms": "아직 다이렉트 메시지가 없습니다"
+    },
+    "virtualNumber": {
+      "label": "가상 번호",
+      "hint": "전화번호를 선택하세요. 이 번호들로 오는 SMS가 채팅에 표시됩니다.",
+      "none": "번호 없음",
+      "loading": "번호 불러오는 중…",
+      "empty": "사용 가능한 번호가 없습니다",
+      "error": "번호를 불러오지 못했습니다",
+      "assignError": "이 번호를 저장하지 못했습니다",
+      "assigned": "번호가 할당되었습니다",
+      "cleared": "번호가 제거되었습니다",
+      "addNumber": "번호 추가…",
+      "removeNumber": "번호 제거",
+      "quotaLabel": "{quota}개 중 {used}개 사용 중",
+      "limitReached": "요금제의 가상 번호 최대 개수에 도달했습니다",
+      "buyCta": "가상 번호 구매",
+      "gateHint": "가상 번호에는 Donator 요금제가 필요합니다. 채팅에서 SMS를 받으려면 번호를 구매하세요.",
+      "buyDialogTitle": "Donator 요금제 필요",
+      "buyDialogDescription": "가상 번호는 Donator 요금제에 포함되어 있습니다. 시작하려면 가격 페이지에서 요금제를 선택하세요.",
+      "buyDialogGoToPricing": "가격 보기"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS 불러오는 중…",
+      "empty": "아직 SMS 대화가 없습니다",
+      "noNumberHint": "여기에서 SMS를 받으려면 가상 번호를 할당하세요",
+      "composerPlaceholder": "SMS 작성…",
+      "sendError": "이 메시지를 보내지 못했습니다",
+      "you": "나",
+      "statusSent": "전송됨",
+      "statusDelivered": "전달됨",
+      "statusFailed": "실패",
+      "error": "SMS를 불러오지 못했습니다"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "촘촘하게",
       "small": "작게",
       "wide": "넓게"
+    }
+  },
+  "pricing": {
+    "metaTitle": "요금",
+    "metaDescription": "Dupip은 웰빙을 사명으로 하는 웹라디오로 유럽에 등록되어 있습니다. 성장을 지원하기 위해 후원자에게 혜택을 제공합니다. 요금제와 DPIP 작동 방식을 확인하세요.",
+    "heroTitle": "라디오, 다시 상상하다",
+    "heroSubtitle": "Dupip은 웰빙이라는 단순한 도전을 중심으로 만들어졌습니다. 우리는 당신의 최고를 이끌어내는 주파수를 찾고 있습니다.",
+    "siaeTitle": "음악 라이선스에 관한 참고",
+    "plansTitle": "요금제",
+    "plansDescription": "듣는 방식에 맞는 요금제를 선택하세요.",
+    "dpipTitle": "DPIP 정보",
+    "dpipBody": "DPIP(Ð)는 Dupip 내부의 가치 단위입니다. 스태시는 활동과 함께 시간이 지나며 늘어납니다. DPIP는 투자 상품이 아니며, 현재든 미래든 금전적 가치가 없을 수 있습니다.",
+    "consentTitle": "DPIP 동의",
+    "consentCheckbox": "DPIP에 현재든 미래든 금전적 가치가 없을 수 있음을 이해하며 이에 동의합니다.",
+    "consentSignedOut": "DPIP 동의를 검토하고 요금제를 보려면 로그인하세요.",
+    "signInToConsent": "로그인",
+    "consentSaved": "동의 기록일: {date}",
+    "saveConsent": "동의 저장",
+    "dpipNoValue": "DPIP(Ð)는 Dupip 내부의 가치 단위입니다. 스태시는 활동과 함께 시간이 지나며 늘어납니다. DPIP는 투자 상품이 아니며, 현재든 미래든 금전적 가치가 없을 수 있습니다.",
+    "consentDescription": "DPIP(Ð)는 Dupip 내부의 가치 단위입니다. 스태시는 활동과 함께 시간이 지나며 늘어납니다. DPIP는 투자 상품이 아니며, 현재든 미래든 금전적 가치가 없을 수 있습니다. 요금제를 보기 전에 다음 내용을 검토하고 확인해 주세요:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

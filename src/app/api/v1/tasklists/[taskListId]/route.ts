@@ -11,8 +11,11 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { Visibility } from '@/generated/prisma'
-import { authorizeListAccess, getUserListRole } from '@/lib/services/auth/authService'
-import { updateTaskList, deleteTaskList, getTaskListWithTasks } from '@/lib/services/tasklist'
+import { authorizeListAccess } from '@/lib/services/auth/authService'
+import { ApiError, toResponse } from '@/lib/services/errors'
+import { getViewerRole } from '@/lib/services/ownership'
+import { updateTaskList, deleteTaskList, getTaskListWithTasks } from '@/lib/services/list'
+import { notifyUser } from '@/lib/services/notification'
 
 const ALLOWED_VISIBILITIES: Visibility[] = ['PUBLIC', 'PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'HIDDEN']
 
@@ -69,6 +72,9 @@ export async function GET(
 
     return NextResponse.json({ taskList, pendingRequests })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error in GET /api/v1/tasklists/[taskListId]:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -99,7 +105,7 @@ export async function PUT(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const role = await getUserListRole(user.id, taskListId)
+    const role = await getViewerRole(user.id, 'list', taskListId)
     if (role !== 'OWNER' && role !== 'MANAGER') {
       return NextResponse.json({ error: 'Only owners and managers can update a list' }, { status: 403 })
     }
@@ -150,6 +156,17 @@ export async function PUT(
       parsedBudgetSourceIds = budgetSourceIds as string[]
     }
 
+    // Track current collaborators so newly added ones can be notified after the update
+    const existingList = await prisma.list.findUnique({
+      where: { id: taskListId },
+      select: { users: true }
+    })
+    const existingCollaboratorIds = new Set(
+      (existingList?.users || [])
+        .filter((ref) => ref.role === 'COLLABORATOR')
+        .map((ref) => ref.userId)
+    )
+
     const taskList = await updateTaskList({
       taskListId,
       role: typeof newRole === 'string' ? newRole : undefined,
@@ -167,8 +184,24 @@ export async function PUT(
       links: links !== undefined ? (typeof links === 'object' ? links : null) : undefined
     })
 
+    // Notify newly added collaborators (list invite)
+    if (parsedCollaborators) {
+      const addedCollaboratorIds = parsedCollaborators.filter((id) => !existingCollaboratorIds.has(id))
+      for (const collaboratorId of addedCollaboratorIds) {
+        void notifyUser({
+          userId: collaboratorId,
+          type: 'LIST_INVITE',
+          actorId: user.id,
+          resourceId: taskListId
+        }).catch((error) => console.error('Error creating list invite notification:', error))
+      }
+    }
+
     return NextResponse.json({ taskList })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error in PUT /api/v1/tasklists/[taskListId]:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -199,7 +232,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const role = await getUserListRole(user.id, taskListId)
+    const role = await getViewerRole(user.id, 'list', taskListId)
     if (role !== 'OWNER') {
       return NextResponse.json({ error: 'Only the owner can delete a list' }, { status: 403 })
     }
@@ -208,6 +241,9 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error in DELETE /api/v1/tasklists/[taskListId]:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

@@ -17,6 +17,7 @@
     "save": "Uložit",
     "cancel": "Zrušit",
     "delete": "Smazat",
+    "remove": "Odebrat",
     "loading": "Načítání...",
     "error": "Chyba",
     "success": "Úspěch",
@@ -60,7 +61,8 @@
     "saving": "Ukládání...",
     "decline": "Odmítnout",
     "friendRequest": "Žádost o přátelství",
-    "reverseOrder": "Obrátit pořadí"
+    "reverseOrder": "Obrátit pořadí",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Domů",
@@ -74,7 +76,8 @@
     "privacy": "Zásady ochrany osobních údajů",
     "locale": "Jazyk",
     "blog": "Blog",
-    "agenda": "Program"
+    "agenda": "Program",
+    "upgrade": "Povýšit"
   },
   "dashboard": {
     "title": "Váš život na první pohled.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Přátelé",
         "CLOSE_FRIENDS": "Blízcí přátelé",
         "PUBLIC": "Veřejné",
-        "AI_ENABLED": "Povoleno umělou inteligencí"
+        "AI_ENABLED": "Povoleno umělou inteligencí",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publikovat poznámku",
       "publishing": "Zveřejňování...",
-      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže."
+      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Povolit analýzu AI"
     },
     "thirdParty": {
       "title": "Třetí strana",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Přidat delegovaného analytika",
       "adding": "Přidávání...",
       "addError": "Delegovaného analytika se nepodařilo přidat",
-      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky."
+      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "Připraveno",
       "open": "Otevřeno",
       "done": "Hotovo",
-      "ignored": "Ignorováno"
+      "ignored": "Ignorováno",
+      "completed": "Completed"
     },
     "edit": "Upravit",
     "loadingForDate": "Načítání úkolů pro vybrané datum...",
     "initializingTasks": "Nastavování vašich úkolů...",
-    "noTasksForDate": "Pro toto datum nejsou naplánované žádné úkoly"
+    "noTasksForDate": "Pro toto datum nejsou naplánované žádné úkoly",
+    "delete": "Smazat...",
+    "deleteTitle": "Smazat úkol",
+    "deleteDescription": "Kolik z tohoto úkolu chcete smazat?",
+    "deleteScopes": {
+      "today": "Pouze dnes",
+      "onwards": "Od dneška dále",
+      "all": "Všechny záznamy"
+    },
+    "requestTitle": "Požádat o práci",
+    "requestDescription": "Vysvětlete, proč chcete tento úkol vzít. Vlastník seznamu žádost zkontroluje.",
+    "submitTitle": "Odevzdat práci",
+    "resubmitTitle": "Upravit a znovu odevzdat",
+    "submitDescription": "Zveřejněte důkaz o své práci. Brzy bude možné připojit fotografii nebo video.",
+    "reviewTitle": "Zkontrolovat práci",
+    "reviewDescription": "Přijměte práci, požádejte o změny nebo ji odmítněte.",
+    "justificationLabel": "Zdůvodnění",
+    "justificationPlaceholder": "Proč byste měli tento úkol dělat?",
+    "evidenceLabel": "Důkaz / poznámka",
+    "evidencePlaceholder": "Popište, co jste udělali...",
+    "selfReviewLabel": "Sebehodnocení (0-100)",
+    "managerReviewLabel": "Hodnocení kontroly (0-100)",
+    "reviewNoteLabel": "Zpětná vazba (volitelné)",
+    "sendRequest": "Odeslat žádost",
+    "resubmit": "Znovu odevzdat",
+    "submit": "Odevzdat",
+    "accept": "Přijmout",
+    "requestChanges": "Požádat o změny",
+    "reject": "Odmítnout",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Vypil vodu",
@@ -243,7 +307,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Podmínky služby",
-    "privacy": "Zásady ochrany osobních údajů"
+    "privacy": "Zásady ochrany osobních údajů",
+    "pricing": "Ceník"
   },
   "earningsTable": {
     "day": "Den",
@@ -329,7 +394,9 @@
     "expectedNeedUtilities": "Očekávaný průměr nákladů na energie",
     "editAction": "Upravit akci",
     "save": "Uložit",
-    "cancel": "Zrušit"
+    "cancel": "Zrušit",
+    "currency": "Měna",
+    "selectCurrency": "Vyberte měnu"
   },
   "agentChat": {
     "thinking": "Přemýšlím...",
@@ -337,7 +404,8 @@
     "getInsights": "Zeptejte se na svou náladu, zvyky nebo získejte personalizované poznatky",
     "placeholder": "Pojďme si povídat...",
     "error": "Promiňte, narazil jsem na chybu. Zkuste to znovu.",
-    "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu."
+    "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Začněte svou vlastní cestu s Dupip",
@@ -536,7 +604,34 @@
       "addTask": "Přidat úkol",
       "cancel": "Zrušit",
       "editTitle": "Upravit úkol",
-      "saveTask": "Uložit úkol"
+      "saveTask": "Uložit úkol",
+      "premiumLabel": "Prémie (volitelné)",
+      "premiumPercentHint": "Procento z rozpočtu seznamu",
+      "cadenceLabel": "Opakuje se",
+      "cadence": {
+        "none": "Neopakuje se",
+        "daily": "Denně",
+        "weekly": "Týdně",
+        "monthly": "Měsíčně",
+        "yearly": "Ročně",
+        "every": "Každý/každé",
+        "day": "den",
+        "days": "dny",
+        "week": "týden",
+        "weeks": "týdny",
+        "month": "měsíc",
+        "months": "měsíce",
+        "year": "rok",
+        "years": "roky",
+        "onDay": "V den",
+        "onThe": "",
+        "inMonth": "V měsíci",
+        "ends": "Končí",
+        "never": "Nikdy",
+        "after": "Po",
+        "onDate": "K datu",
+        "occurrences": "opakování"
+      }
     },
     "addListForm": {
       "titleCreate": "Vytvořit nový seznam",
@@ -592,12 +687,24 @@
       },
       "areaDistributionLabel": "Rozpočet oblasti",
       "areaPrizeDistributionLabel": "Cena oblasti",
+      "areaPremiumDistributionLabel": "Rozdělení cen podle oblasti",
       "categoryDistributionLabel": "Rozpočet kategorie",
       "categoryPrizeDistributionLabel": "Cena kategorie",
+      "categoryPremiumDistributionLabel": "Rozdělení cen podle kategorie",
       "taskDistributionLabel": "Rozpočet",
       "premiumLabel": "Cena",
       "totalLabel": "Celkem",
-      "addTaskTitle": "Přidat úkol"
+      "addTaskTitle": "Přidat úkol",
+      "editTitle": "Upravit seznam",
+      "visibilityLabel": "Viditelnost",
+      "collaboratorsPlaceholder": "Hledat přátele...",
+      "budgetSourcesLabel": "Procento z vašich rozpočtů:",
+      "noBudgets": "Zatím žádné rozpočty — přidejte jeden níže.",
+      "newBudgetName": "Název rozpočtu",
+      "confirmDelete": "Smazat tento seznam a všechny jeho úkoly? Nelze vrátit zpět.",
+      "delete": "Smazat",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Vytvořit novou šablonu",
@@ -662,6 +769,36 @@
       "after": "Po",
       "pickDate": "Vyberte datum",
       "occurrences": "opakování"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -714,7 +851,15 @@
     "notice": "V této aplikaci se momentálně nespravují žádné skutečné peníze. Dupip Invest je stále ve fázi plánování. Toto je pouze testovací prostředí pro demonstrační účely.",
     "consentTitle": "Souhlas s Investiční Demo",
     "consentCheckbox": "Uznávám, že Dupip ještě není investiční platformou a že používáním této funkce jsem si vědom, že všechna má data mohou být smazána před oficiálním spuštěním Dupip Invest.",
-    "confirm": "Potvrdit"
+    "confirm": "Potvrdit",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Generování NFT dokončeno.",
@@ -879,7 +1024,10 @@
         "submitted": "Práce odeslána k posouzení",
         "resubmitted": "Práce znovu odeslána k posouzení"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Poznámka úspěšně aktualizována",
@@ -889,6 +1037,7 @@
     "deleting": "Mazání...",
     "confirmDelete": "Opravdu chcete tuto poznámku smazat?",
     "content": "Obsah poznámky",
+    "recipient": "Příjemce",
     "visibilityUpdated": "Viditelnost úspěšně aktualizována",
     "visibilityUpdateFailed": "Nepodařilo se aktualizovat viditelnost",
     "changeVisibility": "Změnit viditelnost",
@@ -897,7 +1046,17 @@
       "date": "Datum",
       "mostRelevant": "Nejrelevantnější",
       "all": "Vše"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Konverzace",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "Pozvat přítele do této organizace",
     "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
     "inviteSent": "Pozvánka odeslána",
-    "inviteAccepted": "Pozvánka přijata"
+    "inviteAccepted": "Pozvánka přijata",
+    "sidebar": {
+      "directMessages": "Přímé zprávy",
+      "organizations": "Organizace",
+      "sms": "SMS",
+      "virtualNumber": "Virtuální číslo",
+      "searchDmPlaceholder": "Najděte přátele a začněte přímou zprávu",
+      "createChannelPlaceholder": "Vytvořit kanál",
+      "createOrgPlaceholder": "Vytvořit organizaci",
+      "refresh": "Obnovit",
+      "noOrgs": "Zatím žádné organizace",
+      "noDms": "Zatím žádné přímé zprávy"
+    },
+    "virtualNumber": {
+      "label": "Virtuální číslo",
+      "hint": "Vyberte si svá telefonní čísla. Příchozí SMS na tato čísla se zobrazí ve vašem chatu.",
+      "none": "Žádné číslo",
+      "loading": "Načítání čísel…",
+      "empty": "Žádná dostupná čísla",
+      "error": "Vaše čísla se nepodařilo načíst",
+      "assignError": "Toto číslo se nepodařilo uložit",
+      "assigned": "Číslo přiřazeno",
+      "cleared": "Číslo odebráno",
+      "addNumber": "Přidat číslo…",
+      "removeNumber": "Odebrat číslo",
+      "quotaLabel": "Použito {used} z {quota} čísel",
+      "limitReached": "Dosáhli jste maximálního počtu virtuálních čísel pro váš tarif",
+      "buyCta": "Koupit virtuální číslo",
+      "gateHint": "Virtuální čísla vyžadují tarif Donator. Kupte si číslo pro příjem SMS v chatu.",
+      "buyDialogTitle": "Je vyžadován tarif Donator",
+      "buyDialogDescription": "Virtuální čísla jsou součástí tarifů Donator. Vyberte si tarif na stránce cen a začněte.",
+      "buyDialogGoToPricing": "Přejít na ceny"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Načítání SMS…",
+      "empty": "Zatím žádné SMS konverzace",
+      "noNumberHint": "Přiřaďte virtuální číslo, abyste zde začali přijímat SMS",
+      "composerPlaceholder": "Napište SMS…",
+      "sendError": "Tuto zprávu se nepodařilo odeslat",
+      "you": "Vy",
+      "statusSent": "Odesláno",
+      "statusDelivered": "Doručeno",
+      "statusFailed": "Nezdařilo se",
+      "error": "SMS se nepodařilo načíst"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "Těsné",
       "small": "Malé",
       "wide": "Široké"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Ceník",
+    "metaDescription": "Dupip je v Evropě registrován jako webové rádio s posláním pro well-being. Na podporu našeho růstu nabízíme dárcům výhody. Podívejte se na naše plány a jak DPIP funguje.",
+    "heroTitle": "Rádio, znovu vymyšlené",
+    "heroSubtitle": "Dupip je postaven na jednoduché výzvě: well-being. Hledáme frekvence, které z vás dostanou to nejlepší.",
+    "siaeTitle": "Poznámka k hudebním licencím",
+    "plansTitle": "Plány",
+    "plansDescription": "Vyberte si plán, který odpovídá tomu, jak posloucháte.",
+    "dpipTitle": "O DPIP",
+    "dpipBody": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu.",
+    "consentTitle": "Souhlas s DPIP",
+    "consentCheckbox": "Rozumím, že DPIP nemusí mít peněžní hodnotu, nyní ani v budoucnu, a souhlasím s tím.",
+    "consentSignedOut": "Přihlaste se, abyste si mohli prohlédnout souhlas s DPIP a naše plány.",
+    "signInToConsent": "Přihlásit se",
+    "consentSaved": "Souhlas zaznamenán {date}",
+    "saveConsent": "Uložit souhlas",
+    "dpipNoValue": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu.",
+    "consentDescription": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu. Než si prohlédnete naše plány, přečtěte si prosím a potvrďte následující:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

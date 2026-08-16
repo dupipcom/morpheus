@@ -17,6 +17,7 @@
     "save": "Gorde",
     "cancel": "Utzi",
     "delete": "Ezabatu",
+    "remove": "Kendu",
     "loading": "Kargatzen...",
     "error": "Errorea",
     "success": "Arrakasta",
@@ -60,7 +61,8 @@
     "decline": "Ukatu",
     "friendRequest": "Lagun eskaera",
     "reverseOrder": "Ordenaren alderantzizkoa",
-    "saving": "Gordetzen..."
+    "saving": "Gordetzen...",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Hasiera",
@@ -77,7 +79,8 @@
     "agenda": "Agenda",
     "profile": "Profila",
     "settings": "Ezarpenak",
-    "logout": "Saioa itxi"
+    "logout": "Saioa itxi",
+    "upgrade": "Hobetu"
   },
   "dashboard": {
     "title": "Zure bizitza begirada batean.",
@@ -128,11 +131,14 @@
         "FRIENDS": "Lagunak",
         "CLOSE_FRIENDS": "Lagun hurbilak",
         "PUBLIC": "Publikoa",
-        "AI_ENABLED": "AI gaituta"
+        "AI_ENABLED": "AI gaituta",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Argitaratu oharra",
       "publishing": "Argitaratzen...",
-      "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka."
+      "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Gaitu AI analisia"
     },
     "thirdParty": {
       "title": "Hirugarrena",
@@ -150,7 +156,9 @@
       "addDelegatedAnalyst": "Gehitu eskuordetutako analista",
       "adding": "Gehitzen...",
       "addError": "Ezin izan da eskuordetutako analista gehitu",
-      "invitationDraft": "Gonbidapen-zirriborroa helbide elektroniko honetarako prestatu da."
+      "invitationDraft": "Gonbidapen-zirriborroa helbide elektroniko honetarako prestatu da.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -177,12 +185,68 @@
       "ready": "Prest",
       "open": "Ireki",
       "done": "Eginda",
-      "ignored": "Ezikusia"
+      "ignored": "Ezikusia",
+      "completed": "Completed"
     },
     "edit": "Editatu",
     "loadingForDate": "Hautatutako datarako zereginak kargatzen...",
     "initializingTasks": "Zure zereginak konfiguratzen...",
-    "noTasksForDate": "Data honetarako ez dago zereginik programatuta"
+    "noTasksForDate": "Data honetarako ez dago zereginik programatuta",
+    "delete": "Ezabatu...",
+    "deleteTitle": "Ezabatu zeregina",
+    "deleteDescription": "Zeregin honen zenbat ezabatu nahi duzu?",
+    "deleteScopes": {
+      "today": "Gaur soilik",
+      "onwards": "Gaurdik aurrera",
+      "all": "Sarrera guztiak"
+    },
+    "requestTitle": "Lana eskatu",
+    "requestDescription": "Azaldu zergatik hartu nahi duzun zeregin hau. Zerrendaren jabeak eskaera berrikusiko du.",
+    "submitTitle": "Lana entregatu",
+    "resubmitTitle": "Berrikusi eta berriro entregatu",
+    "submitDescription": "Argitaratu zure lanaren froga. Laster argazki edo bideo bat erantsi ahal izango duzu.",
+    "reviewTitle": "Lana berrikusi",
+    "reviewDescription": "Onartu lana, aldaketak eskatu edo baztertu.",
+    "justificationLabel": "Justifikazioa",
+    "justificationPlaceholder": "Zergatik egin beharko zenuke zeregin hau?",
+    "evidenceLabel": "Froga / oharra",
+    "evidencePlaceholder": "Deskribatu zer egin duzun...",
+    "selfReviewLabel": "Autoebaluazioa (0-100)",
+    "managerReviewLabel": "Berrikuspen puntuazioa (0-100)",
+    "reviewNoteLabel": "Iritzia (aukerakoa)",
+    "sendRequest": "Eskaera bidali",
+    "resubmit": "Berriro entregatu",
+    "submit": "Entregatu",
+    "accept": "Onartu",
+    "requestChanges": "Aldaketak eskatu",
+    "reject": "Baztertu",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Ura edan zuen",
@@ -246,7 +310,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Zerbitzu-baldintzak",
-    "privacy": "Pribatutasun-politika"
+    "privacy": "Pribatutasun-politika",
+    "pricing": "Prezioak"
   },
   "earningsTable": {
     "day": "Eguna",
@@ -332,7 +397,9 @@
     "expectedNeedUtilities": "Behar Zerbitzuen Batezbesteko Esperatua",
     "editAction": "Ekintza editatu",
     "save": "Gorde",
-    "cancel": "Utzi"
+    "cancel": "Utzi",
+    "currency": "Moneta",
+    "selectCurrency": "Hautatu moneta"
   },
   "agentChat": {
     "thinking": "Pentsatzen...",
@@ -340,7 +407,8 @@
     "getInsights": "Galde zure humurrari, ohiturei buruz edo lortu ikuspegi pertsonalizatuak",
     "placeholder": "Hitz egin dezagun...",
     "error": "Barkatu, errore bat aurkitu dut. Mesedez, saiatu berriro.",
-    "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro."
+    "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Hasi zure Dupip bidaia",
@@ -539,7 +607,34 @@
       "addTask": "Ataza gehitu",
       "cancel": "Utzi",
       "editTitle": "Editatu zeregina",
-      "saveTask": "Gorde zeregina"
+      "saveTask": "Gorde zeregina",
+      "premiumLabel": "Prima (aukerakoa)",
+      "premiumPercentHint": "Zerrendaren aurrekontuaren ehunekoa",
+      "cadenceLabel": "Errepikatzen da",
+      "cadence": {
+        "none": "Ez da errepikatzen",
+        "daily": "Egunero",
+        "weekly": "Astero",
+        "monthly": "Hilero",
+        "yearly": "Urtero",
+        "every": "Egunero/Behin",
+        "day": "egun",
+        "days": "egun",
+        "week": "aste",
+        "weeks": "aste",
+        "month": "hilabete",
+        "months": "hilabete",
+        "year": "urte",
+        "years": "urte",
+        "onDay": "Eguna",
+        "onThe": "",
+        "inMonth": "Hilean",
+        "ends": "Amaitzen da",
+        "never": "Inoiz ez",
+        "after": "Ondoren",
+        "onDate": "Dataren batean",
+        "occurrences": "aldiz"
+      }
     },
     "addListForm": {
       "titleCreate": "Zerrenda berria sortu",
@@ -595,12 +690,24 @@
       },
       "areaDistributionLabel": "Eremuaren aurrekontua",
       "areaPrizeDistributionLabel": "Eremuaren saria",
+      "areaPremiumDistributionLabel": "Sarien banaketa eremuaren arabera",
       "categoryDistributionLabel": "Kategoriaren aurrekontua",
       "categoryPrizeDistributionLabel": "Kategoriaren saria",
+      "categoryPremiumDistributionLabel": "Sarien banaketa kategoriaren arabera",
       "taskDistributionLabel": "Aurrekontua",
       "premiumLabel": "Saria",
       "totalLabel": "Guztira",
-      "addTaskTitle": "Gehitu zeregina"
+      "addTaskTitle": "Gehitu zeregina",
+      "editTitle": "Editatu zerrenda",
+      "visibilityLabel": "Ikusgarritasuna",
+      "collaboratorsPlaceholder": "Bilatu lagunak...",
+      "budgetSourcesLabel": "Zure aurrekontuen ehunekoa:",
+      "noBudgets": "Oraindik ez dago aurrekonturik — gehitu bat behean.",
+      "newBudgetName": "Aurrekontuaren izena",
+      "confirmDelete": "Zerrenda hau eta bere zeregin guztiak ezabatu? Ezin da desegin.",
+      "delete": "Ezabatu",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Txantiloi berria sortu",
@@ -665,6 +772,36 @@
       "after": "Ondoren",
       "pickDate": "Hautatu data bat",
       "occurrences": "aldiz"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -717,7 +854,15 @@
     "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da.",
     "consentTitle": "Inbertsio Demo Baimena",
     "consentCheckbox": "Onartzen dut Dupip oraindik ez dela inbertsio plataforma, eta funtzio hau erabiliz, nire datu guztiak ezaba daitezkeela Dupip Invest-en jaurtiketa ofiziala baino lehen.",
-    "confirm": "Berretsi"
+    "confirm": "Berretsi",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generazioa osatua.",
@@ -882,7 +1027,10 @@
         "submitted": "Lana berrikusteko bidali da",
         "resubmitted": "Lana berrikusteko birbidali da"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Oharra eguneratuta",
@@ -892,6 +1040,7 @@
     "deleting": "Ezabatzen...",
     "confirmDelete": "Ziur zaude ohar hau ezabatu nahi duzula?",
     "content": "Oharraren edukia",
+    "recipient": "Hartzailea",
     "visibilityUpdated": "Ikusgarritasuna eguneratuta",
     "visibilityUpdateFailed": "Ezin izan da ikusgarritasuna eguneratu",
     "changeVisibility": "Aldatu ikusgarritasuna",
@@ -900,7 +1049,17 @@
       "date": "Data",
       "mostRelevant": "Garrantzitsuena",
       "all": "Guztiak"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Txata",
@@ -916,7 +1075,52 @@
     "inviteFriendToOrg": "Gonbidatu lagun bat erakunde honetara",
     "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
     "inviteSent": "Gonbidapena bidalita",
-    "inviteAccepted": "Gonbidapena onartuta"
+    "inviteAccepted": "Gonbidapena onartuta",
+    "sidebar": {
+      "directMessages": "Mezu zuzenak",
+      "organizations": "Erakundeak",
+      "sms": "SMS",
+      "virtualNumber": "Zenbaki birtuala",
+      "searchDmPlaceholder": "Bilatu lagunak MD bat hasteko",
+      "createChannelPlaceholder": "Sortu kanala",
+      "createOrgPlaceholder": "Sortu erakundea",
+      "refresh": "Freskatu",
+      "noOrgs": "Oraindik ez dago erakunderik",
+      "noDms": "Oraindik ez dago mezu zuzenik"
+    },
+    "virtualNumber": {
+      "label": "Zenbaki birtuala",
+      "hint": "Aukeratu zure telefono-zenbakiak. Zenbaki horietara iristen diren SMSak zure txatean agertuko dira.",
+      "none": "Zenbakirik ez",
+      "loading": "Zenbakiak kargatzen…",
+      "empty": "Ez dago zenbakirik erabilgarri",
+      "error": "Ezin izan dira zure zenbakiak kargatu",
+      "assignError": "Ezin izan da zenbaki hau gorde",
+      "assigned": "Zenbakia esleitu da",
+      "cleared": "Zenbakia kendu da",
+      "addNumber": "Gehitu zenbakia…",
+      "removeNumber": "Kendu zenbakia",
+      "quotaLabel": "{quota} zenbakitik {used} erabilita",
+      "limitReached": "Zure planaren zenbaki birtualen gehieneko kopurura iritsi zara",
+      "buyCta": "Erosi zenbaki birtuala",
+      "gateHint": "Zenbaki birtualek Donator plana behar dute. Erosi zenbaki bat txatean SMSak jasotzeko.",
+      "buyDialogTitle": "Donator plana beharrezkoa da",
+      "buyDialogDescription": "Zenbaki birtualak Donator planetan daude barne. Hasteko, aukeratu plan bat prezioen orrian.",
+      "buyDialogGoToPricing": "Joan prezioetara"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMSak kargatzen…",
+      "empty": "Oraindik ez dago SMS elkarrizketarik",
+      "noNumberHint": "Esleitu zenbaki birtual bat hemen SMSak jasotzen hasteko",
+      "composerPlaceholder": "Idatzi SMS bat…",
+      "sendError": "Ezin izan da mezu hau bidali",
+      "you": "Zu",
+      "statusSent": "Bidalita",
+      "statusDelivered": "Banatuta",
+      "statusFailed": "Huts egin du",
+      "error": "Ezin izan dira SMSak kargatu"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -924,6 +1128,79 @@
       "tight": "Trinkoa",
       "small": "Txikia",
       "wide": "Zabala"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Prezioak",
+    "metaDescription": "Dupip Europan erregistratuta dago web irrati gisa, ongizate misio batekin. Gure hazkundea laguntzeko, abantailak eskaintzen dizkiegu emaileei. Ikusi gure planak eta DPIP nola funtzionatzen duen.",
+    "heroTitle": "Irratia, berrasmatua",
+    "heroSubtitle": "Dupip erronka soil baten inguruan eraikita dago: ongizatea. Zure onena ateratzen duten maiztasunak bilatzen ari gara.",
+    "siaeTitle": "Musika lizentziei buruzko ohar bat",
+    "plansTitle": "Planak",
+    "plansDescription": "Aukeratu zure entzuteko moduarekin bat datorren plana.",
+    "dpipTitle": "DPIP-i buruz",
+    "dpipBody": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean.",
+    "consentTitle": "DPIP adostasuna",
+    "consentCheckbox": "Ulertzen dut DPIP-ek balio ekonomikorik ez izatea posible dela, ez orain, ez etorkizunean, eta onartzen dut.",
+    "consentSignedOut": "Hasi saioa DPIP adostasuna berrikusteko eta gure planak ikusteko.",
+    "signInToConsent": "Hasi saioa",
+    "consentSaved": "Adostasuna erregistratuta: {date}",
+    "saveConsent": "Gorde adostasuna",
+    "dpipNoValue": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean.",
+    "consentDescription": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean. Gure planak ikusi aurretik, berrikusi eta berretsi, mesedez, honako hau:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

@@ -23,6 +23,12 @@ const noteSelect = {
   createdAt: true,
   date: true,
   userId: true,
+  documentIds: true,
+  taskIds: true,
+  profileIds: true,
+  listIds: true,
+  eventIds: true,
+  location: true,
   _count: {
     select: {
       comments: true,
@@ -206,6 +212,27 @@ export async function GET(request: NextRequest) {
       })
 
     const sortedNotesWithUsers = sortNotes(notesWithUsers, sortBy)
+
+    // Attach document metadata (id/fileName/mimeType/kind) so clients render
+    // images/videos/audio inline through the authenticated media pipe. One
+    // batched query over every note's documentIds (no documents relation).
+    const allDocumentIds = Array.from(
+      new Set(sortedNotesWithUsers.flatMap((note) => note.documentIds || []))
+    )
+    if (allDocumentIds.length > 0) {
+      const documents = await prisma.document.findMany({
+        where: { id: { in: allDocumentIds } },
+        select: { id: true, fileName: true, mimeType: true, kind: true, posterUrl: true }
+      })
+      const docsById = new Map(documents.map((doc) => [doc.id, doc]))
+      for (const note of sortedNotesWithUsers) {
+        if (note.documentIds.length > 0) {
+          ;(note as { documents?: unknown[] }).documents = note.documentIds
+            .map((id: string) => docsById.get(id))
+            .filter(Boolean)
+        }
+      }
+    }
 
     // Get total count for pagination
     const totalCount = await prisma.note.count({

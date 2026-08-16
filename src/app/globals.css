@@ -371,3 +371,12 @@ body.dark {
   white-space: pre-wrap;
   margin: 0.5rem 0;
 }
+
+.cl-rootBox {
+  position: relative;
+  z-index: 9999;
+}
+
+[data-sidebar="sidebar"] {
+  z-index: 99999;
+}

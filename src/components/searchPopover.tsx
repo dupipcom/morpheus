@@ -132,6 +132,8 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQue
         return 'Private'
       case 'AI_ENABLED':
         return 'AI Enabled'
+      case 'DOC_ENABLED':
+        return 'Doc Enabled'
       default:
         return visibility.toLowerCase().replace('_', ' ')
     }
@@ -150,6 +152,8 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQue
         return 'bg-gray-50 text-gray-700 border-gray-200'
       case 'AI_ENABLED':
         return 'bg-orange-50 text-orange-700 border-orange-200'
+      case 'DOC_ENABLED':
+        return 'bg-teal-50 text-teal-700 border-teal-200'
       default:
         return 'bg-muted text-muted-foreground border-border'
     }

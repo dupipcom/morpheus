@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
+import { getAuthenticatedUser } from '@/lib/services/auth'
+import { ApiError, toResponse } from '@/lib/services/errors'
+import { getViewerRole } from '@/lib/services/ownership'
 import { resolveListBudget, resolveTaskFinancials } from '@/lib/services/finance/premiumService'
 import { reverseJobEarnings } from '@/lib/services/job/earningsService'
 import { sanitizeText } from '@/lib/utils/sanitize'
@@ -148,13 +150,9 @@ export async function GET(
       return NextResponse.json({ error: 'Task has no associated list' }, { status: 400 })
     }
 
-    const isMember = task.list.users.some(
-      (userRef: { userId: string; role: string }) =>
-        userRef.userId === user!.id &&
-        ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
-    )
+    const viewerRole = await getViewerRole(user!.id, 'task', task)
 
-    if (!isMember) {
+    if (viewerRole === null) {
       return NextResponse.json(
         { error: 'Unauthorized: You must be a member of the list to view this task' },
         { status: 403 }
@@ -185,6 +183,9 @@ export async function GET(
 
     return NextResponse.json({ task: taskWithFinancials })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error fetching task:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -228,9 +229,9 @@ export async function PUT(
       return NextResponse.json({ error: 'Task has no associated list' }, { status: 400 })
     }
 
-    const role = await getUserListRole(user!.id, existingTask.listId)
+    const role = await getViewerRole(user!.id, 'task', existingTask)
 
-    if (!role || !['OWNER', 'MANAGER', 'COLLABORATOR'].includes(role)) {
+    if (role !== 'OWNER' && role !== 'MANAGER' && role !== 'COLLABORATOR') {
       return NextResponse.json(
         { error: 'Unauthorized: Only list owners, managers, and collaborators can update tasks' },
         { status: 403 }
@@ -290,6 +291,9 @@ export async function PUT(
 
     return NextResponse.json({ task: updatedTask })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error updating task:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -346,9 +350,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Task has no associated list' }, { status: 400 })
     }
 
-    const role = await getUserListRole(user!.id, existingTask.listId)
+    const role = await getViewerRole(user!.id, 'task', existingTask)
 
-    if (!role || !['OWNER', 'MANAGER'].includes(role)) {
+    if (role !== 'OWNER' && role !== 'MANAGER') {
       return NextResponse.json(
         { error: 'Unauthorized: Only list owners and managers can delete tasks' },
         { status: 403 }
@@ -392,6 +396,9 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Task deleted successfully' })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error deleting task:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

@@ -13,3 +13,7 @@ export function getChatDmChannelName(conversationId: string) {
 export function getChatOrgMetaChannelName(orgId: string) {
   return `chat:org:${orgId}:meta`
 }
+
+export function getChatSmsChannelName(conversationId: string) {
+  return `chat:sms:${conversationId}`
+}

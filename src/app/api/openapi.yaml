@@ -17,7 +17,9 @@ security:
   - cookieAuth: []
 
 tags:
+  - name: attachments
   - name: auth
+  - name: budgets
   - name: chat
   - name: comments
   - name: days
@@ -27,12 +29,17 @@ tags:
   - name: jobs
   - name: likes
   - name: notes
+  - name: notifications
+  - name: places
   - name: profile
   - name: search
+  - name: sms
   - name: tasklists
   - name: tasks
+  - name: telnyx
   - name: templates
   - name: user
+  - name: virtual-number
   - name: wallet
 
 paths:
@@ -71,6 +78,18 @@ paths:
       responses:
         '200': { description: Fan-out result }
         '401': { description: Unauthorized cron request }
+
+  /api/v1/budgets:
+    get:
+      tags: [budgets]
+      summary: List the current user's budgets
+      responses:
+        '200': { description: Budgets }
+    post:
+      tags: [budgets]
+      summary: Create a budget (name, totalAmount)
+      responses:
+        '200': { description: Budget }
 
   /api/v1/chat:
     post:
@@ -388,7 +407,7 @@ paths:
         '200': { description: Delegations }
     post:
       tags: [delegation]
-      summary: Create or update a delegation
+      summary: Create or update a delegation (scopes + roleKeys relationship labels)
       responses:
         '200': { description: Delegation }
         '202': { description: Invitation draft for non-user email }
@@ -490,6 +509,17 @@ paths:
     post:
       tags: [jobs]
       summary: Create a job (justification required for collaborators)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                documentIds:
+                  type: array
+                  maxItems: 10
+                  items: { type: string }
+                  description: Attached Document ids (e.g. a CV uploaded via /api/v1/attachments)
       responses:
         '200': { description: Job }
 
@@ -515,6 +545,134 @@ paths:
         - { name: jobId, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Cancelled }
+
+  /api/v1/attachments/presign:
+    post:
+      tags: [attachments]
+      summary: Presign a direct upload (extension allowlist + per-kind cap; SVG rejected)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fileName, mimeType, kind, size]
+              properties:
+                fileName: { type: string }
+                mimeType: { type: string }
+                kind: { type: string, enum: [image, video, document, cv] }
+                size: { type: integer }
+                role: { type: string, enum: [cover, flier, evidence, inline, cv] }
+      responses:
+        '200': { description: '{ uploadUrl, key, publicUrl, expiresIn }' }
+        '503': { description: Storage not configured }
+
+  /api/v1/attachments:
+    get:
+      tags: [attachments]
+      summary: List the caller's own documents (?kind=cv&mine=true, newest first, take <= 50)
+      parameters:
+        - { name: mine, in: query, required: true, schema: { type: string } }
+        - { name: kind, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: '{ documents }' }
+    post:
+      tags: [attachments]
+      summary: Confirm upload (key prefix, HEAD cap, magic-byte sniff) and create+link Document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [key, fileName, kind, entityType, entityId]
+              properties:
+                key: { type: string }
+                fileName: { type: string }
+                kind: { type: string, enum: [image, video, document, cv] }
+                entityType: { type: string, enum: [task, list, job, note, user] }
+                entityId: { type: string }
+                role: { type: string, enum: [cover, flier, evidence, inline, cv] }
+                width: { type: integer }
+                height: { type: integer }
+                duration: { type: number }
+                location: { type: object }
+      responses:
+        '200': { description: '{ document }' }
+        '403': { description: Key outside caller prefix / not permitted on entity }
+        '400': { description: Cap exceeded or content/type mismatch (object deleted) }
+
+  /api/v1/attachments/{documentId}:
+    delete:
+      tags: [attachments]
+      summary: Delete attachment (owner only; unlink arrays, delete object, delete row)
+      parameters:
+        - { name: documentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: '{ message: Attachment deleted }' }
+
+  /api/v1/attachments/{documentId}/file:
+    get:
+      tags: [attachments]
+      summary: Authenticated media pipe from the private storage bucket (streams bytes; Range supported)
+      parameters:
+        - { name: documentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Object bytes with sniffed Content-Type }
+        '206': { description: Partial content (video seeking) }
+        '401': { description: Authentication required for non-public documents }
+        '403': { description: Not linked to the document }
+        '404': { description: Attachment or object not found }
+
+  /api/v1/notifications:
+    get:
+      tags: [notifications]
+      summary: List the current user's notifications (newest first, last 30, with unread count)
+      responses:
+        '200': { description: '{ notifications, unreadCount }' }
+    post:
+      tags: [notifications]
+      summary: Mark notifications as read (given ids, or all when omitted)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids: { type: array, items: { type: string } }
+      responses:
+        '200': { description: '{ updated }' }
+
+  /api/v1/places/autocomplete:
+    get:
+      tags: [places]
+      summary: Google Places autocomplete proxy (5 results, 5-min LRU, per-user rate limit)
+      parameters:
+        - { name: input, in: query, required: true, schema: { type: string } }
+        - { name: sessionToken, in: query, schema: { type: string } }
+      responses:
+        '200': { description: '{ predictions: [{ placeId, description }] }' }
+        '503': { description: Places not configured }
+
+  /api/v1/places/details:
+    get:
+      tags: [places]
+      summary: Google Places details proxy (canonical 5-field location)
+      parameters:
+        - { name: placeId, in: query, required: true, schema: { type: string } }
+        - { name: sessionToken, in: query, schema: { type: string } }
+      responses:
+        '200': { description: '{ location: { lat, lng, placeId, name, address } }' }
+
+  /api/v1/places/staticmap:
+    get:
+      tags: [places]
+      summary: Google Static Maps image proxy (API key stays server-side)
+      parameters:
+        - { name: lat, in: query, required: true, schema: { type: number } }
+        - { name: lng, in: query, required: true, schema: { type: number } }
+        - { name: zoom, in: query, schema: { type: number } }
+      responses:
+        '200': { description: Static map image (cached 24h) }
 
   /api/v1/likes:
     get:
@@ -571,12 +729,17 @@ paths:
   /api/v1/notes:
     get:
       tags: [notes]
-      summary: List current user notes (and received notes)
+      summary: List current user notes (and received notes); with userId, list a delegated user's notes
+      parameters:
+        - { name: userId, in: query, schema: { type: string }, description: Target delegator's user id (requires a delegation from them) }
+        - { name: visibility, in: query, schema: { type: string }, description: Comma-separated visibility filter }
+        - { name: noteId, in: query, schema: { type: string } }
       responses:
         '200': { description: Notes }
+        '403': { description: Not authorized for selected user data }
     post:
       tags: [notes]
-      summary: Create a note
+      summary: Create a note (visibility defaults to the user's defaultNoteVisibility, then PRIVATE)
       responses:
         '200': { description: Note }
 
@@ -777,6 +940,20 @@ paths:
       responses:
         '200': { description: Task }
 
+  /api/v1/tasks/past-pending:
+    get:
+      tags: [tasks]
+      summary: Past occurrences still pending or under review (infinite-scroll pages)
+      parameters:
+        - { name: listId, in: query, required: true, schema: { type: string } }
+        - { name: before, in: query, schema: { type: string, format: date } }
+        - { name: windowStart, in: query, schema: { type: string, format: date } }
+        - { name: cursorDate, in: query, schema: { type: string, format: date } }
+        - { name: cursorId, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200': { description: Past pending entries with nextCursor }
+
   /api/v1/tasks/{taskId}:
     get:
       tags: [tasks]
@@ -937,6 +1114,119 @@ paths:
       summary: Transfer tokens from a wallet
       responses:
         '200': { description: Transaction hash }
+
+  /api/v1/virtual-number:
+    get:
+      tags: [virtual-number]
+      summary: Fetch the current user's virtual number assignments and plan quota
+      responses:
+        '200': { description: 'Current assignments and plan quota: { assignments: [...], quota: number }' }
+        '401': { description: Unauthorized }
+    post:
+      tags: [virtual-number]
+      summary: Assign a virtual number (or clear all assignments)
+      description: Premium feature (Clerk feature `virtual_number`). Assigns are bounded by the plan quota (Clerk plan slug `dupip_pro`/`dupip_ultra`/`dupip_max` → 1/3/5). Pass `phoneNumber: null` to clear all assignments.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phoneNumber:
+                  type: [string, 'null']
+                  description: E.164 phone number to assign, or null to clear all
+      responses:
+        '200': { description: Updated assignments }
+        '400': { description: Invalid phoneNumber }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+        '404': { description: Number not in Telnyx account }
+        '409': { description: Number already assigned, or plan quota reached }
+    delete:
+      tags: [virtual-number]
+      summary: Unassign one of the user's virtual numbers
+      parameters:
+        - { name: phoneNumber, in: query, required: true, schema: { type: string }, description: E.164 phone number to unassign }
+      responses:
+        '200': { description: Updated assignments }
+        '400': { description: Missing phoneNumber }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+        '404': { description: Number not assigned to the user }
+
+  /api/v1/virtual-number/numbers:
+    get:
+      tags: [virtual-number]
+      summary: List Telnyx numbers available for assignment
+      responses:
+        '200': { description: Available numbers }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+
+  /api/v1/sms/conversations:
+    get:
+      tags: [sms]
+      summary: List the current user's SMS conversations
+      responses:
+        '200': { description: SMS conversations with unread counts }
+        '401': { description: Unauthorized }
+
+  /api/v1/sms/conversations/{conversationId}/messages:
+    get:
+      tags: [sms]
+      summary: List SMS messages in a conversation
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: SMS messages (newest last) }
+        '401': { description: Unauthorized }
+        '403': { description: Not the conversation owner }
+        '404': { description: Conversation not found }
+    post:
+      tags: [sms]
+      summary: Send an SMS from the user's virtual number
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: SMS text (max 1600 characters)
+      responses:
+        '201': { description: Message sent }
+        '400': { description: Invalid content }
+        '401': { description: Unauthorized }
+        '403': { description: Not the conversation owner }
+        '404': { description: Conversation not found }
+        '409': { description: No virtual number assigned }
+        '502': { description: Telnyx send failed }
+
+  /api/v1/sms/conversations/{conversationId}/read:
+    post:
+      tags: [sms]
+      summary: Mark an SMS conversation as read
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Marked read }
+        '401': { description: Unauthorized }
+        '404': { description: Conversation not found }
+
+  /api/v1/telnyx/webhook:
+    post:
+      tags: [telnyx]
+      summary: Telnyx messaging webhook (Ed25519-signed)
+      description: Receives message.received, message.sent, and message.finalized events. Verified with the Telnyx account Ed25519 public key over `{timestamp}|{raw body}` plus a 5-minute timestamp window.
+      security: []
+      responses:
+        '200': { description: Processed }
+        '400': { description: Invalid JSON }
+        '401': { description: Invalid signature or expired timestamp }
 
 components:
   securitySchemes:

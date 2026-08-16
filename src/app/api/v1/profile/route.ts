@@ -1,11 +1,10 @@
 import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
-import { revalidatePath } from 'next/cache'
 import { sanitizeText } from '@/lib/utils/sanitize'
-// no direct revalidatePath here; we call our v1 endpoint instead
+import { ensureUserAndProfile } from '@/lib/services/user/ensureUserAndProfile'
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const { userId } = await auth()
 
   // Check if user is authenticated
@@ -14,6 +13,9 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    // Guarantee User + Profile exist for the caller.
+    await ensureUserAndProfile(userId)
+
     let user = await prisma.user.findUnique({
       where: { userId },
       include: {
@@ -23,48 +25,6 @@ export async function GET(req: NextRequest) {
 
     if (!user) {
       return Response.json({ error: 'User not found' }, { status: 404 })
-    }
-
-    // Ensure user has a profile - create one if missing
-    if (!user.profiles || user.profiles.length === 0) {
-      const clerkUser = await currentUser()
-      const existing = await prisma.profile.findUnique({ where: { userId: user.id } })
-      if (!existing) {
-        try {
-          await prisma.profile.create({
-            data: {
-              userId: user.id,
-              // Only set root-level username when available — null violates MongoDB unique index
-              ...(clerkUser?.username ? { username: clerkUser.username } : {}),
-              data: {
-                username: {
-                  value: clerkUser?.username || null,
-                  visibility: true
-                }
-              }
-            }
-          })
-          const username = clerkUser?.username
-          if (username) {
-            // Revalidate the public profile path for this user
-            revalidatePath(`/@${username}`);
-          }
-        } catch (error: any) {
-          if (error?.code === 'P2002') {
-            // Profile was just created by another concurrent request
-          } else {
-            console.error('Error creating profile:', error)
-          }
-        }
-      }
-      // Refetch user with new profile
-      user = await prisma.user.findUnique({
-        where: { userId },
-        include: { profiles: true }
-      })
-      if (!user) {
-        return Response.json({ error: 'User not found after profile creation' }, { status: 404 })
-      }
     }
 
     // Always sync username from Clerk if available - Clerk takes precedence
@@ -169,7 +129,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const data = await req.json()
-    
+
+    // Guarantee User + Profile exist for the caller.
+    await ensureUserAndProfile(userId)
+
     // Get the user first
     const user = await prisma.user.findUnique({
       where: { userId }

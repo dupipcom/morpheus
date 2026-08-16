@@ -1,324 +1,178 @@
 'use client'
 
-import React, { useState, useContext, useMemo, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
-import { RecurrencePicker, RecurrenceRule } from '@/components/recurrencePicker'
-import { calculateNextOccurrence } from '@/lib/utils/recurrenceUtils'
-import { generateObjectId } from '@/lib/services/tasklist/helpers'
+import { CadencePicker } from '@/components/cadencePicker'
 
-import { PendingTaskCreation } from '@/lib/hooks/useOptimisticUpdates'
-
+/**
+ * Create/edit task dialog (mirrors the AddListForm dialog pattern).
+ * Controlled via `open` / `onOpenChange`.
+ */
 export const AddTaskForm = ({
+  open,
+  onOpenChange,
   selectedTaskListId,
-  onCancel,
   onCreated,
   editTask,
-  pendingTaskCreationsRef,
-  mutateTasksRef
 }: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
   selectedTaskListId?: string
-  onCancel: () => void
   onCreated: () => Promise<void> | void
   editTask?: any
-  pendingTaskCreationsRef?: React.MutableRefObject<Map<string, PendingTaskCreation>>
-  mutateTasksRef?: React.MutableRefObject<(() => Promise<any>) | null>
 }) => {
   const { t } = useI18n()
   const isEditMode = !!editTask
-  const [newTask, setNewTask] = useState({
-    name: editTask?.name || '',
-    area: editTask?.area || 'self',
-    category: editTask?.categories?.[0] || 'custom',
-    saveToTemplate: false,
-    times: editTask?.times || 1
-  })
-  const [recurrence, setRecurrence] = useState<RecurrenceRule | null>(null)
-  const { taskLists } = useContext(GlobalContext)
-  const allTaskLists = useMemo(() => (Array.isArray(taskLists) ? taskLists : []), [taskLists])
-  const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
-  // Sync form state when editTask changes
+  const [name, setName] = useState(editTask?.name || '')
+  const [rrule, setRRule] = useState<string | null>(editTask?.rrule || null)
+  const [times, setTimes] = useState<number>(editTask?.times || 1)
+  const [premium, setPremium] = useState<string>(editTask?.premium != null ? String(editTask.premium) : '')
+  const [premiumType, setPremiumType] = useState<string>(editTask?.premiumType || 'FIAT')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Reset/sync form state whenever the dialog opens (create or edit)
   useEffect(() => {
-    if (editTask) {
-      setNewTask({
-        name: editTask.name || '',
-        area: editTask.area || 'self',
-        category: editTask.categories?.[0] || 'custom',
-        saveToTemplate: false,
-        times: editTask.times || 1
-      })
-
-      // Normalize recurrence data - handle string dates from database
-      if (editTask.recurrence) {
-        const normalizedRecurrence: RecurrenceRule = {
-          frequency: editTask.recurrence.frequency || 'NONE',
-          interval: editTask.recurrence.interval || 1,
-          byWeekday: editTask.recurrence.byWeekday || [],
-          byMonthDay: editTask.recurrence.byMonthDay || [],
-          byMonth: editTask.recurrence.byMonth || [],
-          endDate: editTask.recurrence.endDate
-            ? (typeof editTask.recurrence.endDate === 'string'
-                ? new Date(editTask.recurrence.endDate)
-                : editTask.recurrence.endDate)
-            : null,
-          occurrenceCount: editTask.recurrence.occurrenceCount || null,
-        }
-        setRecurrence(normalizedRecurrence)
+    if (open) {
+      if (editTask) {
+        setName(editTask.name || '')
+        setRRule(editTask.rrule || null)
+        setTimes(editTask.times || 1)
+        setPremium(editTask.premium != null ? String(editTask.premium) : '')
+        setPremiumType(editTask.premiumType || 'FIAT')
       } else {
-        setRecurrence(null)
+        setName('')
+        setRRule(null)
+        setTimes(1)
+        setPremium('')
+        setPremiumType('FIAT')
       }
-    } else {
-      // Reset form for add mode
-      setNewTask({
-        name: '',
-        area: 'self',
-        category: 'custom',
-        saveToTemplate: false,
-        times: 1
-      })
-      setRecurrence(null)
+      setIsSubmitting(false)
     }
-  }, [editTask])
+  }, [open, editTask])
 
   const handleSubmit = async () => {
-    if (!selectedTaskListId || !newTask.name.trim()) return
+    if (!selectedTaskListId || !name.trim() || isSubmitting) return
 
-    const now = new Date()
-
-    // Map old status format to new enum if needed
-    const statusMap: Record<string, string> = {
-      'open': 'OPEN',
-      'in progress': 'IN_PROGRESS',
-      'steady': 'STEADY',
-      'ready': 'READY',
-      'done': 'DONE',
-      'ignored': 'IGNORED',
-    }
-    const oldStatus = isEditMode ? (editTask?.status || 'open') : 'open'
-    const newStatus = statusMap[oldStatus] || oldStatus.toUpperCase() || 'OPEN'
-
-    const baseTask = {
-      name: newTask.name.trim(),
-      area: newTask.area,
-      categories: [newTask.category],
-      recurrence: recurrence,
-      nextOccurrence: recurrence ? calculateNextOccurrence({ recurrence }, now) : null,
-      firstOccurrence: recurrence ? now : null,
-      status: newStatus,
-      times: Math.max(1, Number(newTask.times) || 1),
-      count: isEditMode ? (editTask?.count || 0) : 0,
-      listId: selectedTaskListId,
-    }
-
-    // For new task creation (not edit mode), add optimistic task
-    const isNewTaskCreation = !isEditMode && !newTask.saveToTemplate
-    let tempId: string | null = null
-
-    if (isNewTaskCreation && pendingTaskCreationsRef) {
-      // Generate a temporary MongoDB ObjectId (24-character hex string)
-      tempId = generateObjectId()
-      
-      // Add optimistic task to the pending map
-      pendingTaskCreationsRef.current.set(tempId, {
-        tempId,
-        task: {
-          ...baseTask,
-          id: tempId,
-          createdAt: now,
-          updatedAt: now,
-        },
-        timestamp: Date.now(),
-      })
-    }
-
+    setIsSubmitting(true)
     try {
-      // Check if task has an ID (real Task model) or is legacy/ephemeral
-      if (isEditMode && editTask?.id && !editTask?.isEphemeral) {
-        // Update existing task via new API
+      const parsedPremium = premium.trim() === '' ? null : parseFloat(premium)
+
+      if (isEditMode && editTask?.id) {
+        // Update existing task via the tasks endpoint
         await fetch(`/api/v1/tasks/${editTask.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(baseTask)
-        })
-      } else if (isEditMode && editTask?.isEphemeral) {
-        // Update ephemeral task (legacy path - for backward compatibility)
-        await fetch('/api/v1/tasklists', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            taskListId: selectedTaskListId,
-            ephemeralTasks: {
-              update: {
-                id: editTask.id,
-                ...baseTask
-              }
-            }
-          })
-        })
-      } else if (isEditMode) {
-        // Update source task in list.tasks - use Task collection only (templateTasks is deprecated)
-        if (selectedList) {
-          const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
-            ? (selectedList as any).tasks
-            : []
-          const updatedTasks = blueprint.map((t: any) => {
-            const isMatch = t.id === editTask.id ||
-                            t.localeKey === editTask.localeKey ||
-                            (t.name && editTask.name && t.name.toLowerCase() === editTask.name.toLowerCase())
-            return isMatch ? { ...t, ...baseTask, id: t.id } : t
-          })
-          await fetch('/api/v1/tasklists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              taskListId: selectedTaskListId,
-              create: false,
-              role: (selectedList as any).role,
-              tasks: updatedTasks
-            })
-          })
-        }
-      } else if (newTask.saveToTemplate && selectedList) {
-        // Add new task to Task collection (templateTasks is deprecated)
-        const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
-          ? (selectedList as any).tasks
-          : []
-        const updatedTasks = [ { ...baseTask }, ...(blueprint || []) ]
-        await fetch('/api/v1/tasklists', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            taskListId: selectedTaskListId,
-            create: false,
-            role: (selectedList as any).role,
-            tasks: updatedTasks
-          })
+            name: name.trim(),
+            rrule,
+            times: Math.max(1, Number(times) || 1),
+            premium: parsedPremium,
+            premiumType: parsedPremium != null ? premiumType : null,
+          }),
         })
       } else {
-        // Create new task via new API
+        // Create a new task; dtstart anchors the cadence at today
+        const today = new Date()
+        const dtstart = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
         await fetch('/api/v1/tasks', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(baseTask)
+          body: JSON.stringify({
+            name: name.trim(),
+            listId: selectedTaskListId,
+            rrule,
+            dtstart,
+            times: Math.max(1, Number(times) || 1),
+            premium: parsedPremium,
+            premiumType: parsedPremium != null ? premiumType : null,
+          }),
         })
       }
-      
-      // Trigger SWR revalidation to fetch updated tasks list
-      if (mutateTasksRef?.current) {
-        await mutateTasksRef.current()
-      }
-      
+
       await onCreated()
+      onOpenChange(false)
     } catch (error) {
-      // On error, remove the optimistic task
-      if (tempId && pendingTaskCreationsRef) {
-        pendingTaskCreationsRef.current.delete(tempId)
-      }
-      console.error('Error creating task:', error)
-      // Optionally show error to user
+      console.error('Error saving task:', error)
     } finally {
-      onCancel()
+      setIsSubmitting(false)
     }
   }
 
   return (
-    <Card className="mb-2 p-4">
-      <CardHeader>
-        <CardTitle className="text-sm">
-          {isEditMode
-            ? (t('forms.addTaskForm.editTitle') || 'Edit Task')
-            : (t('forms.addTaskForm.title') || 'Add Custom Task')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div>
-          <Label htmlFor="task-name">{t('forms.addTaskForm.taskNameLabel') || 'Task Name'}</Label>
-          <Input
-            id="task-name"
-            type="text"
-            value={newTask.name}
-            onChange={(e) => setNewTask(prev => ({ ...prev, name: e.target.value }))}
-            placeholder={t('forms.addTaskForm.taskNamePlaceholder') || 'Enter task name...'}
-          />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="w-[480px] max-w-[90vw] max-h-[70vh] z-[9980] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>
+            {isEditMode
+              ? (t('forms.addTaskForm.editTitle') || 'Edit Task')
+              : (t('forms.addTaskForm.title') || 'Add Task')}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3 overflow-y-auto flex-1 pr-1">
+          <div>
+            <Label htmlFor="task-name">{t('forms.addTaskForm.taskNameLabel') || 'Task Name'}</Label>
+            <Input
+              id="task-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t('forms.addTaskForm.taskNamePlaceholder') || 'Enter task name...'}
+            />
+          </div>
+          <CadencePicker value={rrule} onChange={setRRule} />
+          <div>
+            <Label htmlFor="task-times">{t('forms.addTaskForm.timesLabel') || '# of times per day'}</Label>
+            <Input
+              id="task-times"
+              type="number"
+              min={1}
+              value={times}
+              onChange={(e) => setTimes(Math.max(1, Number(e.target.value) || 1))}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="task-premium">{t('forms.addTaskForm.premiumLabel', { defaultValue: 'Premium (optional)' })}</Label>
+            <div className="flex gap-2">
+              <Input
+                id="task-premium"
+                type="number"
+                min={0}
+                step="0.01"
+                className="flex-1"
+                value={premium}
+                placeholder="0"
+                onChange={(e) => setPremium(e.target.value)}
+              />
+              <Select value={premiumType} onValueChange={setPremiumType}>
+                <SelectTrigger className="w-[130px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="FIAT">$</SelectItem>
+                  <SelectItem value="PERCENT">%</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {premiumType === 'PERCENT' && (
+              <p className="text-xs text-muted-foreground">{t('forms.addTaskForm.premiumPercentHint', { defaultValue: 'Percent of the list budget' })}</p>
+            )}
+          </div>
         </div>
-        <div>
-          <Label htmlFor="task-area">{t('forms.addTaskForm.areaLabel') || 'Area'}</Label>
-          <Select value={newTask.area} onValueChange={(val) => setNewTask(prev => ({ ...prev, area: val }))}>
-            <SelectTrigger className="w-full" id="task-area">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="self">{t('forms.commonOptions.area.self') || 'Self'}</SelectItem>
-              <SelectItem value="social">{t('forms.commonOptions.area.social') || 'Social'}</SelectItem>
-              <SelectItem value="home">{t('forms.commonOptions.area.home') || 'Home'}</SelectItem>
-              <SelectItem value="work">{t('forms.commonOptions.area.work') || 'Work'}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="task-category">{t('forms.addTaskForm.categoryLabel') || 'Category'}</Label>
-          <Select value={newTask.category} onValueChange={(val) => setNewTask(prev => ({ ...prev, category: val }))}>
-            <SelectTrigger className="w-full" id="task-category">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</SelectItem>
-              <SelectItem value="body">{t('forms.commonOptions.category.body') || 'Body'}</SelectItem>
-              <SelectItem value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</SelectItem>
-              <SelectItem value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</SelectItem>
-              <SelectItem value="social">{t('forms.commonOptions.category.social') || 'Social'}</SelectItem>
-              <SelectItem value="work">{t('forms.commonOptions.category.work') || 'Work'}</SelectItem>
-              <SelectItem value="home">{t('forms.commonOptions.category.home') || 'Home'}</SelectItem>
-              <SelectItem value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</SelectItem>
-              <SelectItem value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</SelectItem>
-              <SelectItem value="community">{t('forms.commonOptions.category.community') || 'Community'}</SelectItem>
-              <SelectItem value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</SelectItem>
-              <SelectItem value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</SelectItem>
-              <SelectItem value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</SelectItem>
-              <SelectItem value="spirituality">{t('forms.commonOptions.category.spirituality') || 'Spirituality'}</SelectItem>
-              <SelectItem value="event">{t('forms.commonOptions.category.event') || 'Event'}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="task-times">{t('forms.addTaskForm.timesLabel') || '# of times'}</Label>
-          <Input
-            id="task-times"
-            type="number"
-            min={1}
-            value={newTask.times}
-            onChange={(e) => setNewTask(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))}
-          />
-        </div>
-        <RecurrencePicker value={recurrence} onChange={setRecurrence} />
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="save-to-template"
-            checked={newTask.saveToTemplate}
-            onCheckedChange={(checked) => setNewTask(prev => ({ ...prev, saveToTemplate: checked }))}
-          />
-          <Label htmlFor="save-to-template">
-            {t('forms.addTaskForm.saveToTemplate') || 'Save task to template'}
-          </Label>
-        </div>
-        <div className="flex gap-2">
-          <Button onClick={handleSubmit} disabled={!newTask.name.trim()} size="sm">
+        <div className="flex gap-2 pt-2">
+          <Button onClick={handleSubmit} disabled={!name.trim() || isSubmitting} size="sm">
             {isEditMode
               ? (t('forms.addTaskForm.saveTask') || 'Save Task')
               : (t('forms.addTaskForm.addTask') || 'Add Task')}
           </Button>
-          <Button variant="outline" onClick={onCancel} size="sm">{t('forms.addTaskForm.cancel') || 'Cancel'}</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)} size="sm">{t('forms.addTaskForm.cancel') || 'Cancel'}</Button>
         </div>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   )
 }
-
-

@@ -17,6 +17,7 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "delete": "Eliminar",
+    "remove": "Quitar",
     "loading": "Cargando...",
     "error": "Error",
     "success": "Éxito",
@@ -60,7 +61,8 @@
     "decline": "Rechazar",
     "friendRequest": "Solicitud de amistad",
     "reverseOrder": "Invertir orden",
-    "saving": "Guardando..."
+    "saving": "Guardando...",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Inicio",
@@ -74,7 +76,8 @@
     "privacy": "Privacidad",
     "locale": "Idioma",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Agenda",
+    "upgrade": "Mejorar"
   },
   "dashboard": {
     "title": "Tu vida de un vistazo.",
@@ -126,10 +129,13 @@
         "FRIENDS": "Amigos",
         "CLOSE_FRIENDS": "Amigos cercanos",
         "PUBLIC": "Público",
-        "AI_ENABLED": "IA habilitada"
+        "AI_ENABLED": "IA habilitada",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicar nota",
-      "embedHint": "Inserción de {provider}. Si la reproducción no está disponible, abre el enlace original a continuación."
+      "embedHint": "Inserción de {provider}. Si la reproducción no está disponible, abre el enlace original a continuación.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Habilitar análisis de IA"
     },
     "thirdParty": {
       "title": "Terceros",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Agregar analista delegado",
       "adding": "Agregando...",
       "addError": "No se pudo agregar el analista delegado",
-      "invitationDraft": "Borrador de invitación preparado para este correo."
+      "invitationDraft": "Borrador de invitación preparado para este correo.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -175,11 +183,67 @@
       "ready": "Listo",
       "open": "Abierto",
       "done": "Completado",
-      "ignored": "Ignorado"
+      "ignored": "Ignorado",
+      "completed": "Completed"
     },
     "loadingForDate": "Cargando tareas para la fecha seleccionada...",
     "initializingTasks": "Configurando tus tareas...",
-    "noTasksForDate": "No hay tareas programadas para esta fecha"
+    "noTasksForDate": "No hay tareas programadas para esta fecha",
+    "delete": "Eliminar...",
+    "deleteTitle": "Eliminar tarea",
+    "deleteDescription": "¿Cuánto de esta tarea quieres eliminar?",
+    "deleteScopes": {
+      "today": "Solo hoy",
+      "onwards": "De hoy en adelante",
+      "all": "Todas las entradas"
+    },
+    "requestTitle": "Solicitar trabajo",
+    "requestDescription": "Explica por qué quieres hacerte cargo de esta tarea. El dueño de la lista revisará tu solicitud.",
+    "submitTitle": "Entregar trabajo",
+    "resubmitTitle": "Revisar y volver a entregar",
+    "submitDescription": "Publica evidencia de tu trabajo. Pronto podrás adjuntar una foto o video.",
+    "reviewTitle": "Revisar trabajo",
+    "reviewDescription": "Acepta el trabajo, pide cambios o recházalo.",
+    "justificationLabel": "Justificación",
+    "justificationPlaceholder": "¿Por qué deberías hacer esta tarea?",
+    "evidenceLabel": "Evidencia / nota",
+    "evidencePlaceholder": "Describe lo que hiciste...",
+    "selfReviewLabel": "Autoevaluación (0-100)",
+    "managerReviewLabel": "Puntuación de revisión (0-100)",
+    "reviewNoteLabel": "Comentarios (opcional)",
+    "sendRequest": "Enviar solicitud",
+    "resubmit": "Volver a entregar",
+    "submit": "Entregar",
+    "accept": "Aceptar",
+    "requestChanges": "Pedir cambios",
+    "reject": "Rechazar",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "Configuración",
@@ -199,7 +263,9 @@
     "expectedNeedUtilities": "Promedio Esperado de Servicios Públicos",
     "editAction": "Editar acción",
     "save": "Guardar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "currency": "Moneda",
+    "selectCurrency": "Seleccionar moneda"
   },
   "social": {
     "title": "Contactos Sociales",
@@ -300,7 +366,8 @@
     "cookies": "Usamos cookies, y al usar esta aplicación aceptas esto.",
     "code": "Código",
     "terms": "Términos de Servicio",
-    "privacy": "Política de Privacidad"
+    "privacy": "Política de Privacidad",
+    "pricing": "Precios"
   },
   "earningsTable": {
     "day": "Día",
@@ -346,7 +413,8 @@
     "getInsights": "Pregunta sobre tu estado de ánimo, hábitos u obtén insights personalizados",
     "placeholder": "Hablemos...",
     "error": "Lo siento, encontré un error. Por favor, inténtalo de nuevo.",
-    "failedToSend": "Error al enviar mensaje. Por favor, inténtalo de nuevo."
+    "failedToSend": "Error al enviar mensaje. Por favor, inténtalo de nuevo.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "¡Ups! No se pudo sintonizar esta frecuencia.",
@@ -553,7 +621,34 @@
       "saveToTemplate": "Guardar tarea en plantilla",
       "addTask": "Agregar tarea",
       "saveTask": "Guardar tarea",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "premiumLabel": "Prima (opcional)",
+      "premiumPercentHint": "Porcentaje del presupuesto de la lista",
+      "cadenceLabel": "Se repite",
+      "cadence": {
+        "none": "No se repite",
+        "daily": "Diariamente",
+        "weekly": "Semanalmente",
+        "monthly": "Mensualmente",
+        "yearly": "Anualmente",
+        "every": "Cada",
+        "day": "día",
+        "days": "días",
+        "week": "semana",
+        "weeks": "semanas",
+        "month": "mes",
+        "months": "meses",
+        "year": "año",
+        "years": "años",
+        "onDay": "El día",
+        "onThe": "El",
+        "inMonth": "En el mes",
+        "ends": "Termina",
+        "never": "Nunca",
+        "after": "Después de",
+        "onDate": "En fecha",
+        "occurrences": "veces"
+      }
     },
     "recurrencePicker": {
       "frequency": "Repetir",
@@ -642,12 +737,24 @@
       },
       "areaDistributionLabel": "Presupuesto de área",
       "areaPrizeDistributionLabel": "Premio de área",
+      "areaPremiumDistributionLabel": "Distribución de premios por área",
       "categoryDistributionLabel": "Presupuesto de categoría",
       "categoryPrizeDistributionLabel": "Premio de categoría",
+      "categoryPremiumDistributionLabel": "Distribución de premios por categoría",
       "taskDistributionLabel": "Presupuesto",
       "premiumLabel": "Premio",
       "totalLabel": "Total",
-      "addTaskTitle": "Añadir tarea"
+      "addTaskTitle": "Añadir tarea",
+      "editTitle": "Editar lista",
+      "visibilityLabel": "Visibilidad",
+      "collaboratorsPlaceholder": "Buscar amigos...",
+      "budgetSourcesLabel": "Porcentaje de tus presupuestos:",
+      "noBudgets": "Aún no hay presupuestos — añade uno abajo.",
+      "newBudgetName": "Nombre del presupuesto",
+      "confirmDelete": "¿Eliminar esta lista y todas sus tareas? No se puede deshacer.",
+      "delete": "Eliminar",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Crear nueva plantilla",
@@ -679,6 +786,36 @@
       },
       "create": "Crear",
       "cancel": "Cancelar"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -714,7 +851,15 @@
     "notice": "No hay dinero real gestionado actualmente en esta aplicación. Dupip Invest todavía está en fase de planificación. Esto es solo un espacio de pruebas con fines de demostración.",
     "consentTitle": "Consentimiento de Demostración de Inversión",
     "consentCheckbox": "Reconozco que Dupip aún no es una plataforma de inversión, y que al usar esta función, soy consciente de que todos mis datos pueden ser eliminados antes del lanzamiento oficial de Dupip Invest.",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Generación de NFT completada.",
@@ -879,7 +1024,10 @@
         "submitted": "Trabajo enviado para revisión",
         "resubmitted": "Trabajo reenviado para revisión"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Nota actualizada correctamente",
@@ -889,6 +1037,7 @@
     "deleting": "Eliminando...",
     "confirmDelete": "¿Estás seguro de que quieres eliminar esta nota?",
     "content": "Contenido de la nota",
+    "recipient": "Destinatario",
     "visibilityUpdated": "Visibilidad actualizada correctamente",
     "visibilityUpdateFailed": "No se pudo actualizar la visibilidad",
     "changeVisibility": "Cambiar visibilidad",
@@ -897,7 +1046,17 @@
       "date": "Fecha",
       "mostRelevant": "Más relevante",
       "all": "Todo"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Conversación",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "Invitar a un amigo a esta organización",
     "inviteLinkCopied": "Enlace de invitación copiado",
     "inviteSent": "Invitación enviada",
-    "inviteAccepted": "Invitación aceptada"
+    "inviteAccepted": "Invitación aceptada",
+    "sidebar": {
+      "directMessages": "Mensajes directos",
+      "organizations": "Organizaciones",
+      "sms": "SMS",
+      "virtualNumber": "Número virtual",
+      "searchDmPlaceholder": "Busca amigos para iniciar un MD",
+      "createChannelPlaceholder": "Crear un canal",
+      "createOrgPlaceholder": "Crear una organización",
+      "refresh": "Actualizar",
+      "noOrgs": "Aún no hay organizaciones",
+      "noDms": "Aún no hay mensajes directos"
+    },
+    "virtualNumber": {
+      "label": "Número virtual",
+      "hint": "Elige tus números de teléfono. Los SMS entrantes a estos números aparecerán en tu chat.",
+      "none": "Sin número",
+      "loading": "Cargando números…",
+      "empty": "No hay números disponibles",
+      "error": "No se pudieron cargar tus números",
+      "assignError": "No se pudo guardar este número",
+      "assigned": "Número asignado",
+      "cleared": "Número eliminado",
+      "addNumber": "Añadir número…",
+      "removeNumber": "Eliminar número",
+      "quotaLabel": "{used} de {quota} números utilizados",
+      "limitReached": "Has alcanzado el número máximo de números virtuales de tu plan",
+      "buyCta": "Comprar número virtual",
+      "gateHint": "Los números virtuales requieren un plan Donator. Compra un número para recibir SMS en el chat.",
+      "buyDialogTitle": "Se requiere un plan Donator",
+      "buyDialogDescription": "Los números virtuales están incluidos en los planes Donator. Elige un plan en la página de precios para empezar.",
+      "buyDialogGoToPricing": "Ir a precios"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Cargando SMS…",
+      "empty": "Aún no hay conversaciones de SMS",
+      "noNumberHint": "Asigna un número virtual para empezar a recibir SMS aquí",
+      "composerPlaceholder": "Escribe un SMS…",
+      "sendError": "No se pudo enviar este mensaje",
+      "you": "Tú",
+      "statusSent": "Enviado",
+      "statusDelivered": "Entregado",
+      "statusFailed": "Fallido",
+      "error": "No se pudieron cargar los SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "Compacto",
       "small": "Pequeño",
       "wide": "Amplio"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Precios",
+    "metaDescription": "Dupip está registrada en Europa como una radio web con una misión de bienestar. Para apoyar nuestro crecimiento, ofrecemos ventajas a los donantes. Consulta nuestros planes y cómo funciona DPIP.",
+    "heroTitle": "Radio, reinventada",
+    "heroSubtitle": "Dupip se construye alrededor de un reto sencillo: el bienestar. Buscamos las frecuencias que sacan lo mejor de ti.",
+    "siaeTitle": "Una nota sobre las licencias musicales",
+    "plansTitle": "Planes",
+    "plansDescription": "Elige el plan que se adapte a tu forma de escuchar.",
+    "dpipTitle": "Acerca de DPIP",
+    "dpipBody": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro.",
+    "consentTitle": "Consentimiento de DPIP",
+    "consentCheckbox": "Entiendo que DPIP puede no tener valor monetario, ni ahora ni en el futuro, y lo acepto.",
+    "consentSignedOut": "Inicia sesión para revisar el consentimiento de DPIP y ver nuestros planes.",
+    "signInToConsent": "Iniciar sesión",
+    "consentSaved": "Consentimiento registrado el {date}",
+    "saveConsent": "Guardar consentimiento",
+    "dpipNoValue": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro.",
+    "consentDescription": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro. Antes de ver nuestros planes, revisa y confirma lo siguiente:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import type { EmbeddedTask } from '@/generated/prisma'
 import { buildRRuleFromLegacy } from '@/lib/utils/rruleUtils'
+import { generatePublicUrl, temporaryPublicUrl } from '@/lib/services/list/taskListCrudService'
 
 export async function POST(
   request: NextRequest,
@@ -53,8 +54,15 @@ export async function POST(
         role: 'custom', // Cloned lists are custom
         users: [{ userId: user.id, role: 'OWNER' }],
         templateId: template.id,
+        // Placeholder avoids the null-collision on the unique publicUrl index;
+        // the real slug is assigned below.
+        publicUrl: temporaryPublicUrl()
       },
     })
+
+    // Assign the real slug now that the row (and its id suffix) exists
+    const publicUrl = await generatePublicUrl(taskList.name, taskList.id)
+    await prisma.list.update({ where: { id: taskList.id }, data: { publicUrl } })
 
     // Create Task records from the template's embedded tasks
     const templateTasks = (template.tasks as EmbeddedTask[]) || []

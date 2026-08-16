@@ -17,6 +17,7 @@
     "save": "Salvează",
     "cancel": "Anulează",
     "delete": "Șterge",
+    "remove": "Elimină",
     "loading": "Se încarcă...",
     "error": "Eroare",
     "success": "Succes",
@@ -60,7 +61,8 @@
     "saving": "Se salvează...",
     "decline": "Refuză",
     "friendRequest": "Cerere de prietenie",
-    "reverseOrder": "Ordine inversă"
+    "reverseOrder": "Ordine inversă",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Acasă",
@@ -74,7 +76,8 @@
     "privacy": "Politica de confidențialitate",
     "locale": "Limba",
     "blog": "Blog",
-    "agenda": "Agendă"
+    "agenda": "Agendă",
+    "upgrade": "Upgrade"
   },
   "dashboard": {
     "title": "Viața ta într-o privire.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Prieteni",
         "CLOSE_FRIENDS": "Prieteni apropiați",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI activat"
+        "AI_ENABLED": "AI activat",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publică nota",
       "publishing": "Publicare...",
-      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos."
+      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Activează analiza AI"
     },
     "thirdParty": {
       "title": "Terță parte",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Adaugă analist delegat",
       "adding": "Se adaugă...",
       "addError": "Nu s-a putut adăuga analistul delegat",
-      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail."
+      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "Gata",
       "open": "Deschis",
       "done": "Finalizat",
-      "ignored": "Ignorat"
+      "ignored": "Ignorat",
+      "completed": "Completed"
     },
     "edit": "Editare",
     "loadingForDate": "Se încarcă sarcinile pentru data selectată...",
     "initializingTasks": "Se configurează sarcinile tale...",
-    "noTasksForDate": "Nu există sarcini programate pentru această dată"
+    "noTasksForDate": "Nu există sarcini programate pentru această dată",
+    "delete": "Șterge...",
+    "deleteTitle": "Șterge sarcina",
+    "deleteDescription": "Cât din această sarcină vrei să ștergi?",
+    "deleteScopes": {
+      "today": "Doar azi",
+      "onwards": "De azi înainte",
+      "all": "Toate intrările"
+    },
+    "requestTitle": "Cere munca",
+    "requestDescription": "Explică de ce vrei să preiei această sarcină. Proprietarul listei îți va verifica cererea.",
+    "submitTitle": "Predă munca",
+    "resubmitTitle": "Corectează și predă din nou",
+    "submitDescription": "Publică o dovadă a muncii tale. În curând vei putea atașa o fotografie sau un videoclip.",
+    "reviewTitle": "Verifică munca",
+    "reviewDescription": "Acceptă munca, cere modificări sau respinge-o.",
+    "justificationLabel": "Justificare",
+    "justificationPlaceholder": "De ce ar trebui să faci această sarcină?",
+    "evidenceLabel": "Dovadă / notă",
+    "evidencePlaceholder": "Descrie ce ai făcut...",
+    "selfReviewLabel": "Autoevaluare (0-100)",
+    "managerReviewLabel": "Scor de verificare (0-100)",
+    "reviewNoteLabel": "Feedback (opțional)",
+    "sendRequest": "Trimite cererea",
+    "resubmit": "Predă din nou",
+    "submit": "Predă",
+    "accept": "Acceptă",
+    "requestChanges": "Cere modificări",
+    "reject": "Respinge",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "A băut apă",
@@ -243,7 +307,8 @@
     "cookies": "Folosim cookie-uri, și prin utilizarea acestei aplicații, sunteți de acord cu asta.",
     "code": "Cod",
     "terms": "Termeni și condiții",
-    "privacy": "Politica de confidențialitate"
+    "privacy": "Politica de confidențialitate",
+    "pricing": "Prețuri"
   },
   "earningsTable": {
     "day": "Zi",
@@ -329,7 +394,9 @@
     "expectedNeedUtilities": "Media costuri utilități necesare estimate",
     "editAction": "Editează acțiunea",
     "save": "Salvează",
-    "cancel": "Anulează"
+    "cancel": "Anulează",
+    "currency": "Monedă",
+    "selectCurrency": "Selectează moneda"
   },
   "agentChat": {
     "thinking": "Gândesc...",
@@ -337,7 +404,8 @@
     "getInsights": "Întreabă despre dispoziția ta, obiceiuri sau obține perspective personalizate",
     "placeholder": "Să vorbim...",
     "error": "Îmi pare rău, am întâlnit o eroare. Te rog încearcă din nou.",
-    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
+    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Începe-ți propria călătorie Dupip",
@@ -536,7 +604,34 @@
       "addTask": "Adăugați o sarcină",
       "cancel": "Anulează",
       "editTitle": "Editare sarcină",
-      "saveTask": "Salvare sarcină"
+      "saveTask": "Salvare sarcină",
+      "premiumLabel": "Primă (opțional)",
+      "premiumPercentHint": "Procent din bugetul listei",
+      "cadenceLabel": "Se repetă",
+      "cadence": {
+        "none": "Nu se repetă",
+        "daily": "Zilnic",
+        "weekly": "Săptămânal",
+        "monthly": "Lunar",
+        "yearly": "Anual",
+        "every": "La fiecare",
+        "day": "zi",
+        "days": "zile",
+        "week": "săptămână",
+        "weeks": "săptămâni",
+        "month": "lună",
+        "months": "luni",
+        "year": "an",
+        "years": "ani",
+        "onDay": "În ziua",
+        "onThe": "În",
+        "inMonth": "În luna",
+        "ends": "Se termină",
+        "never": "Niciodată",
+        "after": "După",
+        "onDate": "La data",
+        "occurrences": "ori"
+      }
     },
     "addListForm": {
       "titleCreate": "Creați o listă nouă",
@@ -592,12 +687,24 @@
       },
       "areaDistributionLabel": "Buget zonă",
       "areaPrizeDistributionLabel": "Premiu zonă",
+      "areaPremiumDistributionLabel": "Distribuție premii pe zone",
       "categoryDistributionLabel": "Buget categorie",
       "categoryPrizeDistributionLabel": "Premiu categorie",
+      "categoryPremiumDistributionLabel": "Distribuție premii pe categorii",
       "taskDistributionLabel": "Buget",
       "premiumLabel": "Premiu",
       "totalLabel": "Total",
-      "addTaskTitle": "Adaugă sarcină"
+      "addTaskTitle": "Adaugă sarcină",
+      "editTitle": "Editează lista",
+      "visibilityLabel": "Vizibilitate",
+      "collaboratorsPlaceholder": "Caută prieteni...",
+      "budgetSourcesLabel": "Procent din bugetele tale:",
+      "noBudgets": "Încă nu există bugete — adaugă unul mai jos.",
+      "newBudgetName": "Numele bugetului",
+      "confirmDelete": "Ștergi această listă și toate sarcinile ei? Nu se poate anula.",
+      "delete": "Șterge",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Creați un șablon nou",
@@ -662,6 +769,36 @@
       "after": "După",
       "pickDate": "Alege o dată",
       "occurrences": "apariții"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -714,7 +851,15 @@
     "notice": "Nu există bani reali gestionați în prezent în această aplicație. Dupip Invest este încă în faza de planificare. Acesta este doar un mediu de testare în scopuri de demonstrație.",
     "consentTitle": "Consimțământ pentru Demo de Investiții",
     "consentCheckbox": "Recunosc că Dupip nu este încă o platformă de investiții și că, folosind această funcție, sunt conștient că toate datele mele pot fi șterse înainte de lansarea oficială a Dupip Invest.",
-    "confirm": "Confirmă"
+    "confirm": "Confirmă",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Generarea NFT finalizată.",
@@ -879,7 +1024,10 @@
         "submitted": "Munca trimisă pentru revizuire",
         "resubmitted": "Munca retrimisă pentru revizuire"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Notă actualizată cu succes",
@@ -889,6 +1037,7 @@
     "deleting": "Se șterge...",
     "confirmDelete": "Ești sigur că dorești să ștergi această notă?",
     "content": "Conținut notă",
+    "recipient": "Destinatar",
     "visibilityUpdated": "Vizibilitate actualizată cu succes",
     "visibilityUpdateFailed": "Actualizarea vizibilității a eșuat",
     "changeVisibility": "Schimbă vizibilitatea",
@@ -897,7 +1046,17 @@
       "date": "Dată",
       "mostRelevant": "Cele mai relevante",
       "all": "Toate"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Conversație",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "Invită un prieten în această organizație",
     "inviteLinkCopied": "Link de invitație copiat",
     "inviteSent": "Invitație trimisă",
-    "inviteAccepted": "Invitație acceptată"
+    "inviteAccepted": "Invitație acceptată",
+    "sidebar": {
+      "directMessages": "Mesaje directe",
+      "organizations": "Organizații",
+      "sms": "SMS",
+      "virtualNumber": "Număr virtual",
+      "searchDmPlaceholder": "Caută prieteni pentru a începe un MD",
+      "createChannelPlaceholder": "Creează un canal",
+      "createOrgPlaceholder": "Creează o organizație",
+      "refresh": "Reîmprospătează",
+      "noOrgs": "Nicio organizație încă",
+      "noDms": "Niciun mesaj direct încă"
+    },
+    "virtualNumber": {
+      "label": "Număr virtual",
+      "hint": "Alege numerele tale de telefon. SMS-urile primite la aceste numere vor apărea în chatul tău.",
+      "none": "Niciun număr",
+      "loading": "Se încarcă numerele…",
+      "empty": "Nu sunt numere disponibile",
+      "error": "Numerele tale nu au putut fi încărcate",
+      "assignError": "Acest număr nu a putut fi salvat",
+      "assigned": "Număr atribuit",
+      "cleared": "Număr eliminat",
+      "addNumber": "Adaugă număr…",
+      "removeNumber": "Elimină numărul",
+      "quotaLabel": "{used} din {quota} numere utilizate",
+      "limitReached": "Ai atins numărul maxim de numere virtuale pentru planul tău",
+      "buyCta": "Cumpără număr virtual",
+      "gateHint": "Numerele virtuale necesită un plan Donator. Cumpără un număr pentru a primi SMS în chat.",
+      "buyDialogTitle": "Este necesar un plan Donator",
+      "buyDialogDescription": "Numerele virtuale sunt incluse în planurile Donator. Alege un plan din pagina de prețuri pentru a începe.",
+      "buyDialogGoToPricing": "Mergi la prețuri"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Se încarcă SMS-urile…",
+      "empty": "Nu există încă conversații SMS",
+      "noNumberHint": "Atribuie un număr virtual pentru a începe să primești SMS aici",
+      "composerPlaceholder": "Scrie un SMS…",
+      "sendError": "Acest mesaj nu a putut fi trimis",
+      "you": "Tu",
+      "statusSent": "Trimis",
+      "statusDelivered": "Livrat",
+      "statusFailed": "Eșuat",
+      "error": "SMS-urile nu au putut fi încărcate"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "Compact",
       "small": "Mic",
       "wide": "Lat"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Prețuri",
+    "metaDescription": "Dupip este înregistrată în Europa ca radio web cu o misiune de bunăstare. Pentru a ne susține creșterea, oferim beneficii donatorilor. Vezi planurile noastre și cum funcționează DPIP.",
+    "heroTitle": "Radio, reimaginat",
+    "heroSubtitle": "Dupip este construit în jurul unei provocări simple: bunăstarea. Căutăm frecvențele care scot ce e mai bun din tine.",
+    "siaeTitle": "O notă despre licențele muzicale",
+    "plansTitle": "Planuri",
+    "plansDescription": "Alege planul care se potrivește modului în care asculți.",
+    "dpipTitle": "Despre DPIP",
+    "dpipBody": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor.",
+    "consentTitle": "Consimțământ DPIP",
+    "consentCheckbox": "Înțeleg că DPIP poate să nu aibă valoare monetară, nici acum, nici în viitor, și accept acest lucru.",
+    "consentSignedOut": "Conectează-te pentru a verifica consimțământul DPIP și a vedea planurile noastre.",
+    "signInToConsent": "Conectare",
+    "consentSaved": "Consimțământ înregistrat la {date}",
+    "saveConsent": "Salvează consimțământul",
+    "dpipNoValue": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor.",
+    "consentDescription": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor. Înainte de a vedea planurile noastre, te rugăm să verifici și să confirmi următoarele:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

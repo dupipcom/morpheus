@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma'
-import type { TaskStatus } from '@/generated/prisma'
+import type { Task, TaskStatus } from '@/generated/prisma/client'
+import { getWeekRange, nextOccurrenceAfter, rruleFrequency } from './recurrenceService'
 
 /**
  * Task completion data for a specific date
@@ -97,9 +98,31 @@ function calculateNonRecurringTaskStatus(
 }
 
 /**
+ * Count ACCEPTED jobs for a specific occurrence of a task.
+ * Weekly tasks aggregate across the whole Monday-Sunday week (same rule as
+ * getTasksForDate); all others match the exact occurrence date.
+ */
+export async function countAcceptedForOccurrence(
+  taskId: string,
+  rrule: string | null,
+  occurrenceDate: string
+): Promise<number> {
+  const dates =
+    rruleFrequency(rrule) === 'WEEKLY'
+      ? getWeekRange(occurrenceDate).allDates
+      : [occurrenceDate]
+  return prisma.job.count({
+    where: { taskId, status: 'ACCEPTED', occurrenceDate: { in: dates } }
+  })
+}
+
+/**
  * Update a task's status after a completion or deletion.
  * One-off tasks (no rrule) that reach their counter become COMPLETED; when
  * completions drop below the counter they reset to OPEN.
+ * Recurring tasks (rrule) materialize their next occurrence as a new Task row
+ * once the occurrence's accepted count reaches times; un-accepting rolls the
+ * materialization back.
  */
 export async function updateTaskOccurrenceDates(
   taskId: string,
@@ -108,10 +131,7 @@ export async function updateTaskOccurrenceDates(
 ): Promise<void> {
   const task = await prisma.task.findUnique({
     where: { id: taskId },
-    select: {
-      id: true,
-      rrule: true,
-      times: true,
+    include: {
       jobs: {
         where: { status: 'ACCEPTED' },
         select: { id: true }
@@ -121,6 +141,37 @@ export async function updateTaskOccurrenceDates(
 
   if (!task) {
     throw new Error(`Task not found: ${taskId}`)
+  }
+
+  // Recurring tasks: advance the series on completion
+  if (task.rrule) {
+    if (operation === 'complete') {
+      const count = await countAcceptedForOccurrence(taskId, task.rrule, occurrenceDate)
+      if (count >= (task.times || 1)) {
+        await materializeOccurrence(task, occurrenceDate)
+      }
+    } else if (task.status === 'COMPLETED' && task.completedOn === occurrenceDate) {
+      // Un-accept after a materialized completion: restore the occurrence and
+      // remove the child only if nothing has attached to it yet
+      const count = await countAcceptedForOccurrence(taskId, task.rrule, occurrenceDate)
+      if (count < (task.times || 1)) {
+        await prisma.task.update({
+          where: { id: taskId },
+          data: { status: 'OPEN', completedOn: null }
+        })
+        const next = nextOccurrenceAfter(task, occurrenceDate)
+        if (next) {
+          const child = await prisma.task.findFirst({
+            where: { recurringTaskId: taskId, dtstart: next },
+            select: { id: true }
+          })
+          if (child && (await prisma.job.count({ where: { taskId: child.id } })) === 0) {
+            await prisma.task.delete({ where: { id: child.id } })
+          }
+        }
+      }
+    }
+    return
   }
 
   const newStatus = calculateNonRecurringTaskStatus(task.rrule, task.jobs.length, task.times || 1)
@@ -136,6 +187,54 @@ export async function updateTaskOccurrenceDates(
       data: { status: 'OPEN', completedOn: null }
     })
   }
+}
+
+/**
+ * Materialize the next occurrence of a recurring task as a new Task row with
+ * status and counters reset (OPEN, no jobs, completedOn null, times copied),
+ * and mark the completed occurrence COMPLETED so it stops appearing on future
+ * dates (taskOccursOnDate keeps it visible on its own completion day).
+ * Idempotent: a retried acceptance reuses the existing child row.
+ */
+async function materializeOccurrence(task: Task, occurrenceDate: string): Promise<void> {
+  const next = nextOccurrenceAfter(task, occurrenceDate)
+
+  await prisma.$transaction(async (tx) => {
+    if (next) {
+      const existing = await tx.task.findFirst({
+        where: { recurringTaskId: task.id, dtstart: next },
+        select: { id: true }
+      })
+      if (!existing) {
+        await tx.task.create({
+          data: {
+            name: task.name,
+            categories: task.categories as never,
+            area: task.area as never,
+            times: task.times,
+            localeKey: task.localeKey,
+            premiumType: task.premiumType,
+            premium: task.premium,
+            location: task.location as never,
+            visibility: task.visibility as never,
+            quality: task.quality,
+            redacted: task.redacted ?? false,
+            rrule: task.rrule,
+            dtstart: next,
+            status: 'OPEN',
+            completedOn: null,
+            recurringTaskId: task.id,
+            listId: task.listId
+          }
+        })
+      }
+    }
+
+    await tx.task.update({
+      where: { id: task.id },
+      data: { status: 'COMPLETED', completedOn: occurrenceDate }
+    })
+  })
 }
 
 /**

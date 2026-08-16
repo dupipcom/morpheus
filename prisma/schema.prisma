@@ -5,8 +5,9 @@
 // =============================================================================
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -100,6 +101,7 @@ enum NoteVisibility {
   CLOSE_FRIENDS
   PUBLIC
   AI_ENABLED
+  DOC_ENABLED
 }
 
 enum RecurrenceFrequency {
@@ -163,6 +165,17 @@ enum InviteStatus {
   EXPIRED
 }
 
+enum SmsDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum SmsMessageStatus {
+  SENT
+  DELIVERED
+  FAILED
+}
+
 // =============================================================================
 // EMBEDDED TYPES
 // =============================================================================
@@ -176,7 +189,8 @@ type Completer {
 }
 
 type Consents {
-  doInvestDemo DoInvestDemoConsent?
+  doInvestDemo        DoInvestDemoConsent?
+  dpipNoMonetaryValue DoInvestDemoConsent?
 }
 
 type Currency {
@@ -382,6 +396,9 @@ model User {
   lastLogin          DateTime?
   settings           Settings?
   consents           Consents?
+  // Default visibility for new notes (user preference, PRIVATE unless changed)
+  defaultNoteVisibility NoteVisibility @default(PRIVATE)
+  defaultAiEnabled      Boolean        @default(false)
   // Financial fields
   usedBudget         Float?    @default(0)
   remainingBudget    Float?    @default(100)
@@ -432,6 +449,21 @@ model User {
   delegatedAccessGranted Delegation[] @relation("Delegator")
   delegatedAccessReceived Delegation[] @relation("Delegated")
   emailNotifications EmailNotification[]
+  virtualNumbers    VirtualNumber[]
+  notifications     Notification[] @relation("UserNotifications")
+}
+
+model VirtualNumber {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String   @db.ObjectId
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phoneNumber        String   @unique
+  messagingProfileId String?
+  provider           String   @default("TELNYX")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model EmailNotification {
@@ -449,6 +481,31 @@ model EmailNotification {
   @@unique([recipientUserId, scopeKey])
   @@index([recipientUserId, type, sentAt])
   @@index([chatMessageId])
+}
+
+// In-app bell notifications. `type` is a structured key the client localizes
+// (JOB_REQUESTED, JOB_ACCEPTED, JOB_REJECTED, LIST_INVITE, ...); `message` is an
+// optional pre-rendered fallback. `actorId`/`resourceId` are display references,
+// deliberately not relations (a deleted actor must not delete the notification).
+model Notification {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Recipient (internal User id)
+  userId     String    @db.ObjectId
+  user       User      @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  type       String
+  // Internal User id of whoever triggered the notification (optional)
+  actorId    String?   @db.ObjectId
+  // Related resource id (job, list, note, ...)
+  resourceId String?   @db.ObjectId
+  message    String?
+  readAt     DateTime?
+
+  @@index([userId, createdAt])
+  @@index([userId, readAt])
 }
 
 model Profile {
@@ -522,6 +579,7 @@ model Note {
   content        String
   date           String?
   visibility     NoteVisibility @default(PRIVATE)
+  aiEnabled      Boolean        @default(false)
   // Relations
   userId         String         @db.ObjectId
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -566,12 +624,21 @@ model Delegation {
   delegatedId String         @db.ObjectId
   scope       NoteVisibility @default(AI_ENABLED)
   scopes      NoteVisibility[] @default([AI_ENABLED])
+  // Relationship labels (Doctor, Tutor, Mentor, ...) — see Role model
+  roleIds     String[]       @default([]) @db.ObjectId
   delegator   User           @relation("Delegator", fields: [delegatorId], references: [id], onDelete: Cascade)
   delegated   User           @relation("Delegated", fields: [delegatedId], references: [id], onDelete: Cascade)
 
   @@unique([delegatorId, delegatedId])
   @@index([delegatorId])
   @@index([delegatedId])
+}
+
+model Role {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Comment {
@@ -721,6 +788,8 @@ model Task {
   // Recurrence (RRULE - RFC 5545 string, e.g. "FREQ=WEEKLY;INTERVAL=1;BYDAY=TH"; null = one-off task)
   rrule                String?
   dtstart              String?             // YYYY-MM-DD start date
+  // Materialized recurrence chain: root task id for occurrence rows created at completion
+  recurringTaskId      String?             @db.ObjectId
   // Progress fields
   times                Int?                // Target completions per occurrence (counter)
   localeKey            String?
@@ -755,6 +824,7 @@ model Task {
   @@index([listId])
   @@index([status])
   @@index([listId, status])
+  @@index([recurringTaskId])
 }
 
 model Job {
@@ -1149,4 +1219,36 @@ model ChatReadState {
   @@unique([userId, roomKey])
   @@index([channelId])
   @@index([dmConversationId])
+}
+
+model SmsConversation {
+  id                     String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                 String    @db.ObjectId
+  counterpartPhoneNumber String
+  virtualNumberId        String?   @db.ObjectId
+  lastMessageAt          DateTime?
+  lastReadAt             DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@unique([userId, counterpartPhoneNumber])
+  @@index([userId, lastMessageAt])
+  @@index([virtualNumberId])
+}
+
+model SmsMessage {
+  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId  String             @db.ObjectId
+  userId          String             @db.ObjectId
+  direction       SmsDirection
+  fromPhoneNumber String
+  toPhoneNumber   String
+  text            String
+  status          SmsMessageStatus?
+  telnyxMessageId String?            @unique
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([conversationId, createdAt])
+  @@index([userId, createdAt])
 }

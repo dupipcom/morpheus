@@ -14,6 +14,7 @@
     "save": "حفظ",
     "cancel": "إلغاء",
     "delete": "حذف",
+    "remove": "إزالة",
     "loading": "جاري التحميل...",
     "error": "خطأ",
     "success": "نجح",
@@ -60,7 +61,8 @@
     "saving": "جاري الحفظ...",
     "decline": "رفض",
     "friendRequest": "طلب صداقة",
-    "reverseOrder": "عكس الترتيب"
+    "reverseOrder": "عكس الترتيب",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -78,7 +80,8 @@
     "privacy": "سياسة الخصوصية",
     "locale": "اللغة",
     "blog": "المدونة",
-    "agenda": "الأجندة"
+    "agenda": "الأجندة",
+    "upgrade": "الترقية"
   },
   "dashboard": {
     "title": "حياتك في لمحة.",
@@ -129,11 +132,14 @@
         "FRIENDS": "الأصدقاء",
         "CLOSE_FRIENDS": "الأصدقاء المقربون",
         "PUBLIC": "عام",
-        "AI_ENABLED": "تمكين الذكاء الاصطناعي"
+        "AI_ENABLED": "تمكين الذكاء الاصطناعي",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "نشر المذكرة",
       "publishing": "جاري النشر...",
-      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "تمكين تحليل الذكاء الاصطناعي"
     },
     "thirdParty": {
       "title": "الجهات الخارجية",
@@ -151,7 +157,9 @@
       "addDelegatedAnalyst": "إضافة محلل مفوض",
       "adding": "جارٍ الإضافة...",
       "addError": "تعذر إضافة المحلل المفوض",
-      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني."
+      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -178,12 +186,68 @@
       "ready": "جاهز",
       "open": "مفتوح",
       "done": "مكتمل",
-      "ignored": "متجاهل"
+      "ignored": "متجاهل",
+      "completed": "Completed"
     },
     "edit": "تعديل",
     "loadingForDate": "جاري تحميل المهام للتاريخ المحدد...",
     "initializingTasks": "جاري إعداد مهامك...",
-    "noTasksForDate": "لا توجد مهام مجدولة لهذا التاريخ"
+    "noTasksForDate": "لا توجد مهام مجدولة لهذا التاريخ",
+    "delete": "حذف...",
+    "deleteTitle": "حذف المهمة",
+    "deleteDescription": "ما مقدار هذه المهمة الذي تريد حذفه؟",
+    "deleteScopes": {
+      "today": "اليوم فقط",
+      "onwards": "من اليوم فصاعدًا",
+      "all": "كل الإدخالات"
+    },
+    "requestTitle": "طلب العمل",
+    "requestDescription": "اشرح لماذا تريد القيام بهذه المهمة. سيراجع مالك القائمة طلبك.",
+    "submitTitle": "تسليم العمل",
+    "resubmitTitle": "مراجعة وإعادة التسليم",
+    "submitDescription": "انشر دليلاً على عملك. سيُتاح إرفاق صورة أو فيديو قريبًا.",
+    "reviewTitle": "مراجعة العمل",
+    "reviewDescription": "اقبل العمل أو اطلب تعديلات أو ارفضه.",
+    "justificationLabel": "التبرير",
+    "justificationPlaceholder": "لماذا يجب أن تقوم بهذه المهمة؟",
+    "evidenceLabel": "الدليل / ملاحظة",
+    "evidencePlaceholder": "صف ما فعلته...",
+    "selfReviewLabel": "تقييم ذاتي (0-100)",
+    "managerReviewLabel": "درجة المراجعة (0-100)",
+    "reviewNoteLabel": "ملاحظات (اختياري)",
+    "sendRequest": "إرسال الطلب",
+    "resubmit": "إعادة تسليم",
+    "submit": "تسليم",
+    "accept": "قبول",
+    "requestChanges": "طلب تعديلات",
+    "reject": "رفض",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "الإعدادات",
@@ -203,7 +267,9 @@
     "expectedNeedUtilities": "متوسط المرافق المتوقع",
     "editAction": "تعديل الإجراء",
     "save": "حفظ",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "currency": "العملة",
+    "selectCurrency": "اختر العملة"
   },
   "social": {
     "title": "جهات الاتصال الاجتماعية",
@@ -304,7 +370,8 @@
     "cookies": "نحن نستخدم ملفات تعريف الارتباط، وباستخدام هذا التطبيق فإنك توافق على ذلك.",
     "code": "الكود",
     "terms": "شروط الخدمة",
-    "privacy": "سياسة الخصوصية"
+    "privacy": "سياسة الخصوصية",
+    "pricing": "الأسعار"
   },
   "earningsTable": {
     "day": "اليوم",
@@ -350,7 +417,8 @@
     "getInsights": "اسأل عن مزاجك أو عاداتك أو احصل على رؤى شخصية",
     "placeholder": "دعنا نتحدث...",
     "error": "عذراً، واجهت خطأ. يرجى المحاولة مرة أخرى.",
-    "failedToSend": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى."
+    "failedToSend": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
@@ -557,7 +625,34 @@
       "addTask": "إضافة مهمة",
       "cancel": "إلغاء",
       "editTitle": "تعديل المهمة",
-      "saveTask": "حفظ المهمة"
+      "saveTask": "حفظ المهمة",
+      "premiumLabel": "العلاوة (اختياري)",
+      "premiumPercentHint": "نسبة من ميزانية القائمة",
+      "cadenceLabel": "يتكرر",
+      "cadence": {
+        "none": "لا يتكرر",
+        "daily": "يومي",
+        "weekly": "أسبوعي",
+        "monthly": "شهري",
+        "yearly": "سنوي",
+        "every": "كل",
+        "day": "يوم",
+        "days": "أيام",
+        "week": "أسبوع",
+        "weeks": "أسابيع",
+        "month": "شهر",
+        "months": "أشهر",
+        "year": "سنة",
+        "years": "سنوات",
+        "onDay": "في اليوم",
+        "onThe": "في",
+        "inMonth": "في الشهر",
+        "ends": "ينتهي",
+        "never": "أبدًا",
+        "after": "بعد",
+        "onDate": "في تاريخ",
+        "occurrences": "مرات"
+      }
     },
     "addListForm": {
       "titleCreate": "إنشاء قائمة جديدة",
@@ -613,12 +708,24 @@
       },
       "areaDistributionLabel": "ميزانية المنطقة",
       "areaPrizeDistributionLabel": "جائزة المنطقة",
+      "areaPremiumDistributionLabel": "توزيع الجوائز حسب المنطقة",
       "categoryDistributionLabel": "ميزانية الفئة",
       "categoryPrizeDistributionLabel": "جائزة الفئة",
+      "categoryPremiumDistributionLabel": "توزيع الجوائز حسب الفئة",
       "taskDistributionLabel": "الميزانية",
       "premiumLabel": "الجائزة",
       "totalLabel": "الإجمالي",
-      "addTaskTitle": "إضافة مهمة"
+      "addTaskTitle": "إضافة مهمة",
+      "editTitle": "تعديل القائمة",
+      "visibilityLabel": "الرؤية",
+      "collaboratorsPlaceholder": "ابحث عن أصدقاء...",
+      "budgetSourcesLabel": "نسبة من ميزانياتك:",
+      "noBudgets": "لا ميزانيات بعد — أضف واحدة أدناه.",
+      "newBudgetName": "اسم الميزانية",
+      "confirmDelete": "حذف هذه القائمة وجميع مهامها؟ لا يمكن التراجع.",
+      "delete": "حذف",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "إنشاء قالب جديد",
@@ -683,6 +790,36 @@
       "after": "بعد",
       "pickDate": "اختر تاريخ",
       "occurrences": "مرات"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -718,7 +855,15 @@
     "notice": "لا يوجد أموال حقيقية يتم إدارتها حاليًا في هذا التطبيق. Dupip Invest لا يزال في مرحلة التخطيط. هذا مجرد بيئة اختبار لأغراض العرض التوضيحي.",
     "consentTitle": "موافقة عرض الاستثمار",
     "consentCheckbox": "أعترف بأن Dupip ليست بعد منصة استثمار، وأنه باستخدام هذه الميزة، أنا على علم بأن جميع بياناتي قد يتم حذفها قبل الإطلاق الرسمي لـ Dupip Invest.",
-    "confirm": "تأكيد"
+    "confirm": "تأكيد",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "اكتمل إنشاء NFT.",
@@ -883,7 +1028,10 @@
         "submitted": "تم إرسال العمل للمراجعة",
         "resubmitted": "تم إعادة إرسال العمل للمراجعة"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "تم تحديث الملاحظة بنجاح",
@@ -893,6 +1041,7 @@
     "deleting": "جاري الحذف...",
     "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الملاحظة؟",
     "content": "محتوى الملاحظة",
+    "recipient": "المستلم",
     "visibilityUpdated": "تم تحديث الخصوصية بنجاح",
     "visibilityUpdateFailed": "فشل تحديث الخصوصية",
     "changeVisibility": "تغيير الخصوصية",
@@ -901,7 +1050,17 @@
       "date": "التاريخ",
       "mostRelevant": "الأكثر صلة",
       "all": "الكل"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "المحادثة",
@@ -917,7 +1076,52 @@
     "inviteFriendToOrg": "دعوة صديق إلى هذه المنظمة",
     "inviteLinkCopied": "تم نسخ رابط الدعوة",
     "inviteSent": "تم إرسال الدعوة",
-    "inviteAccepted": "تم قبول الدعوة"
+    "inviteAccepted": "تم قبول الدعوة",
+    "sidebar": {
+      "directMessages": "الرسائل المباشرة",
+      "organizations": "المنظمات",
+      "sms": "رسائل SMS",
+      "virtualNumber": "رقم افتراضي",
+      "searchDmPlaceholder": "ابحث عن أصدقاء لبدء محادثة",
+      "createChannelPlaceholder": "إنشاء قناة",
+      "createOrgPlaceholder": "إنشاء منظمة",
+      "refresh": "تحديث",
+      "noOrgs": "لا توجد منظمات بعد",
+      "noDms": "لا توجد رسائل مباشرة بعد"
+    },
+    "virtualNumber": {
+      "label": "رقم افتراضي",
+      "hint": "اختر أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذه الأرقام في محادثتك.",
+      "none": "بدون رقم",
+      "loading": "جارٍ تحميل الأرقام…",
+      "empty": "لا توجد أرقام متاحة",
+      "error": "تعذّر تحميل أرقامك",
+      "assignError": "تعذّر حفظ هذا الرقم",
+      "assigned": "تم تعيين الرقم",
+      "cleared": "تم إلغاء الرقم",
+      "addNumber": "أضف رقمًا…",
+      "removeNumber": "إزالة الرقم",
+      "quotaLabel": "{used} من أصل {quota} أرقام مستخدمة",
+      "limitReached": "لقد وصلت إلى الحد الأقصى لعدد الأرقام الافتراضية في خطتك",
+      "buyCta": "اشترِ رقمًا افتراضيًا",
+      "gateHint": "تتطلب الأرقام الافتراضية خطة Donator. اشترِ رقمًا لاستقبال الرسائل النصية في المحادثة.",
+      "buyDialogTitle": "خطة Donator مطلوبة",
+      "buyDialogDescription": "الأرقام الافتراضية مشمولة في خطط Donator. اختر خطة من صفحة الأسعار للبدء.",
+      "buyDialogGoToPricing": "الانتقال إلى الأسعار"
+    },
+    "sms": {
+      "label": "رسائل نصية",
+      "loading": "جارٍ تحميل الرسائل النصية…",
+      "empty": "لا توجد محادثات رسائل نصية بعد",
+      "noNumberHint": "عيِّن رقمًا افتراضيًا لبدء استقبال الرسائل النصية هنا",
+      "composerPlaceholder": "اكتب رسالة نصية…",
+      "sendError": "تعذّر إرسال هذه الرسالة",
+      "you": "أنت",
+      "statusSent": "تم الإرسال",
+      "statusDelivered": "تم التسليم",
+      "statusFailed": "فشل",
+      "error": "تعذّر تحميل الرسائل النصية"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -925,6 +1129,79 @@
       "tight": "محكم",
       "small": "صغير",
       "wide": "واسع"
+    }
+  },
+  "pricing": {
+    "metaTitle": "الأسعار",
+    "metaDescription": "دوبيب مسجّلة في أوروبا كمحطة راديو على الويب مهمتها الرفاهية. لدعم نمونا، نقدّم مزايا للمتبرعين. اطّلع على خططنا وكيف يعمل DPIP.",
+    "heroTitle": "راديو، بمفهوم جديد",
+    "heroSubtitle": "بُنيت دوبيب حول تحدٍّ بسيط: الرفاهية. نبحث عن الترددات التي تُخرج أفضل ما فيك.",
+    "siaeTitle": "ملاحظة حول ترخيص الموسيقى",
+    "plansTitle": "الخطط",
+    "plansDescription": "اختر الخطة التي تناسب طريقة استماعك.",
+    "dpipTitle": "حول DPIP",
+    "dpipBody": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل.",
+    "consentTitle": "موافقة DPIP",
+    "consentCheckbox": "أفهم أن DPIP قد لا تكون له قيمة نقدية، الآن أو في المستقبل، وأقبل ذلك.",
+    "consentSignedOut": "سجّل الدخول لمراجعة موافقة DPIP وعرض خططنا.",
+    "signInToConsent": "تسجيل الدخول",
+    "consentSaved": "تم تسجيل الموافقة في {date}",
+    "saveConsent": "حفظ الموافقة",
+    "dpipNoValue": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل.",
+    "consentDescription": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل. قبل عرض خططنا، يرجى المراجعة والتأكيد على ما يلي:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

@@ -17,6 +17,7 @@
     "save": "Mentés",
     "cancel": "Mégse",
     "delete": "Törlés",
+    "remove": "Eltávolítás",
     "loading": "Betöltés...",
     "error": "Hiba",
     "success": "Sikeres",
@@ -60,7 +61,8 @@
     "decline": "Elutasítás",
     "friendRequest": "Barátkozási kérés",
     "reverseOrder": "Fordított sorrend",
-    "saving": "Mentés..."
+    "saving": "Mentés...",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Kezdőlap",
@@ -74,7 +76,8 @@
     "privacy": "Adatvédelmi irányelvek",
     "locale": "Nyelv",
     "blog": "Blog",
-    "agenda": "Napirend"
+    "agenda": "Napirend",
+    "upgrade": "Frissítés"
   },
   "dashboard": {
     "title": "Az életed egy pillantásra.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Barátok",
         "CLOSE_FRIENDS": "Közeli barátok",
         "PUBLIC": "Nyilvános",
-        "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
+        "AI_ENABLED": "Mesterséges intelligencia engedélyezve",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Jegyzet közzététele",
       "publishing": "Közzététel...",
-      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent."
+      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI-elemzés engedélyezése"
     },
     "thirdParty": {
       "title": "Harmadik fél",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Delegált elemző hozzáadása",
       "adding": "Hozzáadás...",
       "addError": "Nem sikerült hozzáadni a delegált elemzőt",
-      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült."
+      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -172,14 +180,70 @@
       "ready": "Kész",
       "open": "Nyitott",
       "done": "Kész",
-      "ignored": "Figyelmen kívül hagyva"
+      "ignored": "Figyelmen kívül hagyva",
+      "completed": "Completed"
     },
     "markAsSensitive": "Mark as sensitive",
     "markAsNotSensitive": "Mark as not sensitive",
     "edit": "Szerkesztés",
     "loadingForDate": "Feladatok betöltése a kiválasztott dátumhoz...",
     "initializingTasks": "Feladataid beállítása...",
-    "noTasksForDate": "Erre a dátumra nincsenek feladatok ütemezve"
+    "noTasksForDate": "Erre a dátumra nincsenek feladatok ütemezve",
+    "delete": "Törlés...",
+    "deleteTitle": "Feladat törlése",
+    "deleteDescription": "Mennyit szeretnél törölni ebből a feladatból?",
+    "deleteScopes": {
+      "today": "Csak ma",
+      "onwards": "Mától kezdve",
+      "all": "Minden bejegyzés"
+    },
+    "requestTitle": "Munka kérése",
+    "requestDescription": "Magyarázd el, miért szeretnéd elvállalni ezt a feladatot. A lista tulajdonosa átnézi a kérésed.",
+    "submitTitle": "Munka leadása",
+    "resubmitTitle": "Javítás és újra leadás",
+    "submitDescription": "Tegyél közzé bizonyítékot a munkádról. Hamarosan fotót vagy videót is csatolhatsz.",
+    "reviewTitle": "Munka ellenőrzése",
+    "reviewDescription": "Fogadd el a munkát, kérj módosítást vagy utasítsd el.",
+    "justificationLabel": "Indoklás",
+    "justificationPlaceholder": "Miért neked kellene elvégezned ezt a feladatot?",
+    "evidenceLabel": "Bizonyíték / jegyzet",
+    "evidencePlaceholder": "Írd le, mit csináltál...",
+    "selfReviewLabel": "Önértékelés (0-100)",
+    "managerReviewLabel": "Ellenőrzési pontszám (0-100)",
+    "reviewNoteLabel": "Visszajelzés (opcionális)",
+    "sendRequest": "Kérés küldése",
+    "resubmit": "Újra leadás",
+    "submit": "Leadás",
+    "accept": "Elfogadás",
+    "requestChanges": "Módosítás kérése",
+    "reject": "Elutasítás",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Vizet ivott",
@@ -243,7 +307,8 @@
     "cookies": "Sütiket használunk, és az alkalmazás használatával hozzájárul ehhez.",
     "code": "Kód",
     "terms": "Szolgáltatási feltételek",
-    "privacy": "Adatvédelmi irányelvek"
+    "privacy": "Adatvédelmi irányelvek",
+    "pricing": "Árazás"
   },
   "earningsTable": {
     "day": "Nap",
@@ -329,7 +394,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Művelet szerkesztése",
     "save": "Mentés",
-    "cancel": "Mégse"
+    "cancel": "Mégse",
+    "currency": "Pénznem",
+    "selectCurrency": "Pénznem kiválasztása"
   },
   "agentChat": {
     "thinking": "Gondolkodom...",
@@ -337,7 +404,8 @@
     "getInsights": "Kérdezzen a hangulatáról, szokásairól vagy szerezzen személyre szabott betekintéseket",
     "placeholder": "Beszéljünk...",
     "error": "Sajnálom, hibába ütköztem. Próbálja újra.",
-    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
+    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Kezdje el a saját Dupip útját",
@@ -536,7 +604,34 @@
       "addTask": "Feladat hozzáadása",
       "cancel": "Mégse",
       "editTitle": "Feladat szerkesztése",
-      "saveTask": "Feladat mentése"
+      "saveTask": "Feladat mentése",
+      "premiumLabel": "Prémium (opcionális)",
+      "premiumPercentHint": "A lista költségvetésének százaléka",
+      "cadenceLabel": "Ismétlődik",
+      "cadence": {
+        "none": "Nem ismétlődik",
+        "daily": "Naponta",
+        "weekly": "Hetente",
+        "monthly": "Havonta",
+        "yearly": "Évente",
+        "every": "Minden",
+        "day": "nap",
+        "days": "nap",
+        "week": "hét",
+        "weeks": "hét",
+        "month": "hónap",
+        "months": "hónap",
+        "year": "év",
+        "years": "év",
+        "onDay": "Napján",
+        "onThe": "",
+        "inMonth": "Hónapban",
+        "ends": "Véget ér",
+        "never": "Soha",
+        "after": "Után",
+        "onDate": "Dátumon",
+        "occurrences": "alkalom"
+      }
     },
     "addListForm": {
       "titleCreate": "Új lista létrehozása",
@@ -592,12 +687,24 @@
       },
       "areaDistributionLabel": "Terület költségvetés",
       "areaPrizeDistributionLabel": "Terület díj",
+      "areaPremiumDistributionLabel": "Díjelosztás területenként",
       "categoryDistributionLabel": "Kategória költségvetés",
       "categoryPrizeDistributionLabel": "Kategória díj",
+      "categoryPremiumDistributionLabel": "Díjelosztás kategóriánként",
       "taskDistributionLabel": "Költségvetés",
       "premiumLabel": "Díj",
       "totalLabel": "Összesen",
-      "addTaskTitle": "Feladat hozzáadása"
+      "addTaskTitle": "Feladat hozzáadása",
+      "editTitle": "Lista szerkesztése",
+      "visibilityLabel": "Láthatóság",
+      "collaboratorsPlaceholder": "Barátok keresése...",
+      "budgetSourcesLabel": "A költségvetéseid százaléka:",
+      "noBudgets": "Még nincs költségvetés — adj hozzá egyet lent.",
+      "newBudgetName": "Költségvetés neve",
+      "confirmDelete": "Törlöd ezt a listát és minden feladatát? Nem vonható vissza.",
+      "delete": "Törlés",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Új sablon létrehozása",
@@ -662,6 +769,36 @@
       "after": "Után",
       "pickDate": "Válassz dátumot",
       "occurrences": "alkalom"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -714,7 +851,15 @@
     "notice": "Jelenleg nincs valódi pénz kezelve ebben az alkalmazásban. A Dupip Invest még a tervezési fázisban van. Ez csak egy tesztkörnyezet bemutatási célokra.",
     "consentTitle": "Befektetési Demo Hozzájárulás",
     "consentCheckbox": "Elismerem, hogy a Dupip még nem befektetési platform, és hogy ezt a funkciót használva tudomásul veszem, hogy az összes adatom törölhető a Dupip Invest hivatalos indítása előtt.",
-    "confirm": "Megerősítés"
+    "confirm": "Megerősítés",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generálás befejezve.",
@@ -879,7 +1024,10 @@
         "submitted": "Munka elküldve felülvizsgálatra",
         "resubmitted": "Munka újraküldve felülvizsgálatra"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Megjegyzés sikeresen frissítve",
@@ -889,6 +1037,7 @@
     "deleting": "Törlés...",
     "confirmDelete": "Biztosan törölni szeretnéd ezt a megjegyzést?",
     "content": "Megjegyzés tartalma",
+    "recipient": "Címzett",
     "visibilityUpdated": "Láthatóság sikeresen frissítve",
     "visibilityUpdateFailed": "Nem sikerült frissíteni a láthatóságot",
     "changeVisibility": "Láthatóság módosítása",
@@ -897,7 +1046,17 @@
       "date": "Dátum",
       "mostRelevant": "Legrelevánsabb",
       "all": "Összes"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Csevegés",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "Barát meghívása ebbe a szervezetbe",
     "inviteLinkCopied": "Meghívólink másolva",
     "inviteSent": "Meghívó elküldve",
-    "inviteAccepted": "Meghívó elfogadva"
+    "inviteAccepted": "Meghívó elfogadva",
+    "sidebar": {
+      "directMessages": "Közvetlen üzenetek",
+      "organizations": "Szervezetek",
+      "sms": "SMS",
+      "virtualNumber": "Virtuális szám",
+      "searchDmPlaceholder": "Barátok keresése közvetlen üzenet indításához",
+      "createChannelPlaceholder": "Csatorna létrehozása",
+      "createOrgPlaceholder": "Szervezet létrehozása",
+      "refresh": "Frissítés",
+      "noOrgs": "Még nincsenek szervezetek",
+      "noDms": "Még nincsenek közvetlen üzenetek"
+    },
+    "virtualNumber": {
+      "label": "Virtuális szám",
+      "hint": "Válaszd ki a telefonszámaidat. Az ezekre a számokra érkező SMS-ek megjelennek a csevegésedben.",
+      "none": "Nincs szám",
+      "loading": "Számok betöltése…",
+      "empty": "Nincs elérhető szám",
+      "error": "Nem sikerült betölteni a számaidat",
+      "assignError": "Nem sikerült menteni ezt a számot",
+      "assigned": "Szám hozzárendelve",
+      "cleared": "Szám eltávolítva",
+      "addNumber": "Szám hozzáadása…",
+      "removeNumber": "Szám eltávolítása",
+      "quotaLabel": "{quota} számból {used} használatban",
+      "limitReached": "Elérted a csomagodhoz tartozó virtuális számok maximális számát",
+      "buyCta": "Virtuális szám vásárlása",
+      "gateHint": "A virtuális számokhoz Donator csomag szükséges. Vásárolj számot, hogy SMS-eket fogadj a csevegésben.",
+      "buyDialogTitle": "Donator csomag szükséges",
+      "buyDialogDescription": "A virtuális számok a Donator csomagok részét képezik. A kezdéshez válassz csomagot az árazási oldalon.",
+      "buyDialogGoToPricing": "Ugrás az árazáshoz"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS-ek betöltése…",
+      "empty": "Még nincsenek SMS-beszélgetések",
+      "noNumberHint": "Rendelj hozzá virtuális számot, hogy itt SMS-eket fogadhass",
+      "composerPlaceholder": "Írj egy SMS-t…",
+      "sendError": "Nem sikerült elküldeni ezt az üzenetet",
+      "you": "Te",
+      "statusSent": "Elküldve",
+      "statusDelivered": "Kézbesítve",
+      "statusFailed": "Sikertelen",
+      "error": "Nem sikerült betölteni az SMS-eket"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "Sűrű",
       "small": "Kicsi",
       "wide": "Széles"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Árazás",
+    "metaDescription": "A Dupip Európában bejegyzett webes rádió, jóléti küldetéssel. Növekedésünk támogatásáért előnyöket kínálunk az adományozóknak. Tekintsd meg csomagjainkat, és hogy hogyan működik a DPIP.",
+    "heroTitle": "Rádió, újragondolva",
+    "heroSubtitle": "A Dupip egy egyszerű kihívás köré épült: a jóllét. Azokat a frekvenciákat keressük, amelyek a legjobbat hozzák ki belőled.",
+    "siaeTitle": "Megjegyzés a zenei licencelésről",
+    "plansTitle": "Csomagok",
+    "plansDescription": "Válaszd azt a csomagot, amely illik ahhoz, ahogyan hallgatsz.",
+    "dpipTitle": "A DPIP-ről",
+    "dpipBody": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben.",
+    "consentTitle": "DPIP hozzájárulás",
+    "consentCheckbox": "Megértem, hogy a DPIP-nek lehet, hogy nincs pénzbeli értéke, sem most, sem a jövőben, és ezt elfogadom.",
+    "consentSignedOut": "Jelentkezz be a DPIP hozzájárulás áttekintéséhez és csomagjaink megtekintéséhez.",
+    "signInToConsent": "Bejelentkezés",
+    "consentSaved": "Hozzájárulás rögzítve: {date}",
+    "saveConsent": "Hozzájárulás mentése",
+    "dpipNoValue": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben.",
+    "consentDescription": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben. Mielőtt megnéznéd csomagjainkat, kérjük, tekintsd át és erősítsd meg a következőt:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

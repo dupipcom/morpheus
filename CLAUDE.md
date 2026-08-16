@@ -49,8 +49,9 @@ Default locale: `en`
 
 - **Database**: MongoDB
 - **ORM**: Prisma (client generated to `generated/prisma/`)
-- **Prisma Client**: Import from `@/generated/prisma` (aliased path)
+- **Prisma Client**: Import from `@/generated/prisma/client` (aliased via `@/generated/*` → `./generated/*`)
 - **Connection**: Singleton pattern in `src/lib/prisma.ts`
+- **Prisma version**: Stay on v6.x (currently 6.19.2) — Prisma 7 does not support MongoDB yet; do not run `npm i prisma@latest`
 
 Key models:
 - `User`: Auth + financial data (stash, profit, equity, withdrawn)
@@ -150,10 +151,12 @@ Tasks are central to the application:
 
 ### AI Integration
 
-- **Provider**: OpenAI (via Vercel AI SDK)
-- **Packages**: `ai`, `@ai-sdk/openai`, `@ai-sdk/react`, `@ai-sdk/rsc`
-- **Component**: `agentChat.tsx` for AI interactions
-- **Config**: `src/lib/openai.ts`
+- **Provider**: DeepSeek (`deepseek-chat` + `deepseek-embed`; key via `DEEPSEEK_API_KEY` env var)
+- **Packages**: `ai`, `@ai-sdk/deepseek`, `@ai-sdk/rsc`, `openai` (OpenAI-compatible client for embeddings and JSON-mode chat)
+- **Component**: `agentChat.tsx` for AI interactions, streaming via `continueConversation` in `agentActions.ts`
+- **Model selection**: a select next to the chat input picks the chat model (`deepseek-chat` default; OpenAI `gpt-5-mini` preserved as an option but currently disabled in the UI)
+- **Config**: `src/lib/deepseek.ts`
+- **RAG**: `src/lib/services/agent/` — per-request in-memory vector space: dashboard filters (date range + dimensions) drive a minimal MongoDB select, compact days are chunked to token budgets, embedded with `deepseek-embed` (cosine top-K, recency fallback), plus bounded excerpts from the cognitive-psychology reference doc. Shared by the chat assistant and `GET /api/v1/hint`.
 
 ## Important Notes
 

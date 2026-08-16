@@ -17,6 +17,7 @@
     "save": "Сохранить",
     "cancel": "Отмена",
     "delete": "Удалить",
+    "remove": "Удалить",
     "loading": "Загрузка...",
     "error": "Ошибка",
     "success": "Успех",
@@ -60,7 +61,8 @@
     "saving": "Сохранение...",
     "decline": "Отклонить",
     "friendRequest": "Запрос в друзья",
-    "reverseOrder": "Обратный порядок"
+    "reverseOrder": "Обратный порядок",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Главная",
@@ -74,7 +76,8 @@
     "privacy": "Политика конфиденциальности",
     "locale": "Язык",
     "blog": "Блог",
-    "agenda": "Повестка дня"
+    "agenda": "Повестка дня",
+    "upgrade": "Улучшить"
   },
   "dashboard": {
     "title": "Ваша жизнь одним взглядом.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Друзья",
         "CLOSE_FRIENDS": "Близкие друзья",
         "PUBLIC": "Общественность",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Опубликовать заметку",
       "publishing": "Публикация...",
-      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже."
+      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Включить AI-анализ"
     },
     "thirdParty": {
       "title": "Третья сторона",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Добавить делегированного аналитика",
       "adding": "Добавление...",
       "addError": "Не удалось добавить делегированного аналитика",
-      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения."
+      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "Готово",
       "open": "Открыто",
       "done": "Выполнено",
-      "ignored": "Игнорировано"
+      "ignored": "Игнорировано",
+      "completed": "Completed"
     },
     "edit": "Редактировать",
     "loadingForDate": "Загрузка задач для выбранной даты...",
     "initializingTasks": "Настройка ваших задач...",
-    "noTasksForDate": "На эту дату задач не запланировано"
+    "noTasksForDate": "На эту дату задач не запланировано",
+    "delete": "Удалить...",
+    "deleteTitle": "Удалить задачу",
+    "deleteDescription": "Какую часть этой задачи удалить?",
+    "deleteScopes": {
+      "today": "Только сегодня",
+      "onwards": "С сегодняшнего дня",
+      "all": "Все записи"
+    },
+    "requestTitle": "Запросить работу",
+    "requestDescription": "Объясните, почему вы хотите взять эту задачу. Владелец списка рассмотрит ваш запрос.",
+    "submitTitle": "Сдать работу",
+    "resubmitTitle": "Исправить и сдать заново",
+    "submitDescription": "Опубликуйте подтверждение вашей работы. Скоро можно будет прикрепить фото или видео.",
+    "reviewTitle": "Проверить работу",
+    "reviewDescription": "Примите работу, запросите изменения или отклоните.",
+    "justificationLabel": "Обоснование",
+    "justificationPlaceholder": "Почему вы должны выполнить эту задачу?",
+    "evidenceLabel": "Подтверждение / заметка",
+    "evidencePlaceholder": "Опишите, что вы сделали...",
+    "selfReviewLabel": "Самооценка (0-100)",
+    "managerReviewLabel": "Оценка проверки (0-100)",
+    "reviewNoteLabel": "Отзыв (необязательно)",
+    "sendRequest": "Отправить запрос",
+    "resubmit": "Сдать заново",
+    "submit": "Сдать",
+    "accept": "Принять",
+    "requestChanges": "Запросить изменения",
+    "reject": "Отклонить",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Пил воду",
@@ -243,7 +307,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Цены"
   },
   "earningsTable": {
     "day": "День",
@@ -346,7 +411,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Редактировать действие",
     "save": "Сохранить",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "currency": "Валюта",
+    "selectCurrency": "Выберите валюту"
   },
   "agentChat": {
     "thinking": "Думаю...",
@@ -354,7 +421,8 @@
     "getInsights": "Спрашивайте о своем настроении, привычках или получайте персонализированные инсайты",
     "placeholder": "Давайте поговорим...",
     "error": "Извините, произошла ошибка. Попробуйте еще раз.",
-    "failedToSend": "Не удалось отправить сообщение. Попробуйте еще раз."
+    "failedToSend": "Не удалось отправить сообщение. Попробуйте еще раз.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Начните свое путешествие с Dupip",
@@ -553,7 +621,34 @@
       "addTask": "Добавить задачу",
       "cancel": "Отмена",
       "editTitle": "Редактировать задачу",
-      "saveTask": "Сохранить задачу"
+      "saveTask": "Сохранить задачу",
+      "premiumLabel": "Премия (необязательно)",
+      "premiumPercentHint": "Процент от бюджета списка",
+      "cadenceLabel": "Повторяется",
+      "cadence": {
+        "none": "Не повторяется",
+        "daily": "Ежедневно",
+        "weekly": "Еженедельно",
+        "monthly": "Ежемесячно",
+        "yearly": "Ежегодно",
+        "every": "Каждые",
+        "day": "день",
+        "days": "дня",
+        "week": "неделю",
+        "weeks": "недели",
+        "month": "месяц",
+        "months": "месяца",
+        "year": "год",
+        "years": "года",
+        "onDay": "В день",
+        "onThe": "В",
+        "inMonth": "В месяце",
+        "ends": "Заканчивается",
+        "never": "Никогда",
+        "after": "После",
+        "onDate": "На дату",
+        "occurrences": "раз"
+      }
     },
     "addListForm": {
       "titleCreate": "Создать новый список",
@@ -609,12 +704,24 @@
       },
       "areaDistributionLabel": "Бюджет области",
       "areaPrizeDistributionLabel": "Приз области",
+      "areaPremiumDistributionLabel": "Распределение призов по областям",
       "categoryDistributionLabel": "Бюджет категории",
       "categoryPrizeDistributionLabel": "Приз категории",
+      "categoryPremiumDistributionLabel": "Распределение призов по категориям",
       "taskDistributionLabel": "Бюджет",
       "premiumLabel": "Приз",
       "totalLabel": "Всего",
-      "addTaskTitle": "Добавить задачу"
+      "addTaskTitle": "Добавить задачу",
+      "editTitle": "Изменить список",
+      "visibilityLabel": "Видимость",
+      "collaboratorsPlaceholder": "Поиск друзей...",
+      "budgetSourcesLabel": "Процент ваших бюджетов:",
+      "noBudgets": "Пока нет бюджетов — добавьте один ниже.",
+      "newBudgetName": "Название бюджета",
+      "confirmDelete": "Удалить этот список и все его задачи? Это нельзя отменить.",
+      "delete": "Удалить",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Создать новый шаблон",
@@ -679,6 +786,36 @@
       "after": "После",
       "pickDate": "Выбрать дату",
       "occurrences": "повторений"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -714,7 +851,15 @@
     "notice": "В настоящее время в этом приложении не управляются реальные деньги. Dupip Invest все еще находится в стадии планирования. Это просто тестовая среда для демонстрационных целей.",
     "consentTitle": "Согласие на Демонстрацию Инвестиций",
     "consentCheckbox": "Я признаю, что Dupip еще не является инвестиционной платформой, и что, используя эту функцию, я осознаю, что все мои данные могут быть удалены до официального запуска Dupip Invest.",
-    "confirm": "Подтвердить"
+    "confirm": "Подтвердить",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Генерация NFT завершена.",
@@ -879,7 +1024,10 @@
         "submitted": "Работа отправлена на проверку",
         "resubmitted": "Работа отправлена снова на проверку"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Заметка успешно обновлена",
@@ -889,6 +1037,7 @@
     "deleting": "Удаление...",
     "confirmDelete": "Вы уверены, что хотите удалить эту заметку?",
     "content": "Содержимое заметки",
+    "recipient": "Получатель",
     "visibilityUpdated": "Видимость успешно обновлена",
     "visibilityUpdateFailed": "Не удалось обновить видимость",
     "changeVisibility": "Изменить видимость",
@@ -897,7 +1046,17 @@
       "date": "Дата",
       "mostRelevant": "Наиболее релевантные",
       "all": "Все"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Чат",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "Пригласить друга в эту организацию",
     "inviteLinkCopied": "Ссылка-приглашение скопирована",
     "inviteSent": "Приглашение отправлено",
-    "inviteAccepted": "Приглашение принято"
+    "inviteAccepted": "Приглашение принято",
+    "sidebar": {
+      "directMessages": "Личные сообщения",
+      "organizations": "Организации",
+      "sms": "SMS",
+      "virtualNumber": "Виртуальный номер",
+      "searchDmPlaceholder": "Найдите друзей, чтобы начать личное сообщение",
+      "createChannelPlaceholder": "Создать канал",
+      "createOrgPlaceholder": "Создать организацию",
+      "refresh": "Обновить",
+      "noOrgs": "Пока нет организаций",
+      "noDms": "Пока нет личных сообщений"
+    },
+    "virtualNumber": {
+      "label": "Виртуальный номер",
+      "hint": "Выберите ваши номера телефона. Входящие SMS на эти номера появятся в вашем чате.",
+      "none": "Нет номера",
+      "loading": "Загрузка номеров…",
+      "empty": "Нет доступных номеров",
+      "error": "Не удалось загрузить ваши номера",
+      "assignError": "Не удалось сохранить этот номер",
+      "assigned": "Номер назначен",
+      "cleared": "Номер удалён",
+      "addNumber": "Добавить номер…",
+      "removeNumber": "Удалить номер",
+      "quotaLabel": "Использовано номеров: {used} из {quota}",
+      "limitReached": "Вы достигли максимального количества виртуальных номеров для вашего тарифа",
+      "buyCta": "Купить виртуальный номер",
+      "gateHint": "Виртуальные номера требуют тариф Donator. Купите номер, чтобы получать SMS в чате.",
+      "buyDialogTitle": "Требуется тариф Donator",
+      "buyDialogDescription": "Виртуальные номера включены в тарифы Donator. Выберите тариф на странице цен, чтобы начать.",
+      "buyDialogGoToPricing": "Перейти к ценам"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Загрузка SMS…",
+      "empty": "Пока нет SMS-переписок",
+      "noNumberHint": "Назначьте виртуальный номер, чтобы получать SMS здесь",
+      "composerPlaceholder": "Напишите SMS…",
+      "sendError": "Не удалось отправить это сообщение",
+      "you": "Вы",
+      "statusSent": "Отправлено",
+      "statusDelivered": "Доставлено",
+      "statusFailed": "Не удалось",
+      "error": "Не удалось загрузить SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "Плотно",
       "small": "Маленький",
       "wide": "Широко"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Цены",
+    "metaDescription": "Dupip зарегистрирован в Европе как веб-радио с миссией благополучия. Чтобы поддержать наш рост, мы предлагаем преимущества донорам. Ознакомьтесь с нашими тарифами и тем, как работает DPIP.",
+    "heroTitle": "Радио, придуманное заново",
+    "heroSubtitle": "Dupip построен вокруг простого вызова: благополучие. Мы ищем частоты, которые раскрывают в вас лучшее.",
+    "siaeTitle": "Примечание о лицензировании музыки",
+    "plansTitle": "Тарифы",
+    "plansDescription": "Выберите тариф, который подходит вашему стилю прослушивания.",
+    "dpipTitle": "О DPIP",
+    "dpipBody": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем.",
+    "consentTitle": "Согласие DPIP",
+    "consentCheckbox": "Я понимаю, что DPIP может не иметь денежной ценности — ни сейчас, ни в будущем, — и принимаю это.",
+    "consentSignedOut": "Войдите, чтобы ознакомиться с согласием DPIP и увидеть наши тарифы.",
+    "signInToConsent": "Войти",
+    "consentSaved": "Согласие записано {date}",
+    "saveConsent": "Сохранить согласие",
+    "dpipNoValue": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем.",
+    "consentDescription": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем. Прежде чем ознакомиться с нашими тарифами, пожалуйста, просмотрите и подтвердите следующее:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

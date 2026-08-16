@@ -14,6 +14,7 @@
     "save": "Gem",
     "cancel": "Annuller",
     "delete": "Slet",
+    "remove": "Fjern",
     "loading": "Indlæser...",
     "error": "Fejl",
     "success": "Succes",
@@ -60,7 +61,8 @@
     "saving": "Gemmer...",
     "decline": "Afvis",
     "friendRequest": "Venneanmodning",
-    "reverseOrder": "Omvendt rækkefølge"
+    "reverseOrder": "Omvendt rækkefølge",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -78,7 +80,8 @@
     "privacy": "Privatlivspolitik",
     "locale": "Sprog",
     "blog": "Blog",
-    "agenda": "Dagsorden"
+    "agenda": "Dagsorden",
+    "upgrade": "Opgrader"
   },
   "dashboard": {
     "title": "Dit liv på et øjeblik.",
@@ -129,11 +132,14 @@
         "FRIENDS": "Venner",
         "CLOSE_FRIENDS": "Nære venner",
         "PUBLIC": "Offentlig",
-        "AI_ENABLED": "AI-aktiveret"
+        "AI_ENABLED": "AI-aktiveret",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicer note",
       "publishing": "Udgiver...",
-      "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor."
+      "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Aktivér AI-analyse"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -151,7 +157,9 @@
       "addDelegatedAnalyst": "Tilføj delegeret analytiker",
       "adding": "Tilføjer...",
       "addError": "Kunne ikke tilføje delegeret analytiker",
-      "invitationDraft": "Invitationsudkast for denne e-mail er klargjort."
+      "invitationDraft": "Invitationsudkast for denne e-mail er klargjort.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -178,12 +186,68 @@
       "ready": "Klar",
       "open": "Åben",
       "done": "Færdig",
-      "ignored": "Ignoreret"
+      "ignored": "Ignoreret",
+      "completed": "Completed"
     },
     "edit": "Rediger",
     "loadingForDate": "Indlæser opgaver for valgt dato...",
     "initializingTasks": "Opsætter dine opgaver...",
-    "noTasksForDate": "Ingen opgaver planlagt for denne dato"
+    "noTasksForDate": "Ingen opgaver planlagt for denne dato",
+    "delete": "Slet...",
+    "deleteTitle": "Slet opgave",
+    "deleteDescription": "Hvor meget af denne opgave vil du slette?",
+    "deleteScopes": {
+      "today": "Kun i dag",
+      "onwards": "Fra i dag og frem",
+      "all": "Alle poster"
+    },
+    "requestTitle": "Anmod om arbejde",
+    "requestDescription": "Forklar, hvorfor du vil påtage dig denne opgave. Listeejeren vil gennemgå din anmodning.",
+    "submitTitle": "Indsend arbejde",
+    "resubmitTitle": "Revider og genindsend",
+    "submitDescription": "Læg bevis for dit arbejde op. Snart kan du vedhæfte et foto eller en video.",
+    "reviewTitle": "Gennemgå arbejde",
+    "reviewDescription": "Accepter arbejdet, bed om ændringer eller afvis det.",
+    "justificationLabel": "Begrundelse",
+    "justificationPlaceholder": "Hvorfor skal du udføre denne opgave?",
+    "evidenceLabel": "Bevis / note",
+    "evidencePlaceholder": "Beskriv, hvad du har gjort...",
+    "selfReviewLabel": "Selvevaluering (0-100)",
+    "managerReviewLabel": "Vurderingsscore (0-100)",
+    "reviewNoteLabel": "Feedback (valgfrit)",
+    "sendRequest": "Send anmodning",
+    "resubmit": "Genindsend",
+    "submit": "Indsend",
+    "accept": "Accepter",
+    "requestChanges": "Bed om ændringer",
+    "reject": "Afvis",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Drak vand",
@@ -247,7 +311,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Priser"
   },
   "earningsTable": {
     "day": "Dag",
@@ -333,7 +398,9 @@
     "expectedNeedUtilities": "Forventet nødvendigt gennemsnit for forsyningsselskaber",
     "editAction": "Rediger handling",
     "save": "Gem",
-    "cancel": "Annuller"
+    "cancel": "Annuller",
+    "currency": "Valuta",
+    "selectCurrency": "Vælg valuta"
   },
   "agentChat": {
     "thinking": "Tænker...",
@@ -341,7 +408,8 @@
     "getInsights": "Spørg om dit humør, vaner eller få personaliserede indsigter",
     "placeholder": "Lad os chatte...",
     "error": "Undskyld, jeg stødte på en fejl. Prøv igen.",
-    "failedToSend": "Beskeden kunne ikke sendes. Prøv igen."
+    "failedToSend": "Beskeden kunne ikke sendes. Prøv igen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Start din egen Dupip-rejse",
@@ -540,7 +608,34 @@
       "addTask": "Tilføj opgave",
       "cancel": "Annuller",
       "editTitle": "Rediger opgave",
-      "saveTask": "Gem opgave"
+      "saveTask": "Gem opgave",
+      "premiumLabel": "Præmie (valgfrit)",
+      "premiumPercentHint": "Procent af listebudgettet",
+      "cadenceLabel": "Gentages",
+      "cadence": {
+        "none": "Gentages ikke",
+        "daily": "Dagligt",
+        "weekly": "Ugentligt",
+        "monthly": "Månedligt",
+        "yearly": "Årligt",
+        "every": "Hver",
+        "day": "dag",
+        "days": "dage",
+        "week": "uge",
+        "weeks": "uger",
+        "month": "måned",
+        "months": "måneder",
+        "year": "år",
+        "years": "år",
+        "onDay": "På dag",
+        "onThe": "Den",
+        "inMonth": "I måned",
+        "ends": "Slutter",
+        "never": "Aldrig",
+        "after": "Efter",
+        "onDate": "På dato",
+        "occurrences": "gange"
+      }
     },
     "addListForm": {
       "titleCreate": "Opret ny liste",
@@ -596,12 +691,24 @@
       },
       "areaDistributionLabel": "Områdebudget",
       "areaPrizeDistributionLabel": "Områdepræmie",
+      "areaPremiumDistributionLabel": "Præmiefordeling efter område",
       "categoryDistributionLabel": "Kategoribudget",
       "categoryPrizeDistributionLabel": "Kategoripræmie",
+      "categoryPremiumDistributionLabel": "Præmiefordeling efter kategori",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Præmie",
       "totalLabel": "Total",
-      "addTaskTitle": "Tilføj opgave"
+      "addTaskTitle": "Tilføj opgave",
+      "editTitle": "Rediger liste",
+      "visibilityLabel": "Synlighed",
+      "collaboratorsPlaceholder": "Søg efter venner...",
+      "budgetSourcesLabel": "Procent af dine budgetter:",
+      "noBudgets": "Ingen budgetter endnu — tilføj et nedenfor.",
+      "newBudgetName": "Budgetnavn",
+      "confirmDelete": "Slet denne liste og alle dens opgaver? Kan ikke fortrydes.",
+      "delete": "Slet",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Opret ny skabelon",
@@ -666,6 +773,36 @@
       "after": "Efter",
       "pickDate": "Vælg en dato",
       "occurrences": "gentagelser"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -718,7 +855,15 @@
     "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål.",
     "consentTitle": "Samtykke til Investeringsdemo",
     "consentCheckbox": "Jeg anerkender, at Dupip endnu ikke er en investeringsplatform, og at ved at bruge denne funktion er jeg opmærksom på, at alle mine data kan blive slettet før den officielle lancering af Dupip Invest.",
-    "confirm": "Bekræft"
+    "confirm": "Bekræft",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generering fuldført.",
@@ -883,7 +1028,10 @@
         "submitted": "Arbejde indsendt til gennemgang",
         "resubmitted": "Arbejde indsendt igen til gennemgang"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Note opdateret",
@@ -893,6 +1041,7 @@
     "deleting": "Sletter...",
     "confirmDelete": "Er du sikker på, at du vil slette denne note?",
     "content": "Noteindhold",
+    "recipient": "Modtager",
     "visibilityUpdated": "Synlighed opdateret",
     "visibilityUpdateFailed": "Kunne ikke opdatere synlighed",
     "changeVisibility": "Skift synlighed",
@@ -901,7 +1050,17 @@
       "date": "Dato",
       "mostRelevant": "Mest relevant",
       "all": "Alle"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Samtale",
@@ -917,7 +1076,52 @@
     "inviteFriendToOrg": "Inviter en ven til denne organisation",
     "inviteLinkCopied": "Invitationslink kopieret",
     "inviteSent": "Invitation sendt",
-    "inviteAccepted": "Invitation accepteret"
+    "inviteAccepted": "Invitation accepteret",
+    "sidebar": {
+      "directMessages": "Direkte beskeder",
+      "organizations": "Organisationer",
+      "sms": "SMS",
+      "virtualNumber": "Virtuelt nummer",
+      "searchDmPlaceholder": "Søg venner for at starte en DM",
+      "createChannelPlaceholder": "Opret en kanal",
+      "createOrgPlaceholder": "Opret en organisation",
+      "refresh": "Opdater",
+      "noOrgs": "Ingen organisationer endnu",
+      "noDms": "Ingen direkte beskeder endnu"
+    },
+    "virtualNumber": {
+      "label": "Virtuelt nummer",
+      "hint": "Vælg dine telefonnumre. Indgående SMS’er til disse numre vises i din chat.",
+      "none": "Intet nummer",
+      "loading": "Indlæser numre…",
+      "empty": "Ingen numre tilgængelige",
+      "error": "Kunne ikke indlæse dine numre",
+      "assignError": "Kunne ikke gemme dette nummer",
+      "assigned": "Nummer tildelt",
+      "cleared": "Nummer fjernet",
+      "addNumber": "Tilføj nummer…",
+      "removeNumber": "Fjern nummer",
+      "quotaLabel": "{used} af {quota} numre brugt",
+      "limitReached": "Du har nået det maksimale antal virtuelle numre for dit abonnement",
+      "buyCta": "Køb virtuelt nummer",
+      "gateHint": "Virtuelle numre kræver et Donator-abonnement. Køb et nummer for at modtage SMS i chatten.",
+      "buyDialogTitle": "Donator-abonnement påkrævet",
+      "buyDialogDescription": "Virtuelle numre er inkluderet i Donator-abonnementerne. Vælg et abonnement på prissiden for at komme i gang.",
+      "buyDialogGoToPricing": "Gå til priser"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Indlæser SMS…",
+      "empty": "Ingen SMS-samtaler endnu",
+      "noNumberHint": "Tildel et virtuelt nummer for at begynde at modtage SMS her",
+      "composerPlaceholder": "Skriv en SMS…",
+      "sendError": "Kunne ikke sende denne besked",
+      "you": "Dig",
+      "statusSent": "Sendt",
+      "statusDelivered": "Leveret",
+      "statusFailed": "Mislykkedes",
+      "error": "Kunne ikke indlæse SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -925,6 +1129,79 @@
       "tight": "Tæt",
       "small": "Lille",
       "wide": "Bred"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Priser",
+    "metaDescription": "Dupip er registreret i Europa som webradio med en mission om velvære. For at støtte vores vækst tilbyder vi fordele til donorer. Se vores abonnementer, og hvordan DPIP fungerer.",
+    "heroTitle": "Radio, gentænkt",
+    "heroSubtitle": "Dupip er bygget omkring en enkel udfordring: velvære. Vi søger de frekvenser, der bringer det bedste frem i dig.",
+    "siaeTitle": "En bemærkning om musiklicenser",
+    "plansTitle": "Abonnementer",
+    "plansDescription": "Vælg det abonnement, der passer til den måde, du lytter på.",
+    "dpipTitle": "Om DPIP",
+    "dpipBody": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden.",
+    "consentTitle": "DPIP-samtykke",
+    "consentCheckbox": "Jeg forstår, at DPIP muligvis ikke har nogen pengeværdi, hverken nu eller i fremtiden, og jeg accepterer dette.",
+    "consentSignedOut": "Log ind for at gennemgå DPIP-samtykket og se vores abonnementer.",
+    "signInToConsent": "Log ind",
+    "consentSaved": "Samtykke registreret den {date}",
+    "saveConsent": "Gem samtykke",
+    "dpipNoValue": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden.",
+    "consentDescription": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden. Før du ser vores abonnementer, bedes du gennemgå og bekræfte følgende:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

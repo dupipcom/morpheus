@@ -315,6 +315,49 @@ export function getOwnerId(entity: { userId?: string; users?: Array<{ userId: st
 }
 
 /**
+ * Resolve which of a note's tagged taskIds the viewer is allowed to see.
+ *
+ * A task is visible when:
+ *  (a) the task itself has PUBLIC visibility, or
+ *  (b) its list has PUBLIC visibility, or
+ *  (c) the viewer is a member of its list (any role: OWNER/MANAGER/COLLABORATOR/FOLLOWER).
+ *
+ * Without a viewer (null) only (a) and (b) apply, so public-task tags survive
+ * anonymous renders while private-list tasks are dropped. Batches all tasks in
+ * a single query to avoid N+1. Returns the subset of taskIds the viewer can see.
+ */
+export async function resolveNoteTags(
+  note: { taskIds?: string[] | null },
+  viewerId: string | null
+): Promise<string[]> {
+  const taskIds = (note.taskIds || []).filter((id): id is string => typeof id === 'string' && id.length > 0)
+  if (taskIds.length === 0) return []
+
+  const tasks = await prisma.task.findMany({
+    where: { id: { in: taskIds } },
+    select: {
+      id: true,
+      visibility: true,
+      list: {
+        select: {
+          visibility: true,
+          users: true
+        }
+      }
+    }
+  })
+
+  return tasks
+    .filter((task) => {
+      if (task.visibility === 'PUBLIC') return true
+      if (task.list?.visibility === 'PUBLIC') return true
+      if (!viewerId) return false
+      return (task.list?.users || []).some((u) => String(u.userId) === viewerId)
+    })
+    .map((task) => task.id)
+}
+
+/**
  * Enrich entities with filtered user profiles
  * Generic function that works with notes, templates, comments, etc.
  */

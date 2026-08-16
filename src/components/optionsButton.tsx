@@ -17,6 +17,7 @@ export interface OptionsMenuItem {
   icon?: ReactNode
   separator?: boolean
   variant?: 'default' | 'destructive'
+  disabled?: boolean
 }
 
 interface OptionsButtonProps {

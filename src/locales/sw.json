@@ -17,6 +17,7 @@
     "save": "Hifadhi",
     "cancel": "Ghairi",
     "delete": "Futa",
+    "remove": "Ondoa",
     "loading": "Inapakia...",
     "error": "Hitilafu",
     "success": "Mafanikio",
@@ -60,7 +61,8 @@
     "saving": "Inahifadhi...",
     "decline": "Kataa",
     "friendRequest": "Ombi la urafiki",
-    "reverseOrder": "Geuza mpangilio"
+    "reverseOrder": "Geuza mpangilio",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -74,7 +76,8 @@
     "privacy": "Sera ya Faragha",
     "locale": "Lugha",
     "blog": "Blogu",
-    "agenda": "Ajenda"
+    "agenda": "Ajenda",
+    "upgrade": "Boresha"
   },
   "dashboard": {
     "title": "Maisha yako kwa mtazamo mmoja.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Marafiki",
         "CLOSE_FRIENDS": "Marafiki wa Karibu",
         "PUBLIC": "Umma",
-        "AI_ENABLED": "AI Imewezeshwa"
+        "AI_ENABLED": "AI Imewezeshwa",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Chapisha Maelezo",
       "publishing": "Inachapisha...",
-      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini."
+      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Washa uchambuzi wa AI"
     },
     "thirdParty": {
       "title": "Mhusika wa tatu",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Ongeza mchambuzi aliyekabidhiwa",
       "adding": "Inaongezwa...",
       "addError": "Haikuwezekana kuongeza mchambuzi aliyekabidhiwa",
-      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii."
+      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "Tayari",
       "open": "Wazi",
       "done": "Imekamilika",
-      "ignored": "Imepuuzwa"
+      "ignored": "Imepuuzwa",
+      "completed": "Completed"
     },
     "edit": "Hariri",
     "loadingForDate": "Inapakia kazi kwa tarehe iliyochaguliwa...",
     "initializingTasks": "Inasanidi kazi zako...",
-    "noTasksForDate": "Hakuna kazi zilizopangwa kwa tarehe hii"
+    "noTasksForDate": "Hakuna kazi zilizopangwa kwa tarehe hii",
+    "delete": "Futa...",
+    "deleteTitle": "Futa kazi",
+    "deleteDescription": "Ni sehemu gani ya kazi hii unataka kufuta?",
+    "deleteScopes": {
+      "today": "Leo tu",
+      "onwards": "Kuanzia leo",
+      "all": "Maingizo yote"
+    },
+    "requestTitle": "Omba kazi",
+    "requestDescription": "Eleza kwa nini unataka kuchukua kazi hii. Mmiliki wa orodha atakagua ombi lako.",
+    "submitTitle": "Wasilisha kazi",
+    "resubmitTitle": "Rekebisha na uwasilishe tena",
+    "submitDescription": "Chapisha uthibitisho wa kazi yako. Hivi karibuni utaweza kuambatisha picha au video.",
+    "reviewTitle": "Kagua kazi",
+    "reviewDescription": "Kubali kazi, omba mabadiliko au ikataa.",
+    "justificationLabel": "Uhalali",
+    "justificationPlaceholder": "Kwa nini ufanye kazi hii?",
+    "evidenceLabel": "Uthibitisho / noti",
+    "evidencePlaceholder": "Eleza ulichofanya...",
+    "selfReviewLabel": "Tathmini binafsi (0-100)",
+    "managerReviewLabel": "Alama ya ukaguzi (0-100)",
+    "reviewNoteLabel": "Maoni (hiari)",
+    "sendRequest": "Tuma ombi",
+    "resubmit": "Wasilisha tena",
+    "submit": "Wasilisha",
+    "accept": "Kubali",
+    "requestChanges": "Omba mabadiliko",
+    "reject": "Kataa",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "Mipangilio",
@@ -200,7 +264,9 @@
     "expectedNeedUtilities": "Wastani wa Matumizi ya Mahitaji ya Kutarajiwa",
     "editAction": "Hariri kitendo",
     "cancel": "Ghairi",
-    "save": "Hifadhi"
+    "save": "Hifadhi",
+    "currency": "Sarafu",
+    "selectCurrency": "Chagua sarafu"
   },
   "actions": {
     "drankWater": "Kunywa maji",
@@ -261,7 +327,8 @@
     "cookies": "Tunatumia vidakuzi, na kwa kutumia programu hii unakubaliana nayo.",
     "code": "Msimbo",
     "terms": "Sheria za Huduma",
-    "privacy": "Sera ya Faragha"
+    "privacy": "Sera ya Faragha",
+    "pricing": "Bei"
   },
   "earningsTable": {
     "day": "Siku",
@@ -344,7 +411,8 @@
     "getInsights": "Uliza kuhusu hali yako ya moyo, tabia au pata maarifa ya kibinafsi",
     "placeholder": "Tuzungumze...",
     "error": "Samahani, nilikumbana na hitilafu. Tafadhali jaribu tena.",
-    "failedToSend": "Kutuma ujumbe hakufanikiwa. Tafadhali jaribu tena."
+    "failedToSend": "Kutuma ujumbe hakufanikiwa. Tafadhali jaribu tena.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Haikuweza kufikia mzunguko huu.",
@@ -551,7 +619,34 @@
       "addTask": "Ongeza Kazi",
       "cancel": "Ghairi",
       "editTitle": "Hariri kazi",
-      "saveTask": "Hifadhi kazi"
+      "saveTask": "Hifadhi kazi",
+      "premiumLabel": "Ziada (hiari)",
+      "premiumPercentHint": "Asilimia ya bajeti ya orodha",
+      "cadenceLabel": "Inajirudia",
+      "cadence": {
+        "none": "Haijirudii",
+        "daily": "Kila siku",
+        "weekly": "Kila wiki",
+        "monthly": "Kila mwezi",
+        "yearly": "Kila mwaka",
+        "every": "Kila",
+        "day": "siku",
+        "days": "siku",
+        "week": "wiki",
+        "weeks": "wiki",
+        "month": "mwezi",
+        "months": "miezi",
+        "year": "mwaka",
+        "years": "miaka",
+        "onDay": "Siku",
+        "onThe": "",
+        "inMonth": "Mwezini",
+        "ends": "Inaisha",
+        "never": "Kamwe",
+        "after": "Baada ya",
+        "onDate": "Tarehe",
+        "occurrences": "mara"
+      }
     },
     "addListForm": {
       "titleCreate": "Unda Orodha Mpya",
@@ -607,12 +702,24 @@
       },
       "areaDistributionLabel": "Bajeti ya eneo",
       "areaPrizeDistributionLabel": "Tuzo ya eneo",
+      "areaPremiumDistributionLabel": "Usambazaji wa tuzo kwa eneo",
       "categoryDistributionLabel": "Bajeti ya kategoria",
       "categoryPrizeDistributionLabel": "Tuzo ya kategoria",
+      "categoryPremiumDistributionLabel": "Usambazaji wa tuzo kwa kategoria",
       "taskDistributionLabel": "Bajeti",
       "premiumLabel": "Tuzo",
       "totalLabel": "Jumla",
-      "addTaskTitle": "Ongeza kazi"
+      "addTaskTitle": "Ongeza kazi",
+      "editTitle": "Hariri orodha",
+      "visibilityLabel": "Mwonekano",
+      "collaboratorsPlaceholder": "Tafuta marafiki...",
+      "budgetSourcesLabel": "Asilimia ya bajeti zako:",
+      "noBudgets": "Hakuna bajeti bado — ongeza moja hapa chini.",
+      "newBudgetName": "Jina la bajeti",
+      "confirmDelete": "Futa orodha hii na kazi zake zote? Haiwezi kutenduliwa.",
+      "delete": "Futa",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Unda Kiolezo Kipya",
@@ -677,6 +784,36 @@
       "after": "Baada ya",
       "pickDate": "Chagua tarehe",
       "occurrences": "mara"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -712,7 +849,15 @@
     "notice": "Hakuna pesa halisi zinazosimamiwa kwa sasa katika programu hii. Dupip Invest bado iko katika awamu ya kupanga. Hii ni mazingira ya majaribio tu kwa madhumuni ya maonyesho.",
     "consentTitle": "Idhini ya Maonyesho ya Uwekezaji",
     "consentCheckbox": "Ninakubali kuwa Dupip bado sio jukwaa la uwekezaji, na kwa kutumia kipengele hiki, ninafahamu kuwa data zangu zote zinaweza kufutwa kabla ya uzinduzi rasmi wa Dupip Invest.",
-    "confirm": "Thibitisha"
+    "confirm": "Thibitisha",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Uundaji wa NFT umekamilika.",
@@ -877,7 +1022,10 @@
         "submitted": "Kazi imewasilishwa kwa ukaguzi",
         "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Dokezo limesasishwa kwa mafanikio",
@@ -887,6 +1035,7 @@
     "deleting": "Inafuta...",
     "confirmDelete": "Je, una uhakika unataka kufuta dokezo hili?",
     "content": "Maudhui ya dokezo",
+    "recipient": "Mpokeaji",
     "visibilityUpdated": "Uonekano umesasishwa kwa mafanikio",
     "visibilityUpdateFailed": "Imeshindwa kusasisha uonekano",
     "changeVisibility": "Badilisha uonekano",
@@ -895,7 +1044,17 @@
       "date": "Tarehe",
       "mostRelevant": "Inayohusiana zaidi",
       "all": "Zote"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Mazungumzo",
@@ -911,7 +1070,52 @@
     "inviteFriendToOrg": "Alika rafiki katika shirika hili",
     "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
     "inviteSent": "Mwaliko umetumwa",
-    "inviteAccepted": "Mwaliko umekubaliwa"
+    "inviteAccepted": "Mwaliko umekubaliwa",
+    "sidebar": {
+      "directMessages": "Ujumbe wa moja kwa moja",
+      "organizations": "Mashirika",
+      "sms": "SMS",
+      "virtualNumber": "Nambari ya kawaida",
+      "searchDmPlaceholder": "Tafuta marafiki ili kuanza DM",
+      "createChannelPlaceholder": "Unda kituo",
+      "createOrgPlaceholder": "Unda shirika",
+      "refresh": "Onyesha upya",
+      "noOrgs": "Bado hakuna mashirika",
+      "noDms": "Bado hakuna ujumbe wa moja kwa moja"
+    },
+    "virtualNumber": {
+      "label": "Namba pepe",
+      "hint": "Chagua namba zako za simu. SMS zinazoingia kwenye namba hizi zitaonekana kwenye mazungumzo yako.",
+      "none": "Hakuna namba",
+      "loading": "Inapakia namba…",
+      "empty": "Hakuna namba zinazopatikana",
+      "error": "Haikuwezekana kupakia namba zako",
+      "assignError": "Haikuwezekana kuhifadhi namba hii",
+      "assigned": "Namba imepewa",
+      "cleared": "Namba imeondolewa",
+      "addNumber": "Ongeza namba…",
+      "removeNumber": "Ondoa namba",
+      "quotaLabel": "{used} kati ya {quota} namba zimetumika",
+      "limitReached": "Umefikia idadi ya juu ya namba pepe kwa mpango wako",
+      "buyCta": "Nunua namba pepe",
+      "gateHint": "Namba pepe zinahitaji mpango wa Donator. Nunua namba ili kupokea SMS kwenye mazungumzo.",
+      "buyDialogTitle": "Mpango wa Donator unahitajika",
+      "buyDialogDescription": "Namba pepe zinajumuishwa katika mipango ya Donator. Chagua mpango kwenye ukurasa wa bei ili kuanza.",
+      "buyDialogGoToPricing": "Nenda kwenye bei"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Inapakia SMS…",
+      "empty": "Bado hakuna mazungumzo ya SMS",
+      "noNumberHint": "Pewa namba pepe ili uanze kupokea SMS hapa",
+      "composerPlaceholder": "Andika SMS…",
+      "sendError": "Haikuwezekana kutuma ujumbe huu",
+      "you": "Wewe",
+      "statusSent": "Imetumwa",
+      "statusDelivered": "Imewasilishwa",
+      "statusFailed": "Imeshindikana",
+      "error": "Haikuwezekana kupakia SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -919,6 +1123,79 @@
       "tight": "Bana",
       "small": "Ndogo",
       "wide": "Pana"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Bei",
+    "metaDescription": "Dupip imesajiliwa barani Ulaya kama redio ya mtandaoni yenye dhamira ya ustawi. Ili kuunga mkono ukuaji wetu, tunatoa manufaa kwa wafadhili. Tazama mipango yetu na jinsi DPIP inavyofanya kazi.",
+    "heroTitle": "Redio, iliyofikiriwa upya",
+    "heroSubtitle": "Dupip imejengwa kuzunguka changamoto rahisi: ustawi. Tunatafuta masafa yanayoleta bora kutoka kwako.",
+    "siaeTitle": "Kidokezo kuhusu leseni za muziki",
+    "plansTitle": "Mipango",
+    "plansDescription": "Chagua mpango unaolingana na jinsi unavyosikiliza.",
+    "dpipTitle": "Kuhusu DPIP",
+    "dpipBody": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye.",
+    "consentTitle": "Idhini ya DPIP",
+    "consentCheckbox": "Ninaelewa kuwa DPIP huenda isiwe na thamani ya kifedha, si sasa wala baadaye, na ninakubali hili.",
+    "consentSignedOut": "Ingia ili kupitia idhini ya DPIP na kuona mipango yetu.",
+    "signInToConsent": "Ingia",
+    "consentSaved": "Idhini imerekodiwa tarehe {date}",
+    "saveConsent": "Hifadhi idhini",
+    "dpipNoValue": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye.",
+    "consentDescription": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye. Kabla ya kuona mipango yetu, tafadhali pitia na uthibitishe yafuatayo:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

@@ -17,6 +17,7 @@
     "save": "保存",
     "cancel": "取消",
     "delete": "删除",
+    "remove": "移除",
     "loading": "加载中...",
     "error": "错误",
     "success": "成功",
@@ -60,7 +61,8 @@
     "saving": "保存中...",
     "decline": "拒绝",
     "friendRequest": "好友请求",
-    "reverseOrder": "反转顺序"
+    "reverseOrder": "反转顺序",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "首页",
@@ -74,7 +76,8 @@
     "privacy": "隐私政策",
     "locale": "语言",
     "blog": "博客",
-    "agenda": "议程"
+    "agenda": "议程",
+    "upgrade": "升级"
   },
   "dashboard": {
     "title": "您的生活一目了然。",
@@ -125,11 +128,14 @@
         "FRIENDS": "朋友",
         "CLOSE_FRIENDS": "亲密朋友",
         "PUBLIC": "公众",
-        "AI_ENABLED": "支持人工智能"
+        "AI_ENABLED": "支持人工智能",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "出版说明",
       "publishing": "发布中...",
-      "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。"
+      "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "启用人工智能分析"
     },
     "thirdParty": {
       "title": "第三方",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "添加委托分析员",
       "adding": "正在添加...",
       "addError": "无法添加委托分析员",
-      "invitationDraft": "已为该邮箱准备邀请草稿。"
+      "invitationDraft": "已为该邮箱准备邀请草稿。",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "就绪",
       "open": "待办",
       "done": "完成",
-      "ignored": "已忽略"
+      "ignored": "已忽略",
+      "completed": "Completed"
     },
     "edit": "编辑",
     "loadingForDate": "正在加载所选日期的任务...",
     "initializingTasks": "正在设置您的任务...",
-    "noTasksForDate": "该日期暂无任务"
+    "noTasksForDate": "该日期暂无任务",
+    "delete": "删除...",
+    "deleteTitle": "删除任务",
+    "deleteDescription": "你想删除此任务的哪部分？",
+    "deleteScopes": {
+      "today": "仅今天",
+      "onwards": "从今天起",
+      "all": "所有条目"
+    },
+    "requestTitle": "申请工作",
+    "requestDescription": "说明你为什么想承担此任务。列表所有者将审核你的申请。",
+    "submitTitle": "提交工作",
+    "resubmitTitle": "修改后重新提交",
+    "submitDescription": "发布你的工作证明。很快就能附上照片或视频。",
+    "reviewTitle": "审核工作",
+    "reviewDescription": "接受工作、要求修改或拒绝。",
+    "justificationLabel": "理由",
+    "justificationPlaceholder": "为什么你应该做这个任务？",
+    "evidenceLabel": "证明 / 备注",
+    "evidencePlaceholder": "描述你做了什么...",
+    "selfReviewLabel": "自我评价（0-100）",
+    "managerReviewLabel": "审核分数（0-100）",
+    "reviewNoteLabel": "反馈（可选）",
+    "sendRequest": "发送申请",
+    "resubmit": "重新提交",
+    "submit": "提交",
+    "accept": "接受",
+    "requestChanges": "要求修改",
+    "reject": "拒绝",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "设置",
@@ -199,7 +263,9 @@
     "expectedNeedUtilities": "预期需求公用事业平均值",
     "editAction": "编辑操作",
     "save": "保存",
-    "cancel": "取消"
+    "cancel": "取消",
+    "currency": "货币",
+    "selectCurrency": "选择货币"
   },
   "social": {
     "title": "社交联系人",
@@ -300,7 +366,8 @@
     "cookies": "我们使用cookie，使用此应用程序即表示您同意。",
     "code": "代码",
     "terms": "服务条款",
-    "privacy": "隐私政策"
+    "privacy": "隐私政策",
+    "pricing": "定价"
   },
   "earningsTable": {
     "day": "日期",
@@ -346,7 +413,8 @@
     "getInsights": "询问您的心情、习惯或获取个性化洞察",
     "placeholder": "让我们聊天...",
     "error": "抱歉，我遇到了错误。请重试。",
-    "failedToSend": "发送消息失败。请重试。"
+    "failedToSend": "发送消息失败。请重试。",
+    "model": "Model"
   },
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
@@ -553,7 +621,34 @@
       "addTask": "添加任务",
       "cancel": "取消",
       "editTitle": "编辑任务",
-      "saveTask": "保存任务"
+      "saveTask": "保存任务",
+      "premiumLabel": "奖励（可选）",
+      "premiumPercentHint": "列表预算的百分比",
+      "cadenceLabel": "重复",
+      "cadence": {
+        "none": "不重复",
+        "daily": "每天",
+        "weekly": "每周",
+        "monthly": "每月",
+        "yearly": "每年",
+        "every": "每",
+        "day": "天",
+        "days": "天",
+        "week": "周",
+        "weeks": "周",
+        "month": "个月",
+        "months": "个月",
+        "year": "年",
+        "years": "年",
+        "onDay": "在第",
+        "onThe": "第",
+        "inMonth": "月份",
+        "ends": "结束",
+        "never": "永不",
+        "after": "次后",
+        "onDate": "到日期",
+        "occurrences": "次"
+      }
     },
     "addListForm": {
       "titleCreate": "创建新列表",
@@ -609,12 +704,24 @@
       },
       "areaDistributionLabel": "区域预算",
       "areaPrizeDistributionLabel": "区域奖金",
+      "areaPremiumDistributionLabel": "按区域分配奖金",
       "categoryDistributionLabel": "类别预算",
       "categoryPrizeDistributionLabel": "类别奖金",
+      "categoryPremiumDistributionLabel": "按类别分配奖金",
       "taskDistributionLabel": "预算",
       "premiumLabel": "奖金",
       "totalLabel": "总计",
-      "addTaskTitle": "添加任务"
+      "addTaskTitle": "添加任务",
+      "editTitle": "编辑列表",
+      "visibilityLabel": "可见性",
+      "collaboratorsPlaceholder": "搜索好友...",
+      "budgetSourcesLabel": "你的预算的百分比：",
+      "noBudgets": "还没有预算 — 在下面添加一个。",
+      "newBudgetName": "预算名称",
+      "confirmDelete": "删除此列表及其所有任务？无法撤销。",
+      "delete": "删除",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "创建新模板",
@@ -679,6 +786,36 @@
       "after": "之后",
       "pickDate": "选择日期",
       "occurrences": "次"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -714,7 +851,15 @@
     "notice": "此应用程序目前不管理任何实际资金。Dupip Invest 仍处于规划阶段。这只是一个用于演示目的的测试环境。",
     "consentTitle": "投资演示同意",
     "consentCheckbox": "我承认 Dupip 还不是投资平台，使用此功能时，我意识到在 Dupip Invest 正式发布之前，我的所有数据都可能被删除。",
-    "confirm": "确认"
+    "confirm": "确认",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT生成已完成。",
@@ -879,7 +1024,10 @@
         "submitted": "工作已提交审核",
         "resubmitted": "工作已重新提交审核"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "笔记更新成功",
@@ -889,6 +1037,7 @@
     "deleting": "正在删除...",
     "confirmDelete": "确定要删除此笔记吗？",
     "content": "笔记内容",
+    "recipient": "收件人",
     "visibilityUpdated": "可见性更新成功",
     "visibilityUpdateFailed": "可见性更新失败",
     "changeVisibility": "更改可见性",
@@ -897,7 +1046,17 @@
       "date": "日期",
       "mostRelevant": "最相关",
       "all": "全部"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "聊天",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "邀请好友加入此组织",
     "inviteLinkCopied": "邀请链接已复制",
     "inviteSent": "邀请已发送",
-    "inviteAccepted": "邀请已接受"
+    "inviteAccepted": "邀请已接受",
+    "sidebar": {
+      "directMessages": "私信",
+      "organizations": "组织",
+      "sms": "短信",
+      "virtualNumber": "虚拟号码",
+      "searchDmPlaceholder": "搜索好友开始私信",
+      "createChannelPlaceholder": "创建频道",
+      "createOrgPlaceholder": "创建组织",
+      "refresh": "刷新",
+      "noOrgs": "暂无组织",
+      "noDms": "暂无私信"
+    },
+    "virtualNumber": {
+      "label": "虚拟号码",
+      "hint": "选择你的电话号码。发到这些号码的短信会显示在你的聊天中。",
+      "none": "无号码",
+      "loading": "正在加载号码…",
+      "empty": "没有可用号码",
+      "error": "无法加载你的号码",
+      "assignError": "无法保存此号码",
+      "assigned": "号码已分配",
+      "cleared": "号码已清除",
+      "addNumber": "添加号码…",
+      "removeNumber": "移除号码",
+      "quotaLabel": "已使用 {used} / {quota} 个号码",
+      "limitReached": "你已达到套餐的虚拟号码数量上限",
+      "buyCta": "购买虚拟号码",
+      "gateHint": "虚拟号码需要 Donator 套餐。购买号码即可在聊天中接收短信。",
+      "buyDialogTitle": "需要 Donator 套餐",
+      "buyDialogDescription": "虚拟号码包含在 Donator 套餐中。请在定价页面选择一个套餐开始使用。",
+      "buyDialogGoToPricing": "前往定价"
+    },
+    "sms": {
+      "label": "短信",
+      "loading": "正在加载短信…",
+      "empty": "暂无短信对话",
+      "noNumberHint": "分配一个虚拟号码以在此接收短信",
+      "composerPlaceholder": "编写短信…",
+      "sendError": "无法发送此消息",
+      "you": "你",
+      "statusSent": "已发送",
+      "statusDelivered": "已送达",
+      "statusFailed": "失败",
+      "error": "无法加载短信"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "紧凑",
       "small": "小",
       "wide": "宽"
+    }
+  },
+  "pricing": {
+    "metaTitle": "定价",
+    "metaDescription": "Dupip 是一家在欧洲注册的网络电台，以身心福祉为使命。为支持我们的发展，我们为捐赠者提供福利。查看我们的方案以及 DPIP 的运作方式。",
+    "heroTitle": "重新构想的电台",
+    "heroSubtitle": "Dupip 围绕一个简单的挑战而建：身心福祉。我们在寻找能激发你最佳状态的频率。",
+    "siaeTitle": "关于音乐授权的说明",
+    "plansTitle": "方案",
+    "plansDescription": "选择适合你收听方式的方案。",
+    "dpipTitle": "关于 DPIP",
+    "dpipBody": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。",
+    "consentTitle": "DPIP 同意",
+    "consentCheckbox": "我理解 DPIP 可能没有货币价值，无论是现在还是将来，并接受这一点。",
+    "consentSignedOut": "请登录以查看 DPIP 同意书并浏览我们的方案。",
+    "signInToConsent": "登录",
+    "consentSaved": "同意记录于 {date}",
+    "saveConsent": "保存同意",
+    "dpipNoValue": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。",
+    "consentDescription": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。 在查看我们的方案之前，请阅读并确认以下内容："
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

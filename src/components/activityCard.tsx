@@ -11,6 +11,7 @@ import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { NoteContent } from "@/components/noteContent"
+import type { NoteDocumentRef } from "@/components/noteAttachments"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdownMenu"
 
 export interface Comment {
@@ -50,6 +51,12 @@ export interface ActivityItem {
   date?: string
   budget?: string | null // For tasklists
   dueDate?: string | null // For tasklists
+  documents?: NoteDocumentRef[] | null // Attached documents for notes
+  taskIds?: string[] | null // Tagged task ids (chips render inside the card)
+  profileIds?: string[] | null // Tagged people (badges link to profiles)
+  listIds?: string[] | null // Tagged lists (badges link to the Do list page)
+  eventIds?: string[] | null // Tagged events (badges link to the Feel view)
+  location?: { lat: number; lng: number; name?: string; address?: string } | null
   isLiked?: boolean // Whether current user has liked this item (if provided, skip fetching)
   userId?: string // User ID who owns this item (for checking ownership)
   user?: {
@@ -89,6 +96,8 @@ interface ActivityCardProps {
   currentUserId?: string | null // Current user's ID to check ownership
   onNoteUpdated?: () => void // Callback when note is updated/deleted
   isHighlighted?: boolean // Whether this card should be highlighted/selected
+  /** When provided, Edit hands the note to the Write composer instead of the inline popover */
+  onEditNote?: (item: ActivityItem) => void
 }
 
 const getVisibilityIcon = (visibility: string) => {
@@ -98,6 +107,7 @@ const getVisibilityIcon = (visibility: string) => {
     case 'CLOSE_FRIENDS': return <UserCheck className="h-3 w-3" />
     case 'PUBLIC': return <Globe className="h-3 w-3" />
     case 'AI_ENABLED': return <Sparkles className="h-3 w-3" />
+    case 'DOC_ENABLED': return <FileText className="h-3 w-3" />
     default: return <Lock className="h-3 w-3" />
   }
 }
@@ -108,9 +118,10 @@ const visibilityOptions = [
   { value: 'CLOSE_FRIENDS', label: 'Close Friends', icon: <UserCheck className="h-4 w-4" /> },
   { value: 'PUBLIC', label: 'Public', icon: <Globe className="h-4 w-4" /> },
   { value: 'AI_ENABLED', label: 'AI Enabled', icon: <Sparkles className="h-4 w-4" /> },
+  { value: 'DOC_ENABLED', label: 'Doc Enabled', icon: <FileText className="h-4 w-4" /> },
 ]
 
-function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false }: ActivityCardProps) {
+function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false, onEditNote }: ActivityCardProps) {
   const { t, locale } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const [comments, setComments] = useState<Comment[]>(item.comments || [])
@@ -531,6 +542,12 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       e.preventDefault()
       e.stopPropagation()
     }
+    // Composer-integrated edit: hand the whole note to the Write toolbar
+    // (content, attachments, tags, location) instead of the inline popover.
+    if (onEditNote) {
+      onEditNote(item)
+      return
+    }
     setEditContent(noteContent)
     // Mark that we just opened the popover to prevent immediate closing
     justOpenedPopoverRef.current = true
@@ -881,6 +898,12 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             content={noteContent}
             truncate={!isExpanded && noteContent.length > 150}
             maxLength={150}
+            taskIds={item.taskIds}
+            profileIds={item.profileIds}
+            listIds={item.listIds}
+            eventIds={item.eventIds}
+            location={item.location}
+            documents={item.documents}
           >
             {/* Expand button – centred horizontally below the text, above link previews */}
             {(noteContent.length > 150 || commentCount > 0) && (

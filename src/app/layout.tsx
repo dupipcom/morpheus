@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation'
 
 import { Comfortaa } from "next/font/google"
 import { Analytics } from '@vercel/analytics/react'
-import { BotIdClient } from 'botid/client'
 
 import { Nav } from '@/components/ui/nav'
 import { Footer } from '@/components/footer'
@@ -155,7 +154,6 @@ export default function RootLayout({
           </NavigationSkeletonWrapper>
         </Providers>
         <Analytics />
-        <BotIdClient protect={[{ path: '/api/v1/*', method: '*' }]} />
       </body>
     </html>
   );

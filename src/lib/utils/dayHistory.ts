@@ -34,7 +34,7 @@ export function buildHistoricalEntriesByYear(days: HistoricalDayRecord[]): Histo
     }
 
     const yearKey = day.date.split('-')[0]
-    const weekNumber = day.week ?? getWeekNumber(new Date(day.date))[1]
+    const weekNumber = day.week ?? getWeekNumber(new Date(day.date)).week
     const weekKey = String(weekNumber)
     const yearEntry = entries[yearKey] || { days: {}, weeks: {} }
     const weekEntry = yearEntry.weeks[weekKey] || { weekNumber, days: [] }

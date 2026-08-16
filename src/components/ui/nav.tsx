@@ -11,9 +11,8 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
-import { SlidersVertical, LogIn, DoorOpen, User, LogOut, Users } from "lucide-react"
+import { SlidersVertical, LogIn, DoorOpen, User, LogOut, Users, Sparkles } from "lucide-react"
 import { NavSkeleton } from "./skeletonLoader"
-import { TickerStrip } from "@/components/tickerStrip"
 
 // UserButtonMenu component to handle translations properly
 const UserButtonMenu = () => {
@@ -340,7 +339,7 @@ export const Logo: TComponent = function ({
     tracks?: typeof DEFAULT_TRACKS;
     prompt?: string;
   }) => {
-	  const { t } = useI18n();
+	  const { t, locale } = useI18n();
 
 
 
@@ -393,6 +392,28 @@ export const Logo: TComponent = function ({
 	                </Button>
               	</div>
               </SignInButton>
+    },
+    {
+      name: "upgrade",
+      href: "/pricing",
+      auth: true,
+      content: <div className="flex">
+        <Button
+          asChild
+          className="hidden lg:flex cursor-pointer"
+          onClick={() => track('Upgrade', { location: 'nav' })}
+        >
+          <Link href={`/${locale}/pricing`}>{t('navigation.upgrade')}</Link>
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          className="flex lg:hidden cursor-pointer"
+          onClick={() => track('Upgrade', { location: 'nav' })}
+        >
+          <Link href={`/${locale}/pricing`} aria-label={t('navigation.upgrade')}><Sparkles /></Link>
+        </Button>
+      </div>
     },
     {
       name: "user",

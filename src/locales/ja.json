@@ -17,6 +17,7 @@
     "save": "保存",
     "cancel": "キャンセル",
     "delete": "削除",
+    "remove": "解除",
     "loading": "読み込み中...",
     "error": "エラー",
     "success": "成功",
@@ -60,7 +61,8 @@
     "saving": "保存中...",
     "decline": "拒否",
     "friendRequest": "フレンドリクエスト",
-    "reverseOrder": "逆順"
+    "reverseOrder": "逆順",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "ホーム",
@@ -74,7 +76,8 @@
     "privacy": "プライバシーポリシー",
     "locale": "言語",
     "blog": "ブログ",
-    "agenda": "アジェンダ"
+    "agenda": "アジェンダ",
+    "upgrade": "アップグレード"
   },
   "dashboard": {
     "title": "あなたの人生を一目で。",
@@ -125,11 +128,14 @@
         "FRIENDS": "友達",
         "CLOSE_FRIENDS": "親しい友達",
         "PUBLIC": "公開",
-        "AI_ENABLED": "AI有効"
+        "AI_ENABLED": "AI有効",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "ノートを公開",
       "publishing": "公開中...",
-      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。"
+      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI分析を有効にする"
     },
     "thirdParty": {
       "title": "サードパーティ",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "委任されたアナリストを追加",
       "adding": "追加中...",
       "addError": "委任されたアナリストを追加できませんでした",
-      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。"
+      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "準備完了",
       "open": "オープン",
       "done": "完了",
-      "ignored": "無視"
+      "ignored": "無視",
+      "completed": "Completed"
     },
     "edit": "編集",
     "loadingForDate": "選択した日付のタスクを読み込んでいます...",
     "initializingTasks": "タスクを設定しています...",
-    "noTasksForDate": "この日付にスケジュールされたタスクはありません"
+    "noTasksForDate": "この日付にスケジュールされたタスクはありません",
+    "delete": "削除...",
+    "deleteTitle": "タスクを削除",
+    "deleteDescription": "このタスクのどの範囲を削除しますか？",
+    "deleteScopes": {
+      "today": "今日のみ",
+      "onwards": "今日以降",
+      "all": "すべてのエントリ"
+    },
+    "requestTitle": "作業を依頼",
+    "requestDescription": "このタスクを引き受けたい理由を説明してください。リストのオーナーが確認します。",
+    "submitTitle": "作業を提出",
+    "resubmitTitle": "修正して再提出",
+    "submitDescription": "作業の証拠を投稿してください。まもなく写真や動画を添付できるようになります。",
+    "reviewTitle": "作業を確認",
+    "reviewDescription": "作業を承認、変更を依頼、または却下します。",
+    "justificationLabel": "理由",
+    "justificationPlaceholder": "なぜこのタスクを行うべきですか？",
+    "evidenceLabel": "証拠 / メモ",
+    "evidencePlaceholder": "何をしたか説明してください...",
+    "selfReviewLabel": "自己評価（0-100）",
+    "managerReviewLabel": "確認スコア（0-100）",
+    "reviewNoteLabel": "フィードバック（任意）",
+    "sendRequest": "依頼を送信",
+    "resubmit": "再提出",
+    "submit": "提出",
+    "accept": "承認",
+    "requestChanges": "変更を依頼",
+    "reject": "却下",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "設定",
@@ -199,7 +263,9 @@
     "expectedNeedUtilities": "期待される必要公共料金の平均",
     "editAction": "アクションを編集",
     "save": "保存",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "currency": "通貨",
+    "selectCurrency": "通貨を選択"
   },
   "social": {
     "title": "ソーシャルコンタクト",
@@ -300,7 +366,8 @@
     "cookies": "私たちはクッキーを使用しており、このアプリを使用することでそれに同意します。",
     "code": "コード",
     "terms": "利用規約",
-    "privacy": "プライバシーポリシー"
+    "privacy": "プライバシーポリシー",
+    "pricing": "料金"
   },
   "earningsTable": {
     "day": "日",
@@ -346,7 +413,8 @@
     "getInsights": "気分、習慣について質問したり、パーソナライズされたインサイトを取得したりできます",
     "placeholder": "チャットしましょう...",
     "error": "申し訳ありません。エラーが発生しました。再試行してください。",
-    "failedToSend": "メッセージの送信に失敗しました。再試行してください。"
+    "failedToSend": "メッセージの送信に失敗しました。再試行してください。",
+    "model": "Model"
   },
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
@@ -553,7 +621,34 @@
       "addTask": "タスクを追加",
       "cancel": "キャンセル",
       "editTitle": "タスクを編集",
-      "saveTask": "タスクを保存"
+      "saveTask": "タスクを保存",
+      "premiumLabel": "プレミアム（任意）",
+      "premiumPercentHint": "リスト予算の割合",
+      "cadenceLabel": "繰り返し",
+      "cadence": {
+        "none": "繰り返さない",
+        "daily": "毎日",
+        "weekly": "毎週",
+        "monthly": "毎月",
+        "yearly": "毎年",
+        "every": "ごとに",
+        "day": "日",
+        "days": "日",
+        "week": "週間",
+        "weeks": "週間",
+        "month": "か月",
+        "months": "か月",
+        "year": "年",
+        "years": "年",
+        "onDay": "日にち",
+        "onThe": "第",
+        "inMonth": "月に",
+        "ends": "終了",
+        "never": "なし",
+        "after": "回後",
+        "onDate": "日付で",
+        "occurrences": "回"
+      }
     },
     "addListForm": {
       "titleCreate": "新しいリストを作成",
@@ -609,12 +704,24 @@
       },
       "areaDistributionLabel": "エリア予算",
       "areaPrizeDistributionLabel": "エリア賞金",
+      "areaPremiumDistributionLabel": "エリア別賞金配分",
       "categoryDistributionLabel": "カテゴリ予算",
       "categoryPrizeDistributionLabel": "カテゴリ賞金",
+      "categoryPremiumDistributionLabel": "カテゴリ別賞金配分",
       "taskDistributionLabel": "予算",
       "premiumLabel": "賞金",
       "totalLabel": "合計",
-      "addTaskTitle": "タスク追加"
+      "addTaskTitle": "タスク追加",
+      "editTitle": "リストを編集",
+      "visibilityLabel": "公開範囲",
+      "collaboratorsPlaceholder": "友達を検索...",
+      "budgetSourcesLabel": "あなたの予算の割合：",
+      "noBudgets": "まだ予算がありません — 下で追加してください。",
+      "newBudgetName": "予算名",
+      "confirmDelete": "このリストとすべてのタスクを削除しますか？取り消せません。",
+      "delete": "削除",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "新しいテンプレートを作成",
@@ -679,6 +786,36 @@
       "after": "後",
       "pickDate": "日付を選択",
       "occurrences": "回"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -714,7 +851,15 @@
     "notice": "このアプリでは現在、実際の資金は管理されていません。Dupip Investはまだ計画段階にあります。これはデモンストレーション目的のテスト環境です。",
     "consentTitle": "投資デモの同意",
     "consentCheckbox": "Dupipはまだ投資プラットフォームではないことを認識し、この機能を使用することで、Dupip Investの正式リリース前にすべてのデータが削除される可能性があることを理解しています。",
-    "confirm": "確認"
+    "confirm": "確認",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT生成が完了しました。",
@@ -879,7 +1024,10 @@
         "submitted": "作業がレビュー用に提出されました",
         "resubmitted": "作業がレビュー用に再提出されました"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "メモが正常に更新されました",
@@ -889,6 +1037,7 @@
     "deleting": "削除中...",
     "confirmDelete": "このメモを削除してもよろしいですか？",
     "content": "メモの内容",
+    "recipient": "受取人",
     "visibilityUpdated": "表示設定が正常に更新されました",
     "visibilityUpdateFailed": "表示設定の更新に失敗しました",
     "changeVisibility": "表示設定を変更",
@@ -897,7 +1046,17 @@
       "date": "日付",
       "mostRelevant": "最も関連性が高い",
       "all": "すべて"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "チャット",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "この組織に友達を招待",
     "inviteLinkCopied": "招待リンクをコピーしました",
     "inviteSent": "招待を送信しました",
-    "inviteAccepted": "招待を承認しました"
+    "inviteAccepted": "招待を承認しました",
+    "sidebar": {
+      "directMessages": "ダイレクトメッセージ",
+      "organizations": "組織",
+      "sms": "SMS",
+      "virtualNumber": "仮想番号",
+      "searchDmPlaceholder": "DMを始める友達を検索",
+      "createChannelPlaceholder": "チャンネルを作成",
+      "createOrgPlaceholder": "組織を作成",
+      "refresh": "更新",
+      "noOrgs": "組織はまだありません",
+      "noDms": "ダイレクトメッセージはまだありません"
+    },
+    "virtualNumber": {
+      "label": "バーチャル番号",
+      "hint": "電話番号を選んでください。これらの番号に届くSMSがチャットに表示されます。",
+      "none": "番号なし",
+      "loading": "番号を読み込み中…",
+      "empty": "利用できる番号がありません",
+      "error": "番号を読み込めませんでした",
+      "assignError": "この番号を保存できませんでした",
+      "assigned": "番号を割り当てました",
+      "cleared": "番号を削除しました",
+      "addNumber": "番号を追加…",
+      "removeNumber": "番号を削除",
+      "quotaLabel": "{quota}件中{used}件使用中",
+      "limitReached": "プランの仮想番号の上限に達しました",
+      "buyCta": "仮想番号を購入",
+      "gateHint": "仮想番号にはDonatorプランが必要です。チャットでSMSを受け取るには番号を購入してください。",
+      "buyDialogTitle": "Donatorプランが必要です",
+      "buyDialogDescription": "仮想番号はDonatorプランに含まれています。料金ページでプランを選択して始めましょう。",
+      "buyDialogGoToPricing": "料金ページへ"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMSを読み込み中…",
+      "empty": "SMSの会話はまだありません",
+      "noNumberHint": "ここでSMSを受信するにはバーチャル番号を割り当ててください",
+      "composerPlaceholder": "SMSを入力…",
+      "sendError": "このメッセージを送信できませんでした",
+      "you": "あなた",
+      "statusSent": "送信済み",
+      "statusDelivered": "配信済み",
+      "statusFailed": "失敗",
+      "error": "SMSを読み込めませんでした"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "高密度",
       "small": "小",
       "wide": "広い"
+    }
+  },
+  "pricing": {
+    "metaTitle": "料金",
+    "metaDescription": "Dupipは、ウェルビーイングを使命とするウェブラジオとしてヨーロッパで登録されています。私たちの成長を支えるため、寄付者には特典をご用意しています。プランとDPIPの仕組みをご覧ください。",
+    "heroTitle": "ラジオの再発明",
+    "heroSubtitle": "Dupipは、ウェルビーイングというシンプルな挑戦を軸に作られています。あなたの最高を引き出す周波数を探しています。",
+    "siaeTitle": "音楽ライセンスに関する注記",
+    "plansTitle": "プラン",
+    "plansDescription": "あなたの聴き方に合うプランを選んでください。",
+    "dpipTitle": "DPIPについて",
+    "dpipBody": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。",
+    "consentTitle": "DPIPへの同意",
+    "consentCheckbox": "DPIPに金銭的価値がない可能性があること（現在も将来も）を理解し、これに同意します。",
+    "consentSignedOut": "DPIPの同意を確認してプランをご覧になるには、サインインしてください。",
+    "signInToConsent": "サインイン",
+    "consentSaved": "同意を記録しました: {date}",
+    "saveConsent": "同意を保存",
+    "dpipNoValue": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。",
+    "consentDescription": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。 プランをご覧いただく前に、以下をご確認のうえ同意してください:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

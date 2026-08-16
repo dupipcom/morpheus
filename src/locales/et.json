@@ -17,6 +17,7 @@
     "save": "Salvesta",
     "cancel": "Tühista",
     "delete": "Kustuta",
+    "remove": "Eemalda",
     "loading": "Laadimine...",
     "error": "Viga",
     "success": "Edu",
@@ -60,7 +61,8 @@
     "saving": "Salvestamine...",
     "decline": "Lükka tagasi",
     "friendRequest": "Sõbrakutse",
-    "reverseOrder": "Pööratud järjekord"
+    "reverseOrder": "Pööratud järjekord",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Avaleht",
@@ -74,7 +76,8 @@
     "privacy": "Privaatsuspoliitika",
     "locale": "Keel",
     "blog": "Blogi",
-    "agenda": "Päevakord"
+    "agenda": "Päevakord",
+    "upgrade": "Täienda"
   },
   "dashboard": {
     "title": "Sinu elu ühe pilguga.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Sõbrad",
         "CLOSE_FRIENDS": "Lähedased sõbrad",
         "PUBLIC": "Avalik",
-        "AI_ENABLED": "AI lubatud"
+        "AI_ENABLED": "AI lubatud",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Avalda märkme",
       "publishing": "Avaldamine...",
-      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link."
+      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Luba AI analüüs"
     },
     "thirdParty": {
       "title": "Kolmas osapool",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Lisa delegeeritud analüütik",
       "adding": "Lisamine...",
       "addError": "Delegeeritud analüütiku lisamine ei õnnestunud",
-      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand."
+      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "Valmis",
       "open": "Avatud",
       "done": "Tehtud",
-      "ignored": "Ignoreeritud"
+      "ignored": "Ignoreeritud",
+      "completed": "Completed"
     },
     "edit": "Muuda",
     "loadingForDate": "Ülesannete laadimine valitud kuupäevale...",
     "initializingTasks": "Ülesannete seadistamine...",
-    "noTasksForDate": "Sellel kuupäeval pole ülesandeid planeeritud"
+    "noTasksForDate": "Sellel kuupäeval pole ülesandeid planeeritud",
+    "delete": "Kustuta...",
+    "deleteTitle": "Kustuta ülesanne",
+    "deleteDescription": "Kui palju sellest ülesandest soovid kustutada?",
+    "deleteScopes": {
+      "today": "Ainult täna",
+      "onwards": "Alates tänasest",
+      "all": "Kõik kanded"
+    },
+    "requestTitle": "Taotle tööd",
+    "requestDescription": "Selgita, miks soovid selle ülesande vastu võtta. Nimekirja omanik vaatab taotluse üle.",
+    "submitTitle": "Esita töö",
+    "resubmitTitle": "Paranda ja esita uuesti",
+    "submitDescription": "Postita tõend oma tööst. Peagi saab lisada foto või video.",
+    "reviewTitle": "Vaata töö üle",
+    "reviewDescription": "Kinnita töö, küsi muudatusi või lükka tagasi.",
+    "justificationLabel": "Põhjendus",
+    "justificationPlaceholder": "Miks peaksid selle ülesande tegema?",
+    "evidenceLabel": "Tõend / märge",
+    "evidencePlaceholder": "Kirjelda, mida tegid...",
+    "selfReviewLabel": "Enesehinnang (0-100)",
+    "managerReviewLabel": "Ülevaatuse skoor (0-100)",
+    "reviewNoteLabel": "Tagasiside (valikuline)",
+    "sendRequest": "Saada taotlus",
+    "resubmit": "Esita uuesti",
+    "submit": "Esita",
+    "accept": "Kinnita",
+    "requestChanges": "Küsi muudatusi",
+    "reject": "Lükka tagasi",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Jõi vett",
@@ -243,7 +307,8 @@
     "cookies": "Me kasutame küpsiseid ja selle rakenduse kasutamisega nõustute sellega.",
     "code": "Kood",
     "terms": "Kasutustingimused",
-    "privacy": "Privaatsuspoliitika"
+    "privacy": "Privaatsuspoliitika",
+    "pricing": "Hinnad"
   },
   "earningsTable": {
     "day": "Päev",
@@ -329,7 +394,9 @@
     "expectedNeedUtilities": "Oodatav vajaduste kommunaalkulude keskmine",
     "editAction": "Redigeeri tegevust",
     "save": "Salvesta",
-    "cancel": "Tühista"
+    "cancel": "Tühista",
+    "currency": "Valuuta",
+    "selectCurrency": "Vali valuuta"
   },
   "agentChat": {
     "thinking": "Mõtlen...",
@@ -337,7 +404,8 @@
     "getInsights": "Küsi oma tuju, harjumuste kohta või saa personaliseeritud teadmisi",
     "placeholder": "Räägime...",
     "error": "Vabandust, kohtasin viga. Palun proovi uuesti.",
-    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
+    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Alusta oma Dupip teekonda",
@@ -536,7 +604,34 @@
       "addTask": "Lisa ülesanne",
       "cancel": "Tühista",
       "editTitle": "Muuda ülesannet",
-      "saveTask": "Salvesta ülesanne"
+      "saveTask": "Salvesta ülesanne",
+      "premiumLabel": "Preemia (valikuline)",
+      "premiumPercentHint": "Protsent nimekirja eelarvest",
+      "cadenceLabel": "Kordub",
+      "cadence": {
+        "none": "Ei kordu",
+        "daily": "Iga päev",
+        "weekly": "Iga nädal",
+        "monthly": "Iga kuu",
+        "yearly": "Iga aasta",
+        "every": "Iga",
+        "day": "päev",
+        "days": "päeva",
+        "week": "nädal",
+        "weeks": "nädalat",
+        "month": "kuu",
+        "months": "kuud",
+        "year": "aasta",
+        "years": "aastat",
+        "onDay": "Päeval",
+        "onThe": "",
+        "inMonth": "Kuus",
+        "ends": "Lõpeb",
+        "never": "Mitte kunagi",
+        "after": "Pärast",
+        "onDate": "Kuupäeval",
+        "occurrences": "korda"
+      }
     },
     "addListForm": {
       "titleCreate": "Loo uus nimekiri",
@@ -592,12 +687,24 @@
       },
       "areaDistributionLabel": "Valdkonna eelarve",
       "areaPrizeDistributionLabel": "Valdkonna auhind",
+      "areaPremiumDistributionLabel": "Auhindade jaotus valdkonna järgi",
       "categoryDistributionLabel": "Kategooria eelarve",
       "categoryPrizeDistributionLabel": "Kategooria auhind",
+      "categoryPremiumDistributionLabel": "Auhindade jaotus kategooria järgi",
       "taskDistributionLabel": "Eelarve",
       "premiumLabel": "Auhind",
       "totalLabel": "Kokku",
-      "addTaskTitle": "Lisa ülesanne"
+      "addTaskTitle": "Lisa ülesanne",
+      "editTitle": "Muuda nimekirja",
+      "visibilityLabel": "Nähtavus",
+      "collaboratorsPlaceholder": "Otsi sõpru...",
+      "budgetSourcesLabel": "Protsent sinu eelarvetest:",
+      "noBudgets": "Eelarveid veel pole — lisa üks allpool.",
+      "newBudgetName": "Eelarve nimi",
+      "confirmDelete": "Kustutada see nimekiri ja kõik selle ülesanded? Seda ei saa tagasi võtta.",
+      "delete": "Kustuta",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Loo uus mall",
@@ -662,6 +769,36 @@
       "after": "Pärast",
       "pickDate": "Vali kuupäev",
       "occurrences": "korda"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -714,7 +851,15 @@
     "notice": "Selles rakenduses ei hallata praegu tegelikke rahasid. Dupip Invest on veel planeerimisfaasis. See on ainult testimiskeskkond demonstratsioonieesmärgil.",
     "consentTitle": "Investeeringu Demo Nõusolek",
     "consentCheckbox": "Tunnistan, et Dupip ei ole veel investeerimisplatvorm ja et selle funktsiooni kasutades olen teadlik, et kõik minu andmed võivad enne Dupip Investi ametlikku käivitamist kustutada.",
-    "confirm": "Kinnita"
+    "confirm": "Kinnita",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT genereerimine lõpetatud.",
@@ -879,7 +1024,10 @@
         "submitted": "Töö esitatud ülevaatuseks",
         "resubmitted": "Töö uuesti esitatud ülevaatuseks"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Märkus edukalt uuendatud",
@@ -889,6 +1037,7 @@
     "deleting": "Kustutamine...",
     "confirmDelete": "Kas olete kindel, et soovite selle märkuse kustutada?",
     "content": "Märkuse sisu",
+    "recipient": "Saaja",
     "visibilityUpdated": "Nähtavus edukalt uuendatud",
     "visibilityUpdateFailed": "Nähtavuse uuendamine ebaõnnestus",
     "changeVisibility": "Muuda nähtavust",
@@ -897,7 +1046,17 @@
       "date": "Kuupäev",
       "mostRelevant": "Asjakohaseimad",
       "all": "Kõik"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Vestlus",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "Kutsu sõber sellesse organisatsiooni",
     "inviteLinkCopied": "Kutselink kopeeritud",
     "inviteSent": "Kutse saadetud",
-    "inviteAccepted": "Kutse vastu võetud"
+    "inviteAccepted": "Kutse vastu võetud",
+    "sidebar": {
+      "directMessages": "Otsesõnumid",
+      "organizations": "Organisatsioonid",
+      "sms": "SMS",
+      "virtualNumber": "Virtuaalne number",
+      "searchDmPlaceholder": "Otsi sõpru, et alustada otsesõnumit",
+      "createChannelPlaceholder": "Loo kanal",
+      "createOrgPlaceholder": "Loo organisatsioon",
+      "refresh": "Värskenda",
+      "noOrgs": "Veel pole organisatsioone",
+      "noDms": "Veel pole otsesõnumeid"
+    },
+    "virtualNumber": {
+      "label": "Virtuaalnumber",
+      "hint": "Vali oma telefoninumbrid. Nendele numbritele saabuvad SMS-id kuvatakse sinu vestluses.",
+      "none": "Numbrit pole",
+      "loading": "Numbrite laadimine…",
+      "empty": "Ühtegi numbrit pole saadaval",
+      "error": "Sinu numbreid ei õnnestunud laadida",
+      "assignError": "Seda numbrit ei õnnestunud salvestada",
+      "assigned": "Number määratud",
+      "cleared": "Number eemaldatud",
+      "addNumber": "Lisa number…",
+      "removeNumber": "Eemalda number",
+      "quotaLabel": "Kasutusel {used} numbrit {quota}-st",
+      "limitReached": "Oled jõudnud oma paketi maksimaalse virtuaalnumbrite arvuni",
+      "buyCta": "Osta virtuaalnumber",
+      "gateHint": "Virtuaalnumbrid nõuavad Donatori paketti. Osta number, et saada vestluses SMS-e.",
+      "buyDialogTitle": "Nõutav on Donatori pakett",
+      "buyDialogDescription": "Virtuaalnumbrid sisalduvad Donatori pakettides. Alustamiseks vali pakett hinnalehelt.",
+      "buyDialogGoToPricing": "Mine hindade juurde"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS-ide laadimine…",
+      "empty": "SMS-vestlusi veel pole",
+      "noNumberHint": "Määra virtuaalnumber, et hakata siin SMS-e vastu võtma",
+      "composerPlaceholder": "Kirjuta SMS…",
+      "sendError": "Seda sõnumit ei õnnestunud saata",
+      "you": "Sina",
+      "statusSent": "Saadetud",
+      "statusDelivered": "Kohale toimetatud",
+      "statusFailed": "Nurjus",
+      "error": "SMS-e ei õnnestunud laadida"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "Tihe",
       "small": "Väike",
       "wide": "Lai"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Hinnad",
+    "metaDescription": "Dupip on registreeritud Euroopas veebiraadiona, mille missioon on heaolu. Meie kasvu toetamiseks pakume annetajatele hüvesid. Vaata meie pakette ja kuidas DPIP töötab.",
+    "heroTitle": "Raadio, uuesti kujutatud",
+    "heroSubtitle": "Dupip on üles ehitatud lihtsa väljakutse ümber: heaolu. Otsime sagedusi, mis toovad sinust esile parima.",
+    "siaeTitle": "Märkus muusikalitsentside kohta",
+    "plansTitle": "Paketid",
+    "plansDescription": "Vali pakett, mis sobib sinu kuulamisviisiga.",
+    "dpipTitle": "DPIP-st",
+    "dpipBody": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus.",
+    "consentTitle": "DPIP nõusolek",
+    "consentCheckbox": "Mõistan, et DPIP-l ei pruugi olla rahalist väärtust, ei praegu ega tulevikus, ja nõustun sellega.",
+    "consentSignedOut": "Logi sisse, et vaadata DPIP nõusolek üle ja näha meie pakette.",
+    "signInToConsent": "Logi sisse",
+    "consentSaved": "Nõusolek salvestatud: {date}",
+    "saveConsent": "Salvesta nõusolek",
+    "dpipNoValue": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus.",
+    "consentDescription": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus. Enne meie pakettide vaatamist palun vaata üle ja kinnita järgmine:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

@@ -17,6 +17,7 @@
     "save": "Fipamọ́",
     "cancel": "Fagilé",
     "delete": "Pa",
+    "remove": "Yọ kúrò",
     "loading": "Ó ń gbé...",
     "error": "Àṣìṣe",
     "success": "Àṣeyọrí",
@@ -60,7 +61,8 @@
     "saving": "N fipamọ...",
     "decline": "Kọ",
     "friendRequest": "Ibeere ọrẹ",
-    "reverseOrder": "Yi ọna pada"
+    "reverseOrder": "Yi ọna pada",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Ilé",
@@ -74,7 +76,8 @@
     "privacy": "Ìlànà Ìpamọ́",
     "locale": "Èdè",
     "blog": "Blog",
-    "agenda": "Àkójọ"
+    "agenda": "Àkójọ",
+    "upgrade": "Igbega"
   },
   "dashboard": {
     "title": "Ìgbésí ayé rẹ̀ ní ìwojú kan.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Àwọn ọ̀rẹ́",
         "CLOSE_FRIENDS": "Àwọn ọ̀rẹ́ tímọ́tímọ́",
         "PUBLIC": "Gbogbo ènìyàn",
-        "AI_ENABLED": "AI tí ó ń ṣiṣẹ́"
+        "AI_ENABLED": "AI tí ó ń ṣiṣẹ́",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Tẹ àkọsílẹ̀ jáde",
       "publishing": "Nigbagbọgbọ...",
-      "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ."
+      "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Mú ìtúpalẹ̀ AI ṣiṣẹ́"
     },
     "thirdParty": {
       "title": "Ẹgbẹ́ kẹta",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Ṣafikun olùtúpalẹ aṣojú",
       "adding": "Ń ṣafikun...",
       "addError": "Kò le ṣafikun olùtúpalẹ aṣojú",
-      "invitationDraft": "A ti pèsè àkọsílẹ ìpè fún ímeèlì yìí."
+      "invitationDraft": "A ti pèsè àkọsílẹ ìpè fún ímeèlì yìí.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "Tán",
       "open": "Ṣíṣi",
       "done": "Ti Parí",
-      "ignored": "Ti Kọjú"
+      "ignored": "Ti Kọjú",
+      "completed": "Completed"
     },
     "edit": "Ṣatunkọ",
     "loadingForDate": "Mimu awọn iṣẹ-ṣiṣe fun ọjọ ti a yan...",
     "initializingTasks": "Ṣiṣeto awọn iṣẹ-ṣiṣe rẹ...",
-    "noTasksForDate": "Ko si awọn iṣẹ-ṣiṣe ti a ṣeto fun ọjọ yii"
+    "noTasksForDate": "Ko si awọn iṣẹ-ṣiṣe ti a ṣeto fun ọjọ yii",
+    "delete": "Pa rẹ́...",
+    "deleteTitle": "Pa iṣẹ́ rẹ́",
+    "deleteDescription": "Ewo ni iye iṣẹ́ yii ti o fẹ́ pa rẹ́?",
+    "deleteScopes": {
+      "today": "Òní nìkan",
+      "onwards": "Láti òní lọ",
+      "all": "Gbogbo àwọn àkọsílẹ̀"
+    },
+    "requestTitle": "Béèrè iṣẹ́",
+    "requestDescription": "Ṣàlàyé ìdí tí o fi fẹ́ gba iṣẹ́ yii. Oní àkọjọ náà yóò ṣàtúnyẹ̀wò ìbéèrè rẹ.",
+    "submitTitle": "Fi iṣẹ́ sílẹ̀",
+    "resubmitTitle": "Ṣàtúnṣe kí o fi sílẹ̀ lẹ́ẹ̀kan sí i",
+    "submitDescription": "Fi ẹ̀rí iṣẹ́ rẹ sílẹ̀. Láìpẹ́ o lè fi fọ́tò tàbí fídíò kun.",
+    "reviewTitle": "Ṣàtúnyẹ̀wò iṣẹ́",
+    "reviewDescription": "Gba iṣẹ́ náà, béèrè àwọn àyípadà tàbí kọ̀ ọ́.",
+    "justificationLabel": "Ìdáláre",
+    "justificationPlaceholder": "Kí nìdí tí o fi gbọ́dọ̀ ṣe iṣẹ́ yii?",
+    "evidenceLabel": "Ẹ̀rí / àkọsílẹ̀",
+    "evidencePlaceholder": "Ṣàlàyé ohun tí o ṣe...",
+    "selfReviewLabel": "Àtúnyẹ̀wò ara ẹni (0-100)",
+    "managerReviewLabel": "Ipa àtúnyẹ̀wò (0-100)",
+    "reviewNoteLabel": "Ìdáhùn (àṣàyàn)",
+    "sendRequest": "Fi ìbéèrè ránṣẹ́",
+    "resubmit": "Fi sílẹ̀ lẹ́ẹ̀kan sí i",
+    "submit": "Fi sílẹ̀",
+    "accept": "Gba",
+    "requestChanges": "Béèrè àwọn àyípadà",
+    "reject": "Kọ̀",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "Ètò",
@@ -200,7 +264,9 @@
     "expectedNeedUtilities": "Ìwọ̀n Ìnáwó Ìbẹ̀rù Tí A Rètí",
     "editAction": "Ṣàtúnṣe ìṣẹ́",
     "cancel": "Fagilé",
-    "save": "Fipamọ́"
+    "save": "Fipamọ́",
+    "currency": "Owó",
+    "selectCurrency": "Yan owó"
   },
   "actions": {
     "drankWater": "Mu omi",
@@ -261,7 +327,8 @@
     "cookies": "A ń lo kúkì, àti nípasẹ̀ lílo app yìí o gbà.",
     "code": "Koodu",
     "terms": "Àwọn Òfin Ìṣẹ́",
-    "privacy": "Ìlànà Ìpamọ́"
+    "privacy": "Ìlànà Ìpamọ́",
+    "pricing": "Iye owó"
   },
   "earningsTable": {
     "day": "Ọjọ́",
@@ -344,7 +411,8 @@
     "getInsights": "Béèrè nípa ìwà rẹ̀, àwọn ìhùwà rẹ̀ tàbí gba ìmọ̀ tí ó jẹ́ ti ara rẹ̀",
     "placeholder": "Jẹ́ ká sọrọ...",
     "error": "Ẹ má bínú, mo rí àṣìṣe kan. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
-    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i."
+    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
@@ -551,7 +619,34 @@
       "addTask": "Fi Iṣẹ́ kún",
       "cancel": "Fagilé",
       "editTitle": "Ṣatunkọ iṣẹ",
-      "saveTask": "Fi iṣẹ pamọ"
+      "saveTask": "Fi iṣẹ pamọ",
+      "premiumLabel": "Ẹ̀bùn (àṣàyàn)",
+      "premiumPercentHint": "Ìpín ọgọ́rùn-ún ti ìnáwó àkọjọ",
+      "cadenceLabel": "Ń tun ṣe",
+      "cadence": {
+        "none": "Kìí tun ṣe",
+        "daily": "Lójoojúmọ́",
+        "weekly": "Lọ́sọ̀ọ̀sẹ̀",
+        "monthly": "Lósooṣù",
+        "yearly": "Lọ́dọọdún",
+        "every": "Gbogbo",
+        "day": "ọjọ́",
+        "days": "ọjọ́",
+        "week": "ọ̀sẹ̀",
+        "weeks": "ọ̀sẹ̀",
+        "month": "oṣù",
+        "months": "oṣù",
+        "year": "ọdún",
+        "years": "ọdún",
+        "onDay": "Ní ọjọ́",
+        "onThe": "",
+        "inMonth": "Nínú oṣù",
+        "ends": "Ó parí",
+        "never": "Kò sí rárá",
+        "after": "Lẹ́yìn",
+        "onDate": "Ní ọjọ́",
+        "occurrences": "ìgbà"
+      }
     },
     "addListForm": {
       "titleCreate": "Ṣẹ̀dá Àkójọ Tuntun",
@@ -607,12 +702,24 @@
       },
       "areaDistributionLabel": "Isuna agbegbe",
       "areaPrizeDistributionLabel": "Ẹbun agbegbe",
+      "areaPremiumDistributionLabel": "Pínpín ẹ̀bùn nípa agbègbè",
       "categoryDistributionLabel": "Isuna ẹka",
       "categoryPrizeDistributionLabel": "Ẹbun ẹka",
+      "categoryPremiumDistributionLabel": "Pínpín ẹ̀bùn nípa ẹ̀ka",
       "taskDistributionLabel": "Isuna",
       "premiumLabel": "Ẹbun",
       "totalLabel": "Lapapọ",
-      "addTaskTitle": "Fi iṣẹ kun"
+      "addTaskTitle": "Fi iṣẹ kun",
+      "editTitle": "Ṣàtúnṣe àkọjọ",
+      "visibilityLabel": "Ìhàn",
+      "collaboratorsPlaceholder": "Wá àwọn ọ̀rẹ́...",
+      "budgetSourcesLabel": "Ìpín ọgọ́rùn-ún ti àwọn ìnáwó rẹ:",
+      "noBudgets": "Kò sí ìnáwó síbẹ̀síbẹ̀ — fi ọ̀kan kún ní ìsàlẹ̀.",
+      "newBudgetName": "Orúkọ ìnáwó",
+      "confirmDelete": "Pa àkọjọ yii àti gbogbo àwọn iṣẹ́ rẹ̀ rẹ́? Kò ṣeé yí padà.",
+      "delete": "Pa rẹ́",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Ṣẹ̀dá Àwòwé Tuntun",
@@ -677,6 +784,36 @@
       "after": "Lẹ́yìn",
       "pickDate": "Yan ọjọ́",
       "occurrences": "ìgbà"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -712,7 +849,15 @@
     "notice": "Ko si owo ti ooto ti a n ṣakoso ni bayi ni app yii. Dupip Invest tun ti o wa ni ipolongo. Eyi jẹ ibi idanwo nikan fun awọn idi ifihan.",
     "consentTitle": "Igbasilẹ Demo Ifowopamọ",
     "consentCheckbox": "Mo jẹwo pe Dupip ko jẹ ibi ifowopamọ sibẹsibẹ, ati pe nipa lilo ẹya yii, mo mọ pe gbogbo data mi le jẹ pa kuro ṣaaju ifilọlẹ ofisiali ti Dupip Invest.",
-    "confirm": "Jẹrisi"
+    "confirm": "Jẹrisi",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Iṣẹda NFT ti pari.",
@@ -877,7 +1022,10 @@
         "submitted": "A ti fi iṣẹ́ ránṣẹ́ fún àyẹ̀wò",
         "resubmitted": "A ti fi iṣẹ́ ránṣẹ́ padà fún àyẹ̀wò"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Akọsilẹ ti ni imudojuiwọn ni aṣeyọri",
@@ -887,6 +1035,7 @@
     "deleting": "Npaarẹ...",
     "confirmDelete": "Ṣe o da ọ loju pe o fẹ paarẹ akọsilẹ yii?",
     "content": "Akoonu akọsilẹ",
+    "recipient": "Olùgbà",
     "visibilityUpdated": "Iranwo ti ni imudojuiwọn ni aṣeyọri",
     "visibilityUpdateFailed": "Ko ṣe imudojuiwọn iranwo",
     "changeVisibility": "Ṣe iyipada iranwo",
@@ -895,7 +1044,17 @@
       "date": "Ọjọ",
       "mostRelevant": "Pẹlu ibatan julọ",
       "all": "Gbogbo"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Ifọrọwanilẹnuwo",
@@ -911,7 +1070,52 @@
     "inviteFriendToOrg": "Pe ọrẹ wa si ajọ yii",
     "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
     "inviteSent": "Ìdẹ ti fi ranṣẹ",
-    "inviteAccepted": "Ìdẹ ti gba"
+    "inviteAccepted": "Ìdẹ ti gba",
+    "sidebar": {
+      "directMessages": "Awọn ifiranṣẹ taara",
+      "organizations": "Awọn agbari",
+      "sms": "SMS",
+      "virtualNumber": "Nọmba foju",
+      "searchDmPlaceholder": "Wa awọn ọrẹ lati bẹrẹ DM kan",
+      "createChannelPlaceholder": "Ṣẹda ikanni",
+      "createOrgPlaceholder": "Ṣẹda agbari",
+      "refresh": "Sọ di tuntun",
+      "noOrgs": "Ko si agbari sibẹsibẹ",
+      "noDms": "Ko si ifiranṣẹ taara sibẹsibẹ"
+    },
+    "virtualNumber": {
+      "label": "Nọ́mbà àkànṣe",
+      "hint": "Yan àwọn nọ́mbà fóònù rẹ. Àwọn SMS tó dé sí àwọn nọ́mbà yìí yóò hàn nínú ìjíròrò rẹ.",
+      "none": "Kò sí nọ́mbà",
+      "loading": "Ń kó nọ́mbà…",
+      "empty": "Kò sí nọ́mbà tó wà",
+      "error": "Kò ṣeé ṣe láti kó àwọn nọ́mbà rẹ",
+      "assignError": "Kò ṣeé ṣe láti fipamọ́ nọ́mbà yìí",
+      "assigned": "A ti fi nọ́mbà sí",
+      "cleared": "A ti yọ nọ́mbà kúrò",
+      "addNumber": "Fi nọ́mbà kún…",
+      "removeNumber": "Yọ nọ́mbà kúrò",
+      "quotaLabel": "{used} nínú {quota} nọ́mbà ti jẹ́ lílò",
+      "limitReached": "O ti dé iye nọ́mbà aláìníyè tó pọ̀ jù fún ètò rẹ",
+      "buyCta": "Ra nọ́mbà aláìníyè",
+      "gateHint": "Àwọn nọ́mbà aláìníyè ń béèrè ètò Donator. Ra nọ́mbà kan láti gba SMS nínú ìjíròrò.",
+      "buyDialogTitle": "A ń béèrè ètò Donator",
+      "buyDialogDescription": "Àwọn nọ́mbà aláìníyè wà nínú àwọn ètò Donator. Yan ètò kan ní ojú-ìwé iye owó láti bẹ̀rẹ̀.",
+      "buyDialogGoToPricing": "Lọ sí iye owó"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Ń kó SMS…",
+      "empty": "Kò sí ìjíròrò SMS kankan",
+      "noNumberHint": "Fi nọ́mbà àkànṣe sí láti bẹ̀rẹ̀ sí gba SMS níbí",
+      "composerPlaceholder": "Kọ SMS…",
+      "sendError": "Kò ṣeé ṣe láti fi ìfiránṣẹ́ yìí ránṣẹ́",
+      "you": "Ìwọ",
+      "statusSent": "A ti fi ránṣẹ́",
+      "statusDelivered": "Ó ti dé",
+      "statusFailed": "Kùnà",
+      "error": "Kò ṣeé ṣe láti kó SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -919,6 +1123,79 @@
       "tight": "Dín",
       "small": "Kékèké",
       "wide": "Fẹ́"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Iye owó",
+    "metaDescription": "Dupip ti forukọsilẹ ni Yuroopu gẹgẹbi redio ayelujara pẹlu iṣẹ apinfunni alafia. Lati ṣe atilẹyin fun idagbasoke wa, a n funni ni awọn anfani fun awọn olùrànwọ. Wo awọn eto wa ati bii DPIP ṣe n ṣiṣẹ.",
+    "heroTitle": "Redio, ti a tun ronu",
+    "heroSubtitle": "Dupip ni a kọ ni ayika ipenija ti o rọrun: alafia. A n wa awọn igbohunsafẹfẹ ti o mu ohun ti o dara julọ jade ninu rẹ.",
+    "siaeTitle": "Akọsilẹ kan nipa iwe-aṣẹ orin",
+    "plansTitle": "Awọn eto",
+    "plansDescription": "Yan eto ti o baamu bi o ṣe n gbọ.",
+    "dpipTitle": "Nipa DPIP",
+    "dpipBody": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju.",
+    "consentTitle": "Ifọwọsi DPIP",
+    "consentCheckbox": "Mo loye pe DPIP le ma ni iye owo kankan, ni bayi tabi ni ọjọ iwaju, ati pe mo gba eyi.",
+    "consentSignedOut": "Wọle lati ṣayẹwo ifọwọsi DPIP ati lati wo awọn eto wa.",
+    "signInToConsent": "Wọle",
+    "consentSaved": "Ifọwọsi ti gbasilẹ ni {date}",
+    "saveConsent": "Fipamọ ifọwọsi",
+    "dpipNoValue": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju.",
+    "consentDescription": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju. Ṣaaju wiwo awọn eto wa, jọwọ ṣayẹwo ki o jẹrisi atẹle naa:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

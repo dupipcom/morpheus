@@ -3,7 +3,7 @@
  * Shared types for visibility-aware queries and profile enrichment
  */
 
-export type VisibilityLevel = 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'PUBLIC' | 'HIDDEN' | 'AI_ENABLED'
+export type VisibilityLevel = 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'PUBLIC' | 'HIDDEN' | 'AI_ENABLED' | 'DOC_ENABLED'
 
 export interface CurrentUser {
   id: string

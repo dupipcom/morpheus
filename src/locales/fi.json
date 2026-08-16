@@ -14,6 +14,7 @@
     "save": "Tallenna",
     "cancel": "Peruuta",
     "delete": "Poista",
+    "remove": "Poista",
     "loading": "Ladataan...",
     "error": "Virhe",
     "success": "Onnistui",
@@ -60,7 +61,8 @@
     "saving": "Tallennetaan...",
     "decline": "Hylkää",
     "friendRequest": "Kaveripyyntö",
-    "reverseOrder": "Käänteinen järjestys"
+    "reverseOrder": "Käänteinen järjestys",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -78,7 +80,8 @@
     "privacy": "Tietosuojakäytäntö",
     "locale": "Kieli",
     "blog": "Blogi",
-    "agenda": "Esityslista"
+    "agenda": "Esityslista",
+    "upgrade": "Päivitä"
   },
   "dashboard": {
     "title": "Elämäsi yhdellä silmäyksellä.",
@@ -129,11 +132,14 @@
         "FRIENDS": "Ystävät",
         "CLOSE_FRIENDS": "Läheiset ystävät",
         "PUBLIC": "Julkinen",
-        "AI_ENABLED": "AI käytössä"
+        "AI_ENABLED": "AI käytössä",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Julkaise muistiinpano",
       "publishing": "Julkaistaan...",
-      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki."
+      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Ota AI-analyysi käyttöön"
     },
     "thirdParty": {
       "title": "Kolmas osapuoli",
@@ -151,7 +157,9 @@
       "addDelegatedAnalyst": "Lisää delegoitu analyytikko",
       "adding": "Lisätään...",
       "addError": "Delegoidun analyytikon lisääminen ei onnistunut",
-      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos."
+      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -178,12 +186,68 @@
       "ready": "Valmis",
       "open": "Avoin",
       "done": "Valmis",
-      "ignored": "Sivuutettu"
+      "ignored": "Sivuutettu",
+      "completed": "Completed"
     },
     "edit": "Muokkaa",
     "loadingForDate": "Ladataan tehtäviä valitulle päivämäärälle...",
     "initializingTasks": "Asetetaan tehtäviäsi...",
-    "noTasksForDate": "Tälle päivämäärälle ei ole suunniteltuja tehtäviä"
+    "noTasksForDate": "Tälle päivämäärälle ei ole suunniteltuja tehtäviä",
+    "delete": "Poista...",
+    "deleteTitle": "Poista tehtävä",
+    "deleteDescription": "Kuinka paljon tästä tehtävästä haluat poistaa?",
+    "deleteScopes": {
+      "today": "Vain tänään",
+      "onwards": "Tästä päivästä eteenpäin",
+      "all": "Kaikki merkinnät"
+    },
+    "requestTitle": "Pyydä työtä",
+    "requestDescription": "Kerro, miksi haluat ottaa tämän tehtävän. Listan omistaja tarkistaa pyyntösi.",
+    "submitTitle": "Palauta työ",
+    "resubmitTitle": "Korjaa ja palauta uudelleen",
+    "submitDescription": "Julkaise todiste työstäsi. Pian voit liittää kuvan tai videon.",
+    "reviewTitle": "Tarkista työ",
+    "reviewDescription": "Hyväksy työ, pyydä muutoksia tai hylkää se.",
+    "justificationLabel": "Perustelu",
+    "justificationPlaceholder": "Miksi sinun pitäisi tehdä tämä tehtävä?",
+    "evidenceLabel": "Todiste / muistiinpano",
+    "evidencePlaceholder": "Kuvaile, mitä teit...",
+    "selfReviewLabel": "Itsearviointi (0-100)",
+    "managerReviewLabel": "Arvostelupisteet (0-100)",
+    "reviewNoteLabel": "Palaute (valinnainen)",
+    "sendRequest": "Lähetä pyyntö",
+    "resubmit": "Palauta uudelleen",
+    "submit": "Palauta",
+    "accept": "Hyväksy",
+    "requestChanges": "Pyydä muutoksia",
+    "reject": "Hylkää",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Joi vettä",
@@ -247,7 +311,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Hinnoittelu"
   },
   "earningsTable": {
     "day": "Päivä",
@@ -333,7 +398,9 @@
     "expectedNeedUtilities": "Odotettavissa olevat tarpeelliset palvelukustannukset",
     "editAction": "Muokkaa toimintoa",
     "save": "Tallenna",
-    "cancel": "Peruuta"
+    "cancel": "Peruuta",
+    "currency": "Valuutta",
+    "selectCurrency": "Valitse valuutta"
   },
   "agentChat": {
     "thinking": "Ajattelen...",
@@ -341,7 +408,8 @@
     "getInsights": "Kysy mielialastasi, tavoista tai saa henkilökohtaisia oivalluksia",
     "placeholder": "Chatataan...",
     "error": "Anteeksi, kohtasimme virheen. Yritä uudelleen.",
-    "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
+    "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Aloita oma Dupip-matkasi",
@@ -540,7 +608,34 @@
       "addTask": "Lisää tehtävä",
       "cancel": "Peruuta",
       "editTitle": "Muokkaa tehtävää",
-      "saveTask": "Tallenna tehtävä"
+      "saveTask": "Tallenna tehtävä",
+      "premiumLabel": "Palkkio (valinnainen)",
+      "premiumPercentHint": "Prosenttia listan budjetista",
+      "cadenceLabel": "Toistuu",
+      "cadence": {
+        "none": "Ei toistu",
+        "daily": "Päivittäin",
+        "weekly": "Viikoittain",
+        "monthly": "Kuukausittain",
+        "yearly": "Vuosittain",
+        "every": "Joka",
+        "day": "päivä",
+        "days": "päivää",
+        "week": "viikko",
+        "weeks": "viikkoa",
+        "month": "kuukausi",
+        "months": "kuukautta",
+        "year": "vuosi",
+        "years": "vuotta",
+        "onDay": "Päivänä",
+        "onThe": "",
+        "inMonth": "Kuukaudessa",
+        "ends": "Päättyy",
+        "never": "Ei koskaan",
+        "after": "Jälkeen",
+        "onDate": "Päivämääränä",
+        "occurrences": "kertaa"
+      }
     },
     "addListForm": {
       "titleCreate": "Luo uusi lista",
@@ -596,12 +691,24 @@
       },
       "areaDistributionLabel": "Alueen budjetti",
       "areaPrizeDistributionLabel": "Alueen palkinto",
+      "areaPremiumDistributionLabel": "Palkintojen jako alueittain",
       "categoryDistributionLabel": "Kategorian budjetti",
       "categoryPrizeDistributionLabel": "Kategorian palkinto",
+      "categoryPremiumDistributionLabel": "Palkintojen jako kategorioittain",
       "taskDistributionLabel": "Budjetti",
       "premiumLabel": "Palkinto",
       "totalLabel": "Yhteensä",
-      "addTaskTitle": "Lisää tehtävä"
+      "addTaskTitle": "Lisää tehtävä",
+      "editTitle": "Muokkaa listaa",
+      "visibilityLabel": "Näkyvyys",
+      "collaboratorsPlaceholder": "Etsi ystäviä...",
+      "budgetSourcesLabel": "Prosenttia budjeteistasi:",
+      "noBudgets": "Ei vielä budjetteja — lisää yksi alle.",
+      "newBudgetName": "Budjetin nimi",
+      "confirmDelete": "Poista tämä lista ja kaikki sen tehtävät? Tätä ei voi peruuttaa.",
+      "delete": "Poista",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Luo uusi malli",
@@ -666,6 +773,36 @@
       "after": "Jälkeen",
       "pickDate": "Valitse päivämäärä",
       "occurrences": "toistoa"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -718,7 +855,15 @@
     "notice": "Tässä sovelluksessa ei tällä hetkellä hallinnoida todellista rahaa. Dupip Invest on vielä suunnitteluvaiheessa. Tämä on vain testiympäristö esittelytarkoituksiin.",
     "consentTitle": "Sijoitusdemot Suostumus",
     "consentCheckbox": "Tunnustan, että Dupip ei ole vielä sijoitusalusta ja että tätä ominaisuutta käyttämällä olen tietoinen siitä, että kaikki tietoni voidaan poistaa ennen Dupip Investin virallista käyttöönottoa.",
-    "confirm": "Vahvista"
+    "confirm": "Vahvista",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generointi valmis.",
@@ -883,7 +1028,10 @@
         "submitted": "Työ lähetetty tarkistettavaksi",
         "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Muistiinpano päivitetty onnistuneesti",
@@ -893,6 +1041,7 @@
     "deleting": "Poistetaan...",
     "confirmDelete": "Haluatko varmasti poistaa tämän muistiinpanon?",
     "content": "Muistiinpanon sisältö",
+    "recipient": "Vastaanottaja",
     "visibilityUpdated": "Näkyvyys päivitetty onnistuneesti",
     "visibilityUpdateFailed": "Näkyvyyden päivittäminen epäonnistui",
     "changeVisibility": "Muuta näkyvyyttä",
@@ -901,7 +1050,17 @@
       "date": "Päivämäärä",
       "mostRelevant": "Relevantein",
       "all": "Kaikki"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Keskustelu",
@@ -917,7 +1076,52 @@
     "inviteFriendToOrg": "Kutsu ystävä tähän organisaatioon",
     "inviteLinkCopied": "Kutsulinki kopioitu",
     "inviteSent": "Kutsu lähetetty",
-    "inviteAccepted": "Kutsu hyväksytty"
+    "inviteAccepted": "Kutsu hyväksytty",
+    "sidebar": {
+      "directMessages": "Yksityisviestit",
+      "organizations": "Organisaatiot",
+      "sms": "SMS",
+      "virtualNumber": "Virtuaalinumero",
+      "searchDmPlaceholder": "Etsi kavereita aloittaaksesi yksityisviestin",
+      "createChannelPlaceholder": "Luo kanava",
+      "createOrgPlaceholder": "Luo organisaatio",
+      "refresh": "Päivitä",
+      "noOrgs": "Ei vielä organisaatioita",
+      "noDms": "Ei vielä yksityisviestejä"
+    },
+    "virtualNumber": {
+      "label": "Virtuaalinumero",
+      "hint": "Valitse puhelinnumerosi. Näihin numeroihin saapuvat tekstiviestit näkyvät chatissasi.",
+      "none": "Ei numeroa",
+      "loading": "Ladataan numeroita…",
+      "empty": "Numeroita ei ole saatavilla",
+      "error": "Numeroitasi ei voitu ladata",
+      "assignError": "Tätä numeroa ei voitu tallentaa",
+      "assigned": "Numero liitetty",
+      "cleared": "Numero poistettu",
+      "addNumber": "Lisää numero…",
+      "removeNumber": "Poista numero",
+      "quotaLabel": "{used} / {quota} numeroa käytössä",
+      "limitReached": "Olet saavuttanut pakettisi virtuaalinumeroiden enimmäismäärän",
+      "buyCta": "Osta virtuaalinumero",
+      "gateHint": "Virtuaalinumerot vaativat Donator-paketin. Osta numero vastaanottaaksesi tekstiviestejä chatissa.",
+      "buyDialogTitle": "Donator-paketti vaaditaan",
+      "buyDialogDescription": "Virtuaalinumerot sisältyvät Donator-paketteihin. Valitse paketti hintasivulta aloittaaksesi.",
+      "buyDialogGoToPricing": "Siirry hintoihin"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Ladataan tekstiviestejä…",
+      "empty": "Ei tekstiviestikeskusteluja vielä",
+      "noNumberHint": "Liitä virtuaalinumero aloittaaksesi tekstiviestien vastaanottamisen täällä",
+      "composerPlaceholder": "Kirjoita tekstiviesti…",
+      "sendError": "Tätä viestiä ei voitu lähettää",
+      "you": "Sinä",
+      "statusSent": "Lähetetty",
+      "statusDelivered": "Toimitettu",
+      "statusFailed": "Epäonnistui",
+      "error": "Tekstiviestejä ei voitu ladata"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -925,6 +1129,79 @@
       "tight": "Tiivis",
       "small": "Pieni",
       "wide": "Leveä"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Hinnoittelu",
+    "metaDescription": "Dupip on rekisteröity Eurooppaan verkkoradiona, jonka missio on hyvinvointi. Tukeaksemme kasvuamme tarjoamme etuja lahjoittajille. Katso tilauksemme ja miten DPIP toimii.",
+    "heroTitle": "Radio, uudelleen kuviteltuna",
+    "heroSubtitle": "Dupip on rakennettu yksinkertaisen haasteen ympärille: hyvinvointi. Etsimme taajuuksia, jotka tuovat sinusta parhaan esiin.",
+    "siaeTitle": "Huomautus musiikin lisensoinnista",
+    "plansTitle": "Tilaukset",
+    "plansDescription": "Valitse tilaus, joka sopii kuuntelutapaasi.",
+    "dpipTitle": "Tietoa DPIP:stä",
+    "dpipBody": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa.",
+    "consentTitle": "DPIP-suostumus",
+    "consentCheckbox": "Ymmärrän, että DPIP:llä ei välttämättä ole rahallista arvoa, ei nyt eikä tulevaisuudessa, ja hyväksyn tämän.",
+    "consentSignedOut": "Kirjaudu sisään tarkistaaksesi DPIP-suostumuksen ja nähdäksesi tilauksemme.",
+    "signInToConsent": "Kirjaudu sisään",
+    "consentSaved": "Suostumus tallennettu {date}",
+    "saveConsent": "Tallenna suostumus",
+    "dpipNoValue": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa.",
+    "consentDescription": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa. Ennen kuin näet tilauksemme, käy läpi ja vahvista seuraava:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

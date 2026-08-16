@@ -14,6 +14,7 @@
     "save": "Simpan",
     "cancel": "Batal",
     "delete": "Padam",
+    "remove": "Buang",
     "loading": "Memuat...",
     "error": "Ralat",
     "success": "Berjaya",
@@ -60,7 +61,8 @@
     "saving": "Menyimpan...",
     "decline": "Tolak",
     "friendRequest": "Permintaan kawan",
-    "reverseOrder": "Terbalikkan urutan"
+    "reverseOrder": "Terbalikkan urutan",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -78,7 +80,8 @@
     "privacy": "Dasar privasi",
     "locale": "Bahasa",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Agenda",
+    "upgrade": "Naik taraf"
   },
   "dashboard": {
     "title": "Hidup anda dalam sekilas.",
@@ -129,11 +132,14 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publish Note",
       "publishing": "Menerbitkan...",
-      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah."
+      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Dayakan analisis AI"
     },
     "thirdParty": {
       "title": "Pihak ketiga",
@@ -151,7 +157,9 @@
       "addDelegatedAnalyst": "Tambah penganalisis yang diwakilkan",
       "adding": "Menambah...",
       "addError": "Tidak dapat menambah penganalisis yang diwakilkan",
-      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini."
+      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -178,12 +186,68 @@
       "ready": "Sedia",
       "open": "Terbuka",
       "done": "Selesai",
-      "ignored": "Diabaikan"
+      "ignored": "Diabaikan",
+      "completed": "Completed"
     },
     "edit": "Sunting",
     "loadingForDate": "Memuatkan tugasan untuk tarikh yang dipilih...",
     "initializingTasks": "Menyediakan tugasan anda...",
-    "noTasksForDate": "Tiada tugasan dijadualkan untuk tarikh ini"
+    "noTasksForDate": "Tiada tugasan dijadualkan untuk tarikh ini",
+    "delete": "Padam...",
+    "deleteTitle": "Padam tugas",
+    "deleteDescription": "Berapa banyak tugasan ini yang mahu dipadam?",
+    "deleteScopes": {
+      "today": "Hari ini sahaja",
+      "onwards": "Mulai hari ini",
+      "all": "Semua entri"
+    },
+    "requestTitle": "Minta kerja",
+    "requestDescription": "Terangkan mengapa anda mahu mengambil tugasan ini. Pemilik senarai akan menyemak permintaan anda.",
+    "submitTitle": "Hantar kerja",
+    "resubmitTitle": "Semak dan hantar semula",
+    "submitDescription": "Siarkan bukti kerja anda. Tidak lama lagi anda boleh lampirkan foto atau video.",
+    "reviewTitle": "Semak kerja",
+    "reviewDescription": "Terima kerja, minta perubahan atau tolak.",
+    "justificationLabel": "Justifikasi",
+    "justificationPlaceholder": "Mengapa anda perlu melakukan tugasan ini?",
+    "evidenceLabel": "Bukti / nota",
+    "evidencePlaceholder": "Terangkan apa yang anda lakukan...",
+    "selfReviewLabel": "Penilaian kendiri (0-100)",
+    "managerReviewLabel": "Skor semakan (0-100)",
+    "reviewNoteLabel": "Maklum balas (pilihan)",
+    "sendRequest": "Hantar permintaan",
+    "resubmit": "Hantar semula",
+    "submit": "Hantar",
+    "accept": "Terima",
+    "requestChanges": "Minta perubahan",
+    "reject": "Tolak",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Minum air",
@@ -247,7 +311,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Harga"
   },
   "earningsTable": {
     "day": "Hari",
@@ -333,7 +398,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Edit tindakan",
     "save": "Simpan",
-    "cancel": "Batal"
+    "cancel": "Batal",
+    "currency": "Mata wang",
+    "selectCurrency": "Pilih mata wang"
   },
   "agentChat": {
     "thinking": "Berfikir...",
@@ -341,7 +408,8 @@
     "getInsights": "Tanya tentang mood, tabiat anda atau dapatkan pandangan peribadi",
     "placeholder": "Mari berbual...",
     "error": "Maaf, saya menghadapi ralat. Sila cuba lagi.",
-    "failedToSend": "Gagal menghantar mesej. Sila cuba lagi."
+    "failedToSend": "Gagal menghantar mesej. Sila cuba lagi.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Mulakan Perjalanan Dupip Anda Sendiri",
@@ -540,7 +608,34 @@
       "addTask": "Tambah Tugas",
       "cancel": "Batal",
       "editTitle": "Sunting tugas",
-      "saveTask": "Simpan tugas"
+      "saveTask": "Simpan tugas",
+      "premiumLabel": "Premium (pilihan)",
+      "premiumPercentHint": "Peratus belanjawan senarai",
+      "cadenceLabel": "Berulang",
+      "cadence": {
+        "none": "Tidak berulang",
+        "daily": "Setiap hari",
+        "weekly": "Setiap minggu",
+        "monthly": "Setiap bulan",
+        "yearly": "Setiap tahun",
+        "every": "Setiap",
+        "day": "hari",
+        "days": "hari",
+        "week": "minggu",
+        "weeks": "minggu",
+        "month": "bulan",
+        "months": "bulan",
+        "year": "tahun",
+        "years": "tahun",
+        "onDay": "Pada hari",
+        "onThe": "Pada",
+        "inMonth": "Pada bulan",
+        "ends": "Tamat",
+        "never": "Tidak pernah",
+        "after": "Selepas",
+        "onDate": "Pada tarikh",
+        "occurrences": "kali"
+      }
     },
     "addListForm": {
       "titleCreate": "Cipta Senarai Baru",
@@ -596,12 +691,24 @@
       },
       "areaDistributionLabel": "Bajet kawasan",
       "areaPrizeDistributionLabel": "Hadiah kawasan",
+      "areaPremiumDistributionLabel": "Pengagihan hadiah mengikut kawasan",
       "categoryDistributionLabel": "Bajet kategori",
       "categoryPrizeDistributionLabel": "Hadiah kategori",
+      "categoryPremiumDistributionLabel": "Pengagihan hadiah mengikut kategori",
       "taskDistributionLabel": "Bajet",
       "premiumLabel": "Hadiah",
       "totalLabel": "Jumlah",
-      "addTaskTitle": "Tambah tugasan"
+      "addTaskTitle": "Tambah tugasan",
+      "editTitle": "Edit senarai",
+      "visibilityLabel": "Keterlihatan",
+      "collaboratorsPlaceholder": "Cari rakan...",
+      "budgetSourcesLabel": "Peratus belanjawan anda:",
+      "noBudgets": "Tiada belanjawan lagi — tambah satu di bawah.",
+      "newBudgetName": "Nama belanjawan",
+      "confirmDelete": "Padam senarai ini dan semua tugasnya? Tidak boleh dibatalkan.",
+      "delete": "Padam",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Cipta Templat Baru",
@@ -666,6 +773,36 @@
       "after": "Selepas",
       "pickDate": "Pilih tarikh",
       "occurrences": "kali"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -718,7 +855,15 @@
     "notice": "Tiada wang sebenar yang dikendalikan pada masa ini dalam aplikasi ini. Dupip Invest masih dalam fasa perancangan. Ini hanyalah persekitaran ujian untuk tujuan demonstrasi.",
     "consentTitle": "Persetujuan Demo Pelaburan",
     "consentCheckbox": "Saya mengakui bahawa Dupip belum lagi platform pelaburan, dan dengan menggunakan ciri ini, saya sedar bahawa semua data saya mungkin dipadam sebelum pelancaran rasmi Dupip Invest.",
-    "confirm": "Sahkan"
+    "confirm": "Sahkan",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Penjanaan NFT selesai.",
@@ -883,7 +1028,10 @@
         "submitted": "Kerja diserahkan untuk semakan",
         "resubmitted": "Kerja diserahkan semula untuk semakan"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Nota berjaya dikemaskini",
@@ -893,6 +1041,7 @@
     "deleting": "Memadam...",
     "confirmDelete": "Adakah anda pasti mahu memadam nota ini?",
     "content": "Kandungan nota",
+    "recipient": "Penerima",
     "visibilityUpdated": "Keterlihatan berjaya dikemaskini",
     "visibilityUpdateFailed": "Gagal mengemaskini keterlihatan",
     "changeVisibility": "Tukar keterlihatan",
@@ -901,7 +1050,17 @@
       "date": "Tarikh",
       "mostRelevant": "Paling Relevan",
       "all": "Semua"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Sembang",
@@ -917,7 +1076,52 @@
     "inviteFriendToOrg": "Jemput rakan ke organisasi ini",
     "inviteLinkCopied": "Pautan jemputan disalin",
     "inviteSent": "Jemputan dihantar",
-    "inviteAccepted": "Jemputan diterima"
+    "inviteAccepted": "Jemputan diterima",
+    "sidebar": {
+      "directMessages": "Mesej terus",
+      "organizations": "Organisasi",
+      "sms": "SMS",
+      "virtualNumber": "Nombor maya",
+      "searchDmPlaceholder": "Cari rakan untuk memulakan DM",
+      "createChannelPlaceholder": "Cipta saluran",
+      "createOrgPlaceholder": "Cipta organisasi",
+      "refresh": "Muat semula",
+      "noOrgs": "Tiada organisasi lagi",
+      "noDms": "Tiada mesej terus lagi"
+    },
+    "virtualNumber": {
+      "label": "Nombor maya",
+      "hint": "Pilih nombor telefon anda. SMS masuk ke nombor-nombor ini akan muncul dalam sembang anda.",
+      "none": "Tiada nombor",
+      "loading": "Memuatkan nombor…",
+      "empty": "Tiada nombor tersedia",
+      "error": "Nombor anda tidak dapat dimuatkan",
+      "assignError": "Nombor ini tidak dapat disimpan",
+      "assigned": "Nombor ditetapkan",
+      "cleared": "Nombor dialih keluar",
+      "addNumber": "Tambah nombor…",
+      "removeNumber": "Buang nombor",
+      "quotaLabel": "{used} daripada {quota} nombor digunakan",
+      "limitReached": "Anda telah mencapai bilangan maksimum nombor maya untuk pelan anda",
+      "buyCta": "Beli nombor maya",
+      "gateHint": "Nombor maya memerlukan pelan Donator. Beli nombor untuk menerima SMS dalam sembang.",
+      "buyDialogTitle": "Pelan Donator diperlukan",
+      "buyDialogDescription": "Nombor maya disertakan dalam pelan-pelan Donator. Pilih pelan di halaman harga untuk bermula.",
+      "buyDialogGoToPricing": "Pergi ke harga"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Memuatkan SMS…",
+      "empty": "Tiada perbualan SMS lagi",
+      "noNumberHint": "Tetapkan nombor maya untuk mula menerima SMS di sini",
+      "composerPlaceholder": "Tulis SMS…",
+      "sendError": "Mesej ini tidak dapat dihantar",
+      "you": "Anda",
+      "statusSent": "Dihantar",
+      "statusDelivered": "Diterima",
+      "statusFailed": "Gagal",
+      "error": "SMS tidak dapat dimuatkan"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -925,6 +1129,79 @@
       "tight": "Padat",
       "small": "Kecil",
       "wide": "Luas"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Harga",
+    "metaDescription": "Dupip didaftarkan di Eropah sebagai radio web dengan misi kesejahteraan. Untuk menyokong pertumbuhan kami, kami menawarkan manfaat kepada penderma. Lihat pelan kami dan cara DPIP berfungsi.",
+    "heroTitle": "Radio, dibayangkan semula",
+    "heroSubtitle": "Dupip dibina berdasarkan cabaran yang mudah: kesejahteraan. Kami mencari frekuensi yang menonjolkan yang terbaik daripada anda.",
+    "siaeTitle": "Nota tentang pelesenan muzik",
+    "plansTitle": "Pelan",
+    "plansDescription": "Pilih pelan yang sesuai dengan cara anda mendengar.",
+    "dpipTitle": "Tentang DPIP",
+    "dpipBody": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan.",
+    "consentTitle": "Persetujuan DPIP",
+    "consentCheckbox": "Saya memahami bahawa DPIP mungkin tidak mempunyai nilai kewangan, kini atau pada masa hadapan, dan saya menerimanya.",
+    "consentSignedOut": "Daftar masuk untuk menyemak persetujuan DPIP dan melihat pelan kami.",
+    "signInToConsent": "Daftar masuk",
+    "consentSaved": "Persetujuan direkodkan pada {date}",
+    "saveConsent": "Simpan persetujuan",
+    "dpipNoValue": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan.",
+    "consentDescription": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan. Sebelum melihat pelan kami, sila semak dan sahkan perkara berikut:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

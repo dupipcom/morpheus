@@ -17,6 +17,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
+    "remove": "Remove",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
@@ -60,7 +61,8 @@
     "decline": "Decline",
     "friendRequest": "Friend request",
     "reverseOrder": "Reverse order",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Home",
@@ -70,6 +72,7 @@
     "events": "Events",
     "label": "Label",
     "supportUs": "Support Us",
+    "upgrade": "Upgrade",
     "about": "About us",
     "privacy": "Privacy Policy",
     "locale": "Language",
@@ -127,9 +130,12 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
-      "action": "Publish Note"
+      "action": "Publish Note",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Enable AI analysis"
     },
     "thirdParty": {
       "title": "Third-Party",
@@ -147,8 +153,25 @@
       "addDelegatedAnalyst": "Add delegated analyst",
       "adding": "Adding...",
       "addError": "Could not add delegated analyst",
-      "invitationDraft": "Invitation draft prepared for this email."
+      "invitationDraft": "Invitation draft prepared for this email.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "HOUSEHOLD": "Household",
+    "THERAPIST": "Therapist"
   },
   "week": {
     "weekNumber": "Week {number}",
@@ -178,8 +201,64 @@
       "ready": "Ready",
       "open": "Open",
       "done": "Done",
-      "ignored": "Ignored"
-    }
+      "ignored": "Ignored",
+      "completed": "Completed"
+    },
+    "delete": "Delete...",
+    "deleteTitle": "Delete task",
+    "deleteDescription": "How much of this task do you want to delete?",
+    "deleteScopes": {
+      "today": "Today only",
+      "onwards": "From today onwards",
+      "all": "All entries"
+    },
+    "requestTitle": "Request to work",
+    "requestDescription": "Explain why you want to take on this task. The list owner will review your request.",
+    "submitTitle": "Submit work",
+    "resubmitTitle": "Revise and resubmit",
+    "submitDescription": "Post evidence of your work. A photo or video can be attached here soon.",
+    "reviewTitle": "Review work",
+    "reviewDescription": "Accept the work, request changes, or reject it.",
+    "justificationLabel": "Justification",
+    "justificationPlaceholder": "Why should you do this task?",
+    "evidenceLabel": "Evidence / note",
+    "evidencePlaceholder": "Describe what you did...",
+    "selfReviewLabel": "Self-review (0-100)",
+    "managerReviewLabel": "Review score (0-100)",
+    "reviewNoteLabel": "Feedback (optional)",
+    "sendRequest": "Send request",
+    "resubmit": "Resubmit",
+    "submit": "Submit",
+    "accept": "Accept",
+    "requestChanges": "Request changes",
+    "reject": "Reject",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "forms": {
     "commonOptions": {
@@ -222,7 +301,34 @@
       "saveToTemplate": "Save task to template",
       "addTask": "Add Task",
       "saveTask": "Save Task",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "premiumLabel": "Premium (optional)",
+      "premiumPercentHint": "Percent of the list budget",
+      "cadenceLabel": "Repeats",
+      "cadence": {
+        "none": "Does not repeat",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "every": "Every",
+        "day": "day",
+        "days": "days",
+        "week": "week",
+        "weeks": "weeks",
+        "month": "month",
+        "months": "months",
+        "year": "year",
+        "years": "years",
+        "onDay": "On day",
+        "onThe": "On the",
+        "inMonth": "In month",
+        "ends": "Ends",
+        "never": "Never",
+        "after": "After",
+        "onDate": "On date",
+        "occurrences": "occurrences"
+      }
     },
     "recurrencePicker": {
       "frequency": "Repeat",
@@ -258,9 +364,11 @@
       "occurrences": "occurrences"
     },
     "addListForm": {
+      "title": "New List",
       "titleCreate": "Create New List",
       "titleEdit": "Edit List",
       "nameLabel": "Name",
+      "namePlaceholder": "List name...",
       "templateOrListLabel": "Template or List",
       "chooseTemplatePlaceholder": "Choose a template",
       "budgetLabel": "Budget",
@@ -311,12 +419,22 @@
       },
       "areaDistributionLabel": "Area Budget",
       "areaPrizeDistributionLabel": "Area Prize",
+      "areaPremiumDistributionLabel": "Area Premium Distribution",
       "categoryDistributionLabel": "Category Budget",
       "categoryPrizeDistributionLabel": "Category Prize",
+      "categoryPremiumDistributionLabel": "Category Premium Distribution",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prize",
       "totalLabel": "Total",
-      "addTaskTitle": "Add Task"
+      "addTaskTitle": "Add Task",
+      "editTitle": "Edit List",
+      "visibilityLabel": "Visibility",
+      "collaboratorsPlaceholder": "Search friends...",
+      "budgetSourcesLabel": "Percent of your budgets:",
+      "noBudgets": "No budgets yet — add one below.",
+      "newBudgetName": "Budget name",
+      "confirmDelete": "Delete this list and all its tasks? This cannot be undone.",
+      "delete": "Delete"
     },
     "addTemplateForm": {
       "title": "Create New Template",
@@ -348,6 +466,36 @@
       },
       "create": "Create",
       "cancel": "Cancel"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "settings": {
@@ -368,7 +516,9 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "currency": "Currency",
+    "selectCurrency": "Select currency"
   },
   "social": {
     "title": "Social Contacts",
@@ -466,7 +616,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Terms of Service",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "pricing": "Pricing"
   },
   "earningsTable": {
     "day": "Day",
@@ -512,7 +663,8 @@
     "getInsights": "Ask about your mood, habits, or get personalized insights",
     "placeholder": "Let's chat...",
     "error": "Sorry, I encountered an error. Please try again.",
-    "failedToSend": "Failed to send message. Please try again."
+    "failedToSend": "Failed to send message. Please try again.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
@@ -721,6 +873,25 @@
     "globalPremiumFactor": "Global Premium Factor",
     "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
+  "pricing": {
+    "metaTitle": "Pricing",
+    "metaDescription": "Dupip is registered in Europe as a webradio with a well-being mission. To support our growth, we offer perks for donors. See our plans and how DPIP works.",
+    "heroTitle": "Radio, re-imagined",
+    "heroSubtitle": "Dupip is built around a simple challenge: well-being. We are seeking the frequencies that bring the best from you.",
+    "siaeTitle": "A note on music licensing",
+    "plansTitle": "Plans",
+    "plansDescription": "Choose the plan that fits how you listen.",
+    "dpipTitle": "About DPIP",
+    "dpipBody": "DPIP (Ð) is the unit of value inside Dupip. Your stash grows over time with your activity. DPIP is not an investment product and may have no monetary value — now or in the future.",
+    "dpipNoValue": "DPIP (Ð) is the unit of value inside Dupip. Your stash grows over time with your activity. DPIP is not an investment product and may have no monetary value — now or in the future.",
+    "consentTitle": "DPIP consent",
+    "consentDescription": "DPIP (Ð) is the unit of value inside Dupip. Your stash grows over time with your activity. DPIP is not an investment product and may have no monetary value — now or in the future. Before viewing our plans, please review and confirm the following:",
+    "consentCheckbox": "I understand that DPIP may have no monetary value, now or in the future, and I accept this.",
+    "consentSignedOut": "Sign in to review the DPIP consent and view our plans.",
+    "signInToConsent": "Sign in",
+    "consentSaved": "Consent recorded on {date}",
+    "saveConsent": "Save consent"
+  },
   "wallet": {
     "nftGenerationCompleted": "NFT generation completed.",
     "errorGeneratingNFT": "Error generating NFT",
@@ -775,6 +946,7 @@
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
+    "justification": "Justification",
     "workerSubmission": "Worker's Submission:",
     "selfReview": "Self-Review:",
     "reviewerFeedback": "Reviewer's Feedback:",
@@ -884,7 +1056,9 @@
         "submitted": "Work submitted for review",
         "resubmitted": "Work resubmitted for review"
       }
-    }
+    },
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Note updated successfully",
@@ -894,6 +1068,7 @@
     "deleting": "Deleting...",
     "confirmDelete": "Are you sure you want to delete this note?",
     "content": "Note content",
+    "recipient": "Recipient",
     "visibilityUpdated": "Visibility updated successfully",
     "visibilityUpdateFailed": "Failed to update visibility",
     "changeVisibility": "Change visibility",
@@ -902,7 +1077,17 @@
       "date": "Date",
       "mostRelevant": "Most Relevant",
       "all": "All"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Chat",
@@ -918,7 +1103,52 @@
     "inviteFriendToOrg": "Invite a friend to this org",
     "inviteLinkCopied": "Invite link copied",
     "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "inviteAccepted": "Invite accepted",
+    "sidebar": {
+      "directMessages": "Direct messages",
+      "organizations": "Organizations",
+      "sms": "SMS",
+      "virtualNumber": "Virtual number",
+      "searchDmPlaceholder": "Search friends to start a DM",
+      "createChannelPlaceholder": "Create a channel",
+      "createOrgPlaceholder": "Create an organization",
+      "refresh": "Refresh",
+      "noOrgs": "No organizations yet",
+      "noDms": "No direct messages yet"
+    },
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose your phone numbers. Incoming SMS to these numbers will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared",
+      "addNumber": "Add number…",
+      "removeNumber": "Remove number",
+      "quotaLabel": "{used} of {quota} numbers used",
+      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
+      "buyCta": "Buy virtual number",
+      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
+      "buyDialogTitle": "Donator plan required",
+      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
+      "buyDialogGoToPricing": "Go to pricing"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Loading SMS…",
+      "empty": "No SMS conversations yet",
+      "noNumberHint": "Assign a virtual number to start receiving SMS here",
+      "composerPlaceholder": "Write an SMS…",
+      "sendError": "Could not send this message",
+      "you": "You",
+      "statusSent": "Sent",
+      "statusDelivered": "Delivered",
+      "statusFailed": "Failed",
+      "error": "Could not load SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -926,6 +1156,45 @@
       "tight": "Tight",
       "small": "Small",
       "wide": "Wide"
+    }
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

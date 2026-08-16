@@ -21,7 +21,10 @@ ChatView (three-panel layout)
 │   │   ├── Invite link generation (admin/superuser)
 │   │   ├── Member invite input (admin/superuser)
 │   │   └── Channel list
-│   └── Organization Creation Card
+│   ├── Organization Creation Card
+│   ├── SMS Card (premium, Telnyx conversations with unread badges)
+│   ├── Virtual Number Gate Card (non-premium, buy CTA → pricing page)
+│   └── Virtual Number Card (premium, `virtual_number` feature flag)
 ├── Room Panel (messages)
 │   ├── Room header (back buttons on mobile)
 │   ├── Message list
@@ -61,6 +64,7 @@ Subscribes to Ably channels for real-time message delivery:
 ### Navigation & URL Sync
 - **DM**: `/chat/{username}[/message/{messageId}]`
 - **Channel**: `/chat/org/{orgId}/channel/{channelId}[/message/{messageId}]`
+- **SMS**: in-memory only (no deep link yet — follow-up)
 - **No room**: `/chat`
 - Uses `router.push()` to keep URL in sync with room selection
 
@@ -89,6 +93,8 @@ Subscribes to Ably channels for real-time message delivery:
 11. **As a user**, I can soft-delete messages
 12. **As a user**, I can deep-link to specific DMs, channels, or messages
 13. **As a user**, I can navigate the chat on mobile with tabbed views
+14. **As a premium user**, I can associate several Telnyx phone numbers with my account, up to my plan quota (1/3/5)
+15. **As a premium user**, I can receive SMS to my virtual number in chat and reply from the chat room
 
 ## API Endpoints
 
@@ -106,6 +112,12 @@ Subscribes to Ably channels for real-time message delivery:
 | `/api/v1/chat/invites/{id}/accept` | POST | Accept org invite |
 | `/api/v1/chat/read-state` | POST | Mark messages as read |
 | `/api/v1/chat/messages/{id}` | DELETE | Soft-delete message |
+| `/api/v1/virtual-number` | GET/POST | Fetch/assign the user's Telnyx virtual numbers, bounded by plan quota (premium) |
+| `/api/v1/virtual-number?phoneNumber=` | DELETE | Unassign one virtual number (premium) |
+| `/api/v1/virtual-number/numbers` | GET | List available Telnyx numbers (premium) |
+| `/api/v1/sms/conversations` | GET | List SMS conversations (premium) |
+| `/api/v1/sms/conversations/{id}/messages` | GET/POST | List/send SMS messages |
+| `/api/v1/sms/conversations/{id}/read` | POST | Mark SMS conversation read |
 
 ## Loading States
 

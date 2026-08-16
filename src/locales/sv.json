@@ -17,6 +17,7 @@
     "save": "Spara",
     "cancel": "Avbryt",
     "delete": "Radera",
+    "remove": "Ta bort",
     "loading": "Laddar...",
     "error": "Fel",
     "success": "Framgång",
@@ -60,7 +61,8 @@
     "saving": "Sparar...",
     "decline": "Avvisa",
     "friendRequest": "Vänskapsförfrågan",
-    "reverseOrder": "Omvänd ordning"
+    "reverseOrder": "Omvänd ordning",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Hem",
@@ -77,7 +79,8 @@
     "agenda": "Dagordning",
     "profile": "Profil",
     "settings": "Inställningar",
-    "logout": "Logga ut"
+    "logout": "Logga ut",
+    "upgrade": "Uppgradera"
   },
   "dashboard": {
     "title": "Ditt liv i en blick.",
@@ -128,11 +131,14 @@
         "FRIENDS": "Vänner",
         "CLOSE_FRIENDS": "Nära vänner",
         "PUBLIC": "Allmänheten",
-        "AI_ENABLED": "AI aktiverad"
+        "AI_ENABLED": "AI aktiverad",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicera anteckning",
       "publishing": "Publicerar...",
-      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan."
+      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Aktivera AI-analys"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -150,7 +156,9 @@
       "addDelegatedAnalyst": "Lägg till delegerad analytiker",
       "adding": "Lägger till...",
       "addError": "Det gick inte att lägga till delegerad analytiker",
-      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress."
+      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -177,12 +185,68 @@
       "ready": "Redo",
       "open": "Öppen",
       "done": "Klar",
-      "ignored": "Ignorerad"
+      "ignored": "Ignorerad",
+      "completed": "Completed"
     },
     "edit": "Redigera",
     "loadingForDate": "Laddar uppgifter för valt datum...",
     "initializingTasks": "Konfigurerar dina uppgifter...",
-    "noTasksForDate": "Inga uppgifter schemalagda för detta datum"
+    "noTasksForDate": "Inga uppgifter schemalagda för detta datum",
+    "delete": "Ta bort...",
+    "deleteTitle": "Ta bort uppgift",
+    "deleteDescription": "Hur mycket av denna uppgift vill du ta bort?",
+    "deleteScopes": {
+      "today": "Endast idag",
+      "onwards": "Från och med idag",
+      "all": "Alla poster"
+    },
+    "requestTitle": "Begär arbete",
+    "requestDescription": "Förklara varför du vill ta dig an denna uppgift. Listans ägare granskar din begäran.",
+    "submitTitle": "Lämna in arbete",
+    "resubmitTitle": "Revidera och lämna in igen",
+    "submitDescription": "Publicera bevis på ditt arbete. Snart kan du bifoga ett foto eller en video.",
+    "reviewTitle": "Granska arbete",
+    "reviewDescription": "Godkänn arbetet, begär ändringar eller avvisa det.",
+    "justificationLabel": "Motivering",
+    "justificationPlaceholder": "Varför ska du utföra denna uppgift?",
+    "evidenceLabel": "Bevis / anteckning",
+    "evidencePlaceholder": "Beskriv vad du gjorde...",
+    "selfReviewLabel": "Självbedömning (0-100)",
+    "managerReviewLabel": "Granskningspoäng (0-100)",
+    "reviewNoteLabel": "Återkoppling (valfritt)",
+    "sendRequest": "Skicka begäran",
+    "resubmit": "Lämna in igen",
+    "submit": "Lämna in",
+    "accept": "Godkänn",
+    "requestChanges": "Begär ändringar",
+    "reject": "Avvisa",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Drack vatten",
@@ -246,7 +310,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Användarvillkor",
-    "privacy": "Integritetspolicy"
+    "privacy": "Integritetspolicy",
+    "pricing": "Priser"
   },
   "earningsTable": {
     "day": "Dag",
@@ -332,7 +397,9 @@
     "expectedNeedUtilities": "Förväntat genomsnitt för nödvändiga tjänster",
     "editAction": "Redigera åtgärd",
     "save": "Spara",
-    "cancel": "Avbryt"
+    "cancel": "Avbryt",
+    "currency": "Valuta",
+    "selectCurrency": "Välj valuta"
   },
   "agentChat": {
     "thinking": "Tänker...",
@@ -340,7 +407,8 @@
     "getInsights": "Fråga om ditt humör, vanor eller få personaliserade insikter",
     "placeholder": "Låt oss chatta...",
     "error": "Ledsen, jag stötte på ett fel. Försök igen.",
-    "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
+    "failedToSend": "Meddelandet kunde inte skickas. Försök igen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Börja din egen Dupip-resa",
@@ -539,7 +607,34 @@
       "addTask": "Lägg till uppgift",
       "cancel": "Avbryt",
       "editTitle": "Redigera uppgift",
-      "saveTask": "Spara uppgift"
+      "saveTask": "Spara uppgift",
+      "premiumLabel": "Premium (valfritt)",
+      "premiumPercentHint": "Procent av listans budget",
+      "cadenceLabel": "Upprepas",
+      "cadence": {
+        "none": "Upprepas inte",
+        "daily": "Dagligen",
+        "weekly": "Varje vecka",
+        "monthly": "Varje månad",
+        "yearly": "Varje år",
+        "every": "Var",
+        "day": "dag",
+        "days": "dagar",
+        "week": "vecka",
+        "weeks": "veckor",
+        "month": "månad",
+        "months": "månader",
+        "year": "år",
+        "years": "år",
+        "onDay": "På dag",
+        "onThe": "Den",
+        "inMonth": "I månad",
+        "ends": "Slutar",
+        "never": "Aldrig",
+        "after": "Efter",
+        "onDate": "På datum",
+        "occurrences": "gånger"
+      }
     },
     "addListForm": {
       "titleCreate": "Skapa ny lista",
@@ -595,12 +690,24 @@
       },
       "areaDistributionLabel": "Områdesbudget",
       "areaPrizeDistributionLabel": "Områdespris",
+      "areaPremiumDistributionLabel": "Prisfördelning per område",
       "categoryDistributionLabel": "Kategoribudget",
       "categoryPrizeDistributionLabel": "Kategoripris",
+      "categoryPremiumDistributionLabel": "Prisfördelning per kategori",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Pris",
       "totalLabel": "Totalt",
-      "addTaskTitle": "Lägg till uppgift"
+      "addTaskTitle": "Lägg till uppgift",
+      "editTitle": "Redigera lista",
+      "visibilityLabel": "Synlighet",
+      "collaboratorsPlaceholder": "Sök vänner...",
+      "budgetSourcesLabel": "Procent av dina budgetar:",
+      "noBudgets": "Inga budgetar än — lägg till en nedan.",
+      "newBudgetName": "Budgetens namn",
+      "confirmDelete": "Ta bort denna lista och alla dess uppgifter? Kan inte ångras.",
+      "delete": "Ta bort",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Skapa ny mall",
@@ -665,6 +772,36 @@
       "after": "Efter",
       "pickDate": "Välj ett datum",
       "occurrences": "upprepningar"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -717,7 +854,15 @@
     "notice": "Det finns för närvarande inga riktiga pengar som hanteras i denna app. Dupip Invest är fortfarande i planeringsfasen. Detta är bara en testmiljö i demonstrationssyfte.",
     "consentTitle": "Samtycke för Investeringsdemo",
     "consentCheckbox": "Jag erkänner att Dupip ännu inte är en investeringsplattform och att genom att använda denna funktion är jag medveten om att alla mina data kan raderas före den officiella lanseringen av Dupip Invest.",
-    "confirm": "Bekräfta"
+    "confirm": "Bekräfta",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generering slutförd.",
@@ -882,7 +1027,10 @@
         "submitted": "Arbete inskickat för granskning",
         "resubmitted": "Arbete inskickat igen för granskning"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Anteckning uppdaterades",
@@ -892,6 +1040,7 @@
     "deleting": "Raderar...",
     "confirmDelete": "Är du säker på att du vill radera denna anteckning?",
     "content": "Anteckningsinnehåll",
+    "recipient": "Mottagare",
     "visibilityUpdated": "Synlighet uppdaterades",
     "visibilityUpdateFailed": "Det gick inte att uppdatera synlighet",
     "changeVisibility": "Ändra synlighet",
@@ -900,7 +1049,17 @@
       "date": "Datum",
       "mostRelevant": "Mest relevant",
       "all": "Alla"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Chatt",
@@ -916,7 +1075,52 @@
     "inviteFriendToOrg": "Bjud in en vän till denna organisation",
     "inviteLinkCopied": "Inbjudningslänk kopierad",
     "inviteSent": "Inbjudan skickad",
-    "inviteAccepted": "Inbjudan accepterad"
+    "inviteAccepted": "Inbjudan accepterad",
+    "sidebar": {
+      "directMessages": "Direktmeddelanden",
+      "organizations": "Organisationer",
+      "sms": "SMS",
+      "virtualNumber": "Virtuellt nummer",
+      "searchDmPlaceholder": "Sök vänner för att starta ett DM",
+      "createChannelPlaceholder": "Skapa en kanal",
+      "createOrgPlaceholder": "Skapa en organisation",
+      "refresh": "Uppdatera",
+      "noOrgs": "Inga organisationer ännu",
+      "noDms": "Inga direktmeddelanden ännu"
+    },
+    "virtualNumber": {
+      "label": "Virtuellt nummer",
+      "hint": "Välj dina telefonnummer. Inkommande SMS till dessa nummer visas i din chatt.",
+      "none": "Inget nummer",
+      "loading": "Laddar nummer…",
+      "empty": "Inga nummer tillgängliga",
+      "error": "Dina nummer kunde inte laddas",
+      "assignError": "Detta nummer kunde inte sparas",
+      "assigned": "Nummer tilldelat",
+      "cleared": "Nummer borttaget",
+      "addNumber": "Lägg till nummer…",
+      "removeNumber": "Ta bort nummer",
+      "quotaLabel": "{used} av {quota} nummer använda",
+      "limitReached": "Du har nått maxantalet virtuella nummer för ditt abonnemang",
+      "buyCta": "Köp virtuellt nummer",
+      "gateHint": "Virtuella nummer kräver ett Donator-abonnemang. Köp ett nummer för att ta emot SMS i chatten.",
+      "buyDialogTitle": "Donator-abonnemang krävs",
+      "buyDialogDescription": "Virtuella nummer ingår i Donator-abonnemangen. Välj ett abonnemang på prissidan för att komma igång.",
+      "buyDialogGoToPricing": "Gå till priser"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Laddar SMS…",
+      "empty": "Inga SMS-konversationer ännu",
+      "noNumberHint": "Tilldela ett virtuellt nummer för att börja ta emot SMS här",
+      "composerPlaceholder": "Skriv ett SMS…",
+      "sendError": "Detta meddelande kunde inte skickas",
+      "you": "Du",
+      "statusSent": "Skickat",
+      "statusDelivered": "Levererat",
+      "statusFailed": "Misslyckades",
+      "error": "SMS kunde inte laddas"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -924,6 +1128,79 @@
       "tight": "Tät",
       "small": "Liten",
       "wide": "Bred"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Priser",
+    "metaDescription": "Dupip är registrerat i Europa som webbradio med ett välmåendeuppdrag. För att stödja vår tillväxt erbjuder vi förmåner till donatorer. Se våra abonnemang och hur DPIP fungerar.",
+    "heroTitle": "Radio, omtänkt",
+    "heroSubtitle": "Dupip är byggt kring en enkel utmaning: välmående. Vi söker de frekvenser som tar fram det bästa ur dig.",
+    "siaeTitle": "En notering om musiklicenser",
+    "plansTitle": "Abonnemang",
+    "plansDescription": "Välj det abonnemang som passar ditt sätt att lyssna.",
+    "dpipTitle": "Om DPIP",
+    "dpipBody": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden.",
+    "consentTitle": "DPIP-samtycke",
+    "consentCheckbox": "Jag förstår att DPIP kan sakna penningvärde, varken nu eller i framtiden, och jag accepterar detta.",
+    "consentSignedOut": "Logga in för att granska DPIP-samtycket och se våra abonnemang.",
+    "signInToConsent": "Logga in",
+    "consentSaved": "Samtycke registrerat {date}",
+    "saveConsent": "Spara samtycke",
+    "dpipNoValue": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden.",
+    "consentDescription": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden. Innan du ser våra abonnemang, granska och bekräfta följande:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

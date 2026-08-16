@@ -17,6 +17,7 @@
     "save": "Opslaan",
     "cancel": "Annuleren",
     "delete": "Verwijderen",
+    "remove": "Verwijderen",
     "loading": "Laden...",
     "error": "Fout",
     "success": "Succes",
@@ -60,7 +61,8 @@
     "saving": "Opslaan...",
     "decline": "Weigeren",
     "friendRequest": "Vriendschapsverzoek",
-    "reverseOrder": "Volgorde omkeren"
+    "reverseOrder": "Volgorde omkeren",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Home",
@@ -74,7 +76,8 @@
     "privacy": "Privacybeleid",
     "locale": "Taal",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Agenda",
+    "upgrade": "Upgraden"
   },
   "dashboard": {
     "title": "Je leven in één oogopslag.",
@@ -125,11 +128,14 @@
         "FRIENDS": "Vrienden",
         "CLOSE_FRIENDS": "Dichte vrienden",
         "PUBLIC": "Openbaar",
-        "AI_ENABLED": "AI-ingeschakeld"
+        "AI_ENABLED": "AI-ingeschakeld",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publiceer notitie",
       "publishing": "Publiceren...",
-      "embedHint": "{provider}-insluiting. Als afspelen niet beschikbaar is, open dan de originele link hieronder."
+      "embedHint": "{provider}-insluiting. Als afspelen niet beschikbaar is, open dan de originele link hieronder.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI-analyse inschakelen"
     },
     "thirdParty": {
       "title": "Derde partij",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "Gedelegeerde analist toevoegen",
       "adding": "Toevoegen...",
       "addError": "Gedelegeerde analist kon niet worden toegevoegd",
-      "invitationDraft": "Er is een uitnodigingsconcept voorbereid voor dit e-mailadres."
+      "invitationDraft": "Er is een uitnodigingsconcept voorbereid voor dit e-mailadres.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "Klaar",
       "open": "Open",
       "done": "Voltooid",
-      "ignored": "Genegeerd"
+      "ignored": "Genegeerd",
+      "completed": "Completed"
     },
     "edit": "Bewerken",
     "loadingForDate": "Taken laden voor geselecteerde datum...",
     "initializingTasks": "Uw taken instellen...",
-    "noTasksForDate": "Geen taken gepland voor deze datum"
+    "noTasksForDate": "Geen taken gepland voor deze datum",
+    "delete": "Verwijderen...",
+    "deleteTitle": "Taak verwijderen",
+    "deleteDescription": "Hoeveel van deze taak wil je verwijderen?",
+    "deleteScopes": {
+      "today": "Alleen vandaag",
+      "onwards": "Vanaf vandaag",
+      "all": "Alle items"
+    },
+    "requestTitle": "Werk aanvragen",
+    "requestDescription": "Leg uit waarom je deze taak wilt doen. De lijsteigenaar beoordeelt je aanvraag.",
+    "submitTitle": "Werk inleveren",
+    "resubmitTitle": "Aanpassen en opnieuw inleveren",
+    "submitDescription": "Plaats bewijs van je werk. Binnenkort kun je een foto of video toevoegen.",
+    "reviewTitle": "Werk beoordelen",
+    "reviewDescription": "Accepteer het werk, vraag wijzigingen of wijs het af.",
+    "justificationLabel": "Onderbouwing",
+    "justificationPlaceholder": "Waarom zou jij deze taak doen?",
+    "evidenceLabel": "Bewijs / notitie",
+    "evidencePlaceholder": "Beschrijf wat je hebt gedaan...",
+    "selfReviewLabel": "Zelfevaluatie (0-100)",
+    "managerReviewLabel": "Beoordelingsscore (0-100)",
+    "reviewNoteLabel": "Feedback (optioneel)",
+    "sendRequest": "Aanvraag versturen",
+    "resubmit": "Opnieuw inleveren",
+    "submit": "Inleveren",
+    "accept": "Accepteren",
+    "requestChanges": "Wijzigingen aanvragen",
+    "reject": "Afwijzen",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Heeft water gedronken",
@@ -243,7 +307,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Servicevoorwaarden",
-    "privacy": "Privacybeleid"
+    "privacy": "Privacybeleid",
+    "pricing": "Prijzen"
   },
   "earningsTable": {
     "day": "Dag",
@@ -329,7 +394,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Actie bewerken",
     "save": "Opslaan",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "currency": "Valuta",
+    "selectCurrency": "Valuta selecteren"
   },
   "agentChat": {
     "thinking": "Denken...",
@@ -337,7 +404,8 @@
     "getInsights": "Vraag over je stemming, gewoonten of krijg gepersonaliseerde inzichten",
     "placeholder": "Laten we chatten...",
     "error": "Sorry, ik ben een fout tegengekomen. Probeer opnieuw.",
-    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw."
+    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Begin je eigen Dupip reis",
@@ -536,7 +604,34 @@
       "addTask": "Taak toevoegen",
       "cancel": "Annuleren",
       "editTitle": "Taak bewerken",
-      "saveTask": "Taak opslaan"
+      "saveTask": "Taak opslaan",
+      "premiumLabel": "Premie (optioneel)",
+      "premiumPercentHint": "Percentage van het lijstbudget",
+      "cadenceLabel": "Herhaalt",
+      "cadence": {
+        "none": "Herhaalt niet",
+        "daily": "Dagelijks",
+        "weekly": "Wekelijks",
+        "monthly": "Maandelijks",
+        "yearly": "Jaarlijks",
+        "every": "Elke",
+        "day": "dag",
+        "days": "dagen",
+        "week": "week",
+        "weeks": "weken",
+        "month": "maand",
+        "months": "maanden",
+        "year": "jaar",
+        "years": "jaar",
+        "onDay": "Op dag",
+        "onThe": "De",
+        "inMonth": "In maand",
+        "ends": "Eindigt",
+        "never": "Nooit",
+        "after": "Na",
+        "onDate": "Op datum",
+        "occurrences": "keer"
+      }
     },
     "addListForm": {
       "titleCreate": "Nieuwe lijst maken",
@@ -592,12 +687,24 @@
       },
       "areaDistributionLabel": "Gebiedsbudget",
       "areaPrizeDistributionLabel": "Gebiedsprijs",
+      "areaPremiumDistributionLabel": "Prijsverdeling per gebied",
       "categoryDistributionLabel": "Categoriebudget",
       "categoryPrizeDistributionLabel": "Categorieprijs",
+      "categoryPremiumDistributionLabel": "Prijsverdeling per categorie",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prijs",
       "totalLabel": "Totaal",
-      "addTaskTitle": "Taak toevoegen"
+      "addTaskTitle": "Taak toevoegen",
+      "editTitle": "Lijst bewerken",
+      "visibilityLabel": "Zichtbaarheid",
+      "collaboratorsPlaceholder": "Vrienden zoeken...",
+      "budgetSourcesLabel": "Percentage van jouw budgetten:",
+      "noBudgets": "Nog geen budgetten — voeg er hieronder een toe.",
+      "newBudgetName": "Budgetnaam",
+      "confirmDelete": "Deze lijst en alle taken verwijderen? Dit kan niet ongedaan worden gemaakt.",
+      "delete": "Verwijderen",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Nieuwe sjabloon maken",
@@ -662,6 +769,36 @@
       "after": "Na",
       "pickDate": "Kies een datum",
       "occurrences": "herhalingen"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -714,7 +851,15 @@
     "notice": "Er wordt momenteel geen echt geld beheerd in deze app. Dupip Invest bevindt zich nog in de planningsfase. Dit is slechts een testomgeving voor demonstratiedoeleinden.",
     "consentTitle": "Toestemming voor Investeringsdemo",
     "consentCheckbox": "Ik erken dat Dupip nog geen investeringsplatform is en dat door deze functie te gebruiken, ik me ervan bewust ben dat al mijn gegevens kunnen worden verwijderd vóór de officiële lancering van Dupip Invest.",
-    "confirm": "Bevestigen"
+    "confirm": "Bevestigen",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generatie voltooid.",
@@ -879,7 +1024,10 @@
         "submitted": "Werk ingediend ter beoordeling",
         "resubmitted": "Werk opnieuw ingediend ter beoordeling"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Notitie succesvol bijgewerkt",
@@ -889,6 +1037,7 @@
     "deleting": "Verwijderen...",
     "confirmDelete": "Weet u zeker dat u deze notitie wilt verwijderen?",
     "content": "Notitie-inhoud",
+    "recipient": "Ontvanger",
     "visibilityUpdated": "Zichtbaarheid succesvol bijgewerkt",
     "visibilityUpdateFailed": "Bijwerken van zichtbaarheid mislukt",
     "changeVisibility": "Zichtbaarheid wijzigen",
@@ -897,7 +1046,17 @@
       "date": "Datum",
       "mostRelevant": "Meest relevant",
       "all": "Alles"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Gesprek",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "Een vriend uitnodigen voor deze organisatie",
     "inviteLinkCopied": "Uitnodigingslink gekopieerd",
     "inviteSent": "Uitnodiging verzonden",
-    "inviteAccepted": "Uitnodiging geaccepteerd"
+    "inviteAccepted": "Uitnodiging geaccepteerd",
+    "sidebar": {
+      "directMessages": "Directe berichten",
+      "organizations": "Organisaties",
+      "sms": "SMS",
+      "virtualNumber": "Virtueel nummer",
+      "searchDmPlaceholder": "Zoek vrienden om een DM te starten",
+      "createChannelPlaceholder": "Kanaal aanmaken",
+      "createOrgPlaceholder": "Organisatie aanmaken",
+      "refresh": "Vernieuwen",
+      "noOrgs": "Nog geen organisaties",
+      "noDms": "Nog geen directe berichten"
+    },
+    "virtualNumber": {
+      "label": "Virtueel nummer",
+      "hint": "Kies je telefoonnummers. Inkomende sms’jes naar deze nummers verschijnen in je chat.",
+      "none": "Geen nummer",
+      "loading": "Nummers laden…",
+      "empty": "Geen nummers beschikbaar",
+      "error": "Je nummers konden niet worden geladen",
+      "assignError": "Dit nummer kon niet worden opgeslagen",
+      "assigned": "Nummer toegewezen",
+      "cleared": "Nummer verwijderd",
+      "addNumber": "Nummer toevoegen…",
+      "removeNumber": "Nummer verwijderen",
+      "quotaLabel": "{used} van {quota} nummers gebruikt",
+      "limitReached": "Je hebt het maximale aantal virtuele nummers voor je abonnement bereikt",
+      "buyCta": "Koop virtueel nummer",
+      "gateHint": "Virtuele nummers vereisen een Donator-abonnement. Koop een nummer om sms’jes te ontvangen in de chat.",
+      "buyDialogTitle": "Donator-abonnement vereist",
+      "buyDialogDescription": "Virtuele nummers zijn inbegrepen bij de Donator-abonnementen. Kies een abonnement op de prijzenpagina om te beginnen.",
+      "buyDialogGoToPricing": "Naar prijzen"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS laden…",
+      "empty": "Nog geen sms-gesprekken",
+      "noNumberHint": "Wijs een virtueel nummer toe om hier sms’jes te ontvangen",
+      "composerPlaceholder": "Schrijf een sms…",
+      "sendError": "Dit bericht kon niet worden verzonden",
+      "you": "Jij",
+      "statusSent": "Verzonden",
+      "statusDelivered": "Afgeleverd",
+      "statusFailed": "Mislukt",
+      "error": "SMS kon niet worden geladen"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "Compact",
       "small": "Klein",
       "wide": "Breed"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Prijzen",
+    "metaDescription": "Dupip is in Europa geregistreerd als webradio met een welzijnsmissie. Om onze groei te ondersteunen, bieden we voordelen aan donateurs. Bekijk onze abonnementen en hoe DPIP werkt.",
+    "heroTitle": "Radio, opnieuw uitgevonden",
+    "heroSubtitle": "Dupip is gebouwd rond een eenvoudige uitdaging: welzijn. We zoeken de frequenties die het beste uit je halen.",
+    "siaeTitle": "Een opmerking over muzieklicenties",
+    "plansTitle": "Abonnementen",
+    "plansDescription": "Kies het abonnement dat past bij hoe je luistert.",
+    "dpipTitle": "Over DPIP",
+    "dpipBody": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet.",
+    "consentTitle": "DPIP-toestemming",
+    "consentCheckbox": "Ik begrijp dat DPIP mogelijk geen geldelijke waarde heeft, nu niet en in de toekomst niet, en ik accepteer dit.",
+    "consentSignedOut": "Log in om de DPIP-toestemming te bekijken en onze abonnementen te zien.",
+    "signInToConsent": "Inloggen",
+    "consentSaved": "Toestemming vastgelegd op {date}",
+    "saveConsent": "Toestemming opslaan",
+    "dpipNoValue": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet.",
+    "consentDescription": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet. Bekijk en bevestig het volgende voordat je onze abonnementen ziet:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }

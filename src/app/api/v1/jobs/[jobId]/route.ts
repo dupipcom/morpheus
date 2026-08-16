@@ -7,6 +7,7 @@ import { calculateAndApplyJobEarnings, reverseJobEarnings, initializeJobInvoice,
 import { validateStatusTransition, isAuthorizedForTransition } from '@/lib/services/job/statusValidator'
 import { TASK_STATUS_MAP } from '@/lib/services/job/taskSync'
 import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
+import { notifyUser } from '@/lib/services/notification'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import type { ListUser, UpdateJobRequest } from '@/lib/services/job/types'
@@ -109,28 +110,27 @@ async function updateJobWithRetry({
     jobUpdateData.reviewersNoteIds = { push: newReviewerNoteId }
   }
 
+  // Statuses that can still be auto-rejected when another job wins the date.
+  // A positive allow-list lets MongoDB use indexes (a $nin filter cannot).
+  const AUTO_REJECTABLE_STATUSES = ['REQUESTED', 'SUBMITTED', 'VALIDATING', 'IN_PROGRESS', 'CANCELLED']
+
   let lastError: unknown = null
 
   for (let attempt = 1; attempt <= MAX_TRANSACTION_RETRIES; attempt++) {
+    let taskUpdate: { id: string; status: string } | null = null
     try {
-      return await prisma.$transaction(async (tx) => {
-        // Update job
-        const updatedJob = await tx.job.update({
+      await prisma.$transaction(async (tx) => {
+        // Update job — no include here: relation reads inside the transaction
+        // add many sequential roundtrips that can blow the interactive
+        // transaction timeout (P2028 "Transaction already closed"). The full
+        // job is re-fetched after commit instead.
+        await tx.job.update({
           where: { id: jobId },
           data: jobUpdateData,
-          include: {
-            ...jobFullInclude,
-            requesterNotes: true,
-            reviewersNotes: {
-              include: {
-                user: { select: { id: true, profiles: true } }
-              }
-            },
-          }
+          select: { id: true, status: true }
         })
 
         // Sync task status based on job status
-        let taskUpdate: { id: string; status: string } | null = null
         if (newStatus && newStatus !== existingJob.status) {
           const newTaskStatus = TASK_STATUS_MAP[newStatus]
           if (newTaskStatus) {
@@ -147,7 +147,7 @@ async function updateJobWithRetry({
           const rejectWhereClause: any = {
             taskId: existingJob.taskId,
             id: { not: jobId },
-            status: { notIn: ['ACCEPTED', 'REJECTED'] }
+            status: { in: AUTO_REJECTABLE_STATUSES }
           }
 
           // If this job has an occurrenceDate, only reject competing jobs on the same date
@@ -160,9 +160,24 @@ async function updateJobWithRetry({
             data: { status: 'REJECTED' }
           })
         }
-
-        return { job: updatedJob, task: taskUpdate }
+      }, {
+        // Defaults (maxWait 2s / timeout 5s) were exceeded under load by the
+        // status sync + auto-reject writes, closing the transaction mid-flight.
+        maxWait: 10_000,
+        timeout: 20_000
       })
+
+      // Re-fetch the job with its relations after the transaction commits —
+      // the include does not need transactional consistency.
+      const job = await prisma.job.findUnique({
+        where: { id: jobId },
+        include: jobFullInclude
+      })
+      if (!job) {
+        throw new Error('Job not found after update')
+      }
+
+      return { job, task: taskUpdate }
     } catch (error) {
       lastError = error
       const code = (error as { code?: string })?.code
@@ -590,6 +605,20 @@ export async function PUT(
       } catch (earningsError) {
         console.error('Error reversing job earnings:', earningsError)
       }
+    }
+
+    // Notify the worker when their job request is approved or declined
+    if (
+      (newStatus === 'ACCEPTED' || newStatus === 'REJECTED') &&
+      newStatus !== existingJob.status &&
+      existingJob.workerId
+    ) {
+      void notifyUser({
+        userId: existingJob.workerId,
+        type: newStatus === 'ACCEPTED' ? 'JOB_ACCEPTED' : 'JOB_REJECTED',
+        actorId: user!.id,
+        resourceId: jobId
+      }).catch((error) => console.error('Error creating job status notification:', error))
     }
 
     return NextResponse.json({

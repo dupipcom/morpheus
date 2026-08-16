@@ -17,6 +17,7 @@
     "save": "שמירה",
     "cancel": "ביטול",
     "delete": "מחיקה",
+    "remove": "הסר",
     "loading": "טוען...",
     "error": "שגיאה",
     "success": "הצלחה",
@@ -60,7 +61,8 @@
     "saving": "שומר...",
     "decline": "דחה",
     "friendRequest": "בקשת חברות",
-    "reverseOrder": "סדר הפוך"
+    "reverseOrder": "סדר הפוך",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "בית",
@@ -74,7 +76,8 @@
     "privacy": "מדיניות פרטיות",
     "locale": "שפה",
     "blog": "בלוג",
-    "agenda": "סדר יום"
+    "agenda": "סדר יום",
+    "upgrade": "שדרוג"
   },
   "dashboard": {
     "title": "חייך במבט אחד.",
@@ -125,11 +128,14 @@
         "FRIENDS": "חברים",
         "CLOSE_FRIENDS": "חברים קרובים",
         "PUBLIC": "ציבורי",
-        "AI_ENABLED": "בינה מלאכותית מופעלת"
+        "AI_ENABLED": "בינה מלאכותית מופעלת",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "פרסם הערה",
       "publishing": "מפרסם...",
-      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
+      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "הפעל ניתוח בינה מלאכותית"
     },
     "thirdParty": {
       "title": "צד שלישי",
@@ -147,7 +153,9 @@
       "addDelegatedAnalyst": "הוסף אנליסט מואצל",
       "adding": "מוסיף...",
       "addError": "לא ניתן היה להוסיף אנליסט מואצל",
-      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו."
+      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -174,12 +182,68 @@
       "ready": "מוכן",
       "open": "פתוח",
       "done": "הושלם",
-      "ignored": "התעלם"
+      "ignored": "התעלם",
+      "completed": "Completed"
     },
     "edit": "ערוך",
     "loadingForDate": "טוען משימות לתאריך שנבחר...",
     "initializingTasks": "מגדיר את המשימות שלך...",
-    "noTasksForDate": "אין משימות מתוכננות לתאריך זה"
+    "noTasksForDate": "אין משימות מתוכננות לתאריך זה",
+    "delete": "מחק...",
+    "deleteTitle": "מחיקת משימה",
+    "deleteDescription": "כמה מהמשימה הזו ברצונך למחוק?",
+    "deleteScopes": {
+      "today": "רק היום",
+      "onwards": "מהיום והלאה",
+      "all": "כל הרשומות"
+    },
+    "requestTitle": "בקשת עבודה",
+    "requestDescription": "הסבר מדוע ברצונך לקחת על עצמך את המשימה הזו. בעל הרשימה יבדוק את בקשתך.",
+    "submitTitle": "הגשת עבודה",
+    "resubmitTitle": "תקן והגש מחדש",
+    "submitDescription": "פרסם הוכחה לעבודתך. בקרוב תוכל לצרף תמונה או וידאו.",
+    "reviewTitle": "בדיקת עבודה",
+    "reviewDescription": "אשר את העבודה, בקש שינויים או דחה אותה.",
+    "justificationLabel": "הצדקה",
+    "justificationPlaceholder": "מדוע עליך לבצע את המשימה הזו?",
+    "evidenceLabel": "הוכחה / הערה",
+    "evidencePlaceholder": "תאר מה עשית...",
+    "selfReviewLabel": "הערכה עצמית (0-100)",
+    "managerReviewLabel": "ציון בדיקה (0-100)",
+    "reviewNoteLabel": "משוב (אופציונלי)",
+    "sendRequest": "שלח בקשה",
+    "resubmit": "הגש מחדש",
+    "submit": "הגש",
+    "accept": "אשר",
+    "requestChanges": "בקש שינויים",
+    "reject": "דחה",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "שתה מים",
@@ -243,7 +307,8 @@
     "cookies": "אנו משתמשים בכרות, ובשימוש באפליקציה זו אתה מסכים לכך.",
     "code": "קוד",
     "terms": "תנאי שירות",
-    "privacy": "מדיניות פרטיות"
+    "privacy": "מדיניות פרטיות",
+    "pricing": "תמחור"
   },
   "earningsTable": {
     "day": "יום",
@@ -329,7 +394,9 @@
     "expectedNeedUtilities": "ממוצע שירותים נדרשים צפוי",
     "editAction": "ערוך פעולה",
     "save": "שמור",
-    "cancel": "בטל"
+    "cancel": "בטל",
+    "currency": "מטבע",
+    "selectCurrency": "בחר מטבע"
   },
   "agentChat": {
     "thinking": "חושב...",
@@ -337,7 +404,8 @@
     "getInsights": "שאל על מצב הרוח שלך, הרגלים או קבל תובנות מותאמות אישית",
     "placeholder": "בואו נשוחח...",
     "error": "סליחה, נתקלתי בשגיאה. אנא נסה שוב.",
-    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
+    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "התחל את המסע שלך עם Dupip",
@@ -536,7 +604,34 @@
       "addTask": "הוסף משימה",
       "cancel": "ביטול",
       "editTitle": "ערוך משימה",
-      "saveTask": "שמור משימה"
+      "saveTask": "שמור משימה",
+      "premiumLabel": "פרמיה (אופציונלי)",
+      "premiumPercentHint": "אחוז מתקציב הרשימה",
+      "cadenceLabel": "חוזר על עצמו",
+      "cadence": {
+        "none": "לא חוזר",
+        "daily": "יומי",
+        "weekly": "שבועי",
+        "monthly": "חודשי",
+        "yearly": "שנתי",
+        "every": "כל",
+        "day": "יום",
+        "days": "ימים",
+        "week": "שבוע",
+        "weeks": "שבועות",
+        "month": "חודש",
+        "months": "חודשים",
+        "year": "שנה",
+        "years": "שנים",
+        "onDay": "ביום",
+        "onThe": "ב",
+        "inMonth": "בחודש",
+        "ends": "מסתיים",
+        "never": "לעולם לא",
+        "after": "אחרי",
+        "onDate": "בתאריך",
+        "occurrences": "פעמים"
+      }
     },
     "addListForm": {
       "titleCreate": "צור רשימה חדשה",
@@ -592,12 +687,24 @@
       },
       "areaDistributionLabel": "תקציב תחום",
       "areaPrizeDistributionLabel": "פרס תחום",
+      "areaPremiumDistributionLabel": "חלוקת פרסים לפי תחום",
       "categoryDistributionLabel": "תקציב קטגוריה",
       "categoryPrizeDistributionLabel": "פרס קטגוריה",
+      "categoryPremiumDistributionLabel": "חלוקת פרסים לפי קטגוריה",
       "taskDistributionLabel": "תקציב",
       "premiumLabel": "פרס",
       "totalLabel": "סה\"כ",
-      "addTaskTitle": "הוסף משימה"
+      "addTaskTitle": "הוסף משימה",
+      "editTitle": "עריכת רשימה",
+      "visibilityLabel": "נראות",
+      "collaboratorsPlaceholder": "חפש חברים...",
+      "budgetSourcesLabel": "אחוז מהתקציבים שלך:",
+      "noBudgets": "אין עדיין תקציבים — הוסף אחד למטה.",
+      "newBudgetName": "שם התקציב",
+      "confirmDelete": "למחוק רשימה זו ואת כל המשימות שלה? לא ניתן לבטל.",
+      "delete": "מחק",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "צור תבנית חדשה",
@@ -662,6 +769,36 @@
       "after": "אחרי",
       "pickDate": "בחר תאריך",
       "occurrences": "פעמים"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -714,7 +851,15 @@
     "notice": "כרגע אין כסף אמיתי מנוהל באפליקציה זו. Dupip Invest עדיין בשלב התכנון. זהו רק סביבת בדיקה למטרות הדגמה.",
     "consentTitle": "הסכמה להדגמת השקעות",
     "consentCheckbox": "אני מכיר בכך ש-Dupip עדיין אינו פלטפורמת השקעות, ובשימוש בתכונה זו, אני מודע לכך שכל הנתונים שלי עלולים להימחק לפני השקה הרשמית של Dupip Invest.",
-    "confirm": "אישור"
+    "confirm": "אישור",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "יצירת NFT הושלמה.",
@@ -879,7 +1024,10 @@
         "submitted": "עבודה נשלחה לבדיקה",
         "resubmitted": "עבודה נשלחה מחדש לבדיקה"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "הפתק עודכן בהצלחה",
@@ -889,6 +1037,7 @@
     "deleting": "מוחק...",
     "confirmDelete": "האם אתה בטוח שברצונך למחוק את הפתק הזה?",
     "content": "תוכן הפתק",
+    "recipient": "נמען",
     "visibilityUpdated": "הנראות עודכנה בהצלחה",
     "visibilityUpdateFailed": "עדכון הנראות נכשל",
     "changeVisibility": "שנה נראות",
@@ -897,7 +1046,17 @@
       "date": "תאריך",
       "mostRelevant": "הרלוונטי ביותר",
       "all": "הכל"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "צ'אט",
@@ -913,7 +1072,52 @@
     "inviteFriendToOrg": "הזמן חבר לארגון זה",
     "inviteLinkCopied": "קישור ההזמנה הועתק",
     "inviteSent": "ההזמנה נשלחה",
-    "inviteAccepted": "ההזמנה התקבלה"
+    "inviteAccepted": "ההזמנה התקבלה",
+    "sidebar": {
+      "directMessages": "הודעות ישירות",
+      "organizations": "ארגונים",
+      "sms": "SMS",
+      "virtualNumber": "מספר וירטואלי",
+      "searchDmPlaceholder": "חפש חברים כדי להתחיל הודעה ישירה",
+      "createChannelPlaceholder": "צור ערוץ",
+      "createOrgPlaceholder": "צור ארגון",
+      "refresh": "רענן",
+      "noOrgs": "אין עדיין ארגונים",
+      "noDms": "אין עדיין הודעות ישירות"
+    },
+    "virtualNumber": {
+      "label": "מספר וירטואלי",
+      "hint": "בחר את מספרי הטלפון שלך. הודעות SMS נכנסות למספרים אלה יופיעו בצ’אט שלך.",
+      "none": "ללא מספר",
+      "loading": "טוען מספרים…",
+      "empty": "אין מספרים זמינים",
+      "error": "לא ניתן היה לטעון את המספרים שלך",
+      "assignError": "לא ניתן היה לשמור מספר זה",
+      "assigned": "המספר שויך",
+      "cleared": "המספר הוסר",
+      "addNumber": "הוסף מספר…",
+      "removeNumber": "הסר מספר",
+      "quotaLabel": "בשימוש {used} מתוך {quota} מספרים",
+      "limitReached": "הגעת למספר המרבי של מספרים וירטואליים בתוכנית שלך",
+      "buyCta": "קנה מספר וירטואלי",
+      "gateHint": "מספרים וירטואליים דורשים תוכנית Donator. קנה מספר כדי לקבל SMS בצ’אט.",
+      "buyDialogTitle": "נדרשת תוכנית Donator",
+      "buyDialogDescription": "מספרים וירטואליים כלולים בתוכניות Donator. בחר תוכנית בדף התמחור כדי להתחיל.",
+      "buyDialogGoToPricing": "עבור לתמחור"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "טוען SMS…",
+      "empty": "אין עדיין שיחות SMS",
+      "noNumberHint": "שייך מספר וירטואלי כדי להתחיל לקבל SMS כאן",
+      "composerPlaceholder": "כתוב SMS…",
+      "sendError": "לא ניתן היה לשלוח הודעה זו",
+      "you": "אתה",
+      "statusSent": "נשלח",
+      "statusDelivered": "נמסר",
+      "statusFailed": "נכשל",
+      "error": "לא ניתן היה לטעון SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -921,6 +1125,79 @@
       "tight": "צפוף",
       "small": "קטן",
       "wide": "רחב"
+    }
+  },
+  "pricing": {
+    "metaTitle": "תמחור",
+    "metaDescription": "דופיפ רשומה באירופה כרדיו אינטרנט עם שליחות של רווחה נפשית. כדי לתמוך בצמיחה שלנו, אנו מציעים הטבות לתורמים. הציגו את התוכניות שלנו ואיך DPIP עובד.",
+    "heroTitle": "רדיו, בדמיון מחדש",
+    "heroSubtitle": "דופיפ נבנתה סביב אתגר פשוט: רווחה. אנחנו מחפשים את התדרים שמוציאים ממך את הטוב ביותר.",
+    "siaeTitle": "הערה על רישוי מוזיקה",
+    "plansTitle": "תוכניות",
+    "plansDescription": "בחרו את התוכנית שמתאימה לאופן שבו אתם מאזינים.",
+    "dpipTitle": "על DPIP",
+    "dpipBody": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד.",
+    "consentTitle": "הסכמת DPIP",
+    "consentCheckbox": "אני מבין/מבינה של-DPIP ייתכן שאין ערך כספי, לא עכשיו ולא בעתיד, ואני מקבל/ת זאת.",
+    "consentSignedOut": "היכנסו כדי לבדוק את הסכמת DPIP ולהציג את התוכניות שלנו.",
+    "signInToConsent": "כניסה",
+    "consentSaved": "ההסכמה נרשמה בתאריך {date}",
+    "saveConsent": "שמירת הסכמה",
+    "dpipNoValue": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד.",
+    "consentDescription": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד. לפני הצגת התוכניות שלנו, אנא עיינו ואשרו את הדברים הבאים:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
     }
   }
 }
