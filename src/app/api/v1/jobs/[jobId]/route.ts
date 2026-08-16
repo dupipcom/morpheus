@@ -7,6 +7,7 @@ import { calculateAndApplyJobEarnings, reverseJobEarnings, initializeJobInvoice,
 import { validateStatusTransition, isAuthorizedForTransition } from '@/lib/services/job/statusValidator'
 import { TASK_STATUS_MAP } from '@/lib/services/job/taskSync'
 import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
+import { notifyUser } from '@/lib/services/notification'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import type { ListUser, UpdateJobRequest } from '@/lib/services/job/types'
@@ -604,6 +605,20 @@ export async function PUT(
       } catch (earningsError) {
         console.error('Error reversing job earnings:', earningsError)
       }
+    }
+
+    // Notify the worker when their job request is approved or declined
+    if (
+      (newStatus === 'ACCEPTED' || newStatus === 'REJECTED') &&
+      newStatus !== existingJob.status &&
+      existingJob.workerId
+    ) {
+      void notifyUser({
+        userId: existingJob.workerId,
+        type: newStatus === 'ACCEPTED' ? 'JOB_ACCEPTED' : 'JOB_REJECTED',
+        actorId: user!.id,
+        resourceId: jobId
+      }).catch((error) => console.error('Error creating job status notification:', error))
     }
 
     return NextResponse.json({

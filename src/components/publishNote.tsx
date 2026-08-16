@@ -14,6 +14,9 @@ import { LinkPreview } from "@/components/linkPreview"
 import { extractUrls } from "@/lib/utils/linkPreview"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
+import { AttachmentPicker, type PickedAttachment } from "@/components/attachmentPicker"
+import { PlacePicker, type PlaceLocation } from "@/components/placePicker"
+import { EntityTagPicker, type EntityTag } from "@/components/entityTagPicker"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
@@ -39,6 +42,12 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
   )
   const [isPublishing, setIsPublishing] = useState(false)
   const previewUrls = useMemo(() => extractUrls(noteContent), [noteContent])
+  // Composer extensions: attachments, location, and entity tags
+  const [attachments, setAttachments] = useState<PickedAttachment[]>([])
+  const [location, setLocation] = useState<PlaceLocation | null>(null)
+  const [profileTags, setProfileTags] = useState<EntityTag[]>([])
+  const [listTags, setListTags] = useState<EntityTag[]>([])
+  const [taskTags, setTaskTags] = useState<EntityTag[]>([])
   
   // Use ref to track if we're updating from props to prevent loops
   const isUpdatingFromProps = useRef(false)
@@ -98,21 +107,61 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         : (date || todayDate)
       const noteDate = selectedDateForNote
 
+      // Attachments already committed elsewhere (documentId set) go in the note
+      // body directly; new uploads are committed against the note after creation.
+      const committedDocumentIds = attachments
+        .filter((attachment) => !!attachment.documentId)
+        .map((attachment) => attachment.documentId as string)
+
+      const body: Record<string, unknown> = {
+        content: noteContent.trim(),
+        visibility: noteVisibility,
+        aiEnabled,
+        date: noteDate,
+        recipientId
+      }
+      if (committedDocumentIds.length > 0) body.documentIds = committedDocumentIds
+      if (location) body.location = location
+      if (profileTags.length > 0) body.profileIds = profileTags.map((tag) => tag.id)
+      if (listTags.length > 0) body.listIds = listTags.map((tag) => tag.id)
+      if (taskTags.length > 0) body.taskIds = taskTags.map((tag) => tag.id)
+
       const response = await fetch('/api/v1/notes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          content: noteContent.trim(),
-          visibility: noteVisibility,
-          aiEnabled,
-          date: noteDate,
-          recipientId
-        }),
+        body: JSON.stringify(body),
       })
 
       if (response.ok) {
+        // Commit new uploads against the created note. The attachments API links
+        // the document (pushes documentIds into the note) for the given entity,
+        // so no follow-up PATCH is needed. Failures only break the attachment,
+        // never the note itself.
+        const createdNote = await response.json().catch(() => null)
+        const createdNoteId = createdNote?.note?.id as string | undefined
+        if (createdNoteId) {
+          await Promise.all(
+            attachments
+              .filter((attachment) => !attachment.documentId)
+              .map(async (attachment) => {
+                try {
+                  const commitResponse = await fetch('/api/v1/attachments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ entityType: 'note', entityId: createdNoteId, key: attachment.key })
+                  })
+                  if (!commitResponse.ok) {
+                    console.error('Error committing attachment:', await commitResponse.text())
+                  }
+                } catch (error) {
+                  console.error('Error committing attachment:', error)
+                }
+              })
+          )
+        }
+
         // Persist the AI analysis preference only if it changed
         const storedAiEnabled = (session?.user as { defaultAiEnabled?: boolean } | undefined)?.defaultAiEnabled ?? false
         if (aiEnabled !== storedAiEnabled) {
@@ -128,6 +177,11 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         }
         // Clear the note content after successful publish
         setNoteContent('')
+        setAttachments([])
+        setLocation(null)
+        setProfileTags([])
+        setListTags([])
+        setTaskTags([])
         // Refresh all registered note lists
         refreshAll()
         if (onNotePublished) {
@@ -190,6 +244,20 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           />
           <span>{t('mood.publish.enableAiAnalysis') || 'Enable AI analysis'}</span>
         </label>
+      </div>
+      {/* Composer extensions: attachments, place, and entity tags */}
+      <div className="flex flex-col gap-3 mt-3">
+        <AttachmentPicker
+          entityType="note"
+          kind="any"
+          max={4}
+          value={attachments}
+          onChange={setAttachments}
+        />
+        <PlacePicker value={location} onChange={setLocation} compact />
+        <EntityTagPicker kind="profile" value={profileTags} onChange={setProfileTags} />
+        <EntityTagPicker kind="list" value={listTags} onChange={setListTags} />
+        <EntityTagPicker kind="task" value={taskTags} onChange={setTaskTags} />
       </div>
       {previewUrls.length > 0 && (
         <div className="mt-3">

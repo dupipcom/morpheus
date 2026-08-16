@@ -450,6 +450,7 @@ model User {
   delegatedAccessReceived Delegation[] @relation("Delegated")
   emailNotifications EmailNotification[]
   virtualNumbers    VirtualNumber[]
+  notifications     Notification[] @relation("UserNotifications")
 }
 
 model VirtualNumber {
@@ -480,6 +481,31 @@ model EmailNotification {
   @@unique([recipientUserId, scopeKey])
   @@index([recipientUserId, type, sentAt])
   @@index([chatMessageId])
+}
+
+// In-app bell notifications. `type` is a structured key the client localizes
+// (JOB_REQUESTED, JOB_ACCEPTED, JOB_REJECTED, LIST_INVITE, ...); `message` is an
+// optional pre-rendered fallback. `actorId`/`resourceId` are display references,
+// deliberately not relations (a deleted actor must not delete the notification).
+model Notification {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Recipient (internal User id)
+  userId     String    @db.ObjectId
+  user       User      @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  type       String
+  // Internal User id of whoever triggered the notification (optional)
+  actorId    String?   @db.ObjectId
+  // Related resource id (job, list, note, ...)
+  resourceId String?   @db.ObjectId
+  message    String?
+  readAt     DateTime?
+
+  @@index([userId, createdAt])
+  @@index([userId, readAt])
 }
 
 model Profile {
@@ -762,6 +788,8 @@ model Task {
   // Recurrence (RRULE - RFC 5545 string, e.g. "FREQ=WEEKLY;INTERVAL=1;BYDAY=TH"; null = one-off task)
   rrule                String?
   dtstart              String?             // YYYY-MM-DD start date
+  // Materialized recurrence chain: root task id for occurrence rows created at completion
+  recurringTaskId      String?             @db.ObjectId
   // Progress fields
   times                Int?                // Target completions per occurrence (counter)
   localeKey            String?
@@ -796,6 +824,7 @@ model Task {
   @@index([listId])
   @@index([status])
   @@index([listId, status])
+  @@index([recurringTaskId])
 }
 
 model Job {

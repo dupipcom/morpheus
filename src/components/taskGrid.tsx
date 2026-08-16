@@ -106,18 +106,20 @@ export const TaskGrid = ({
 
   // Job dialog actions
   const handleRequestSubmit = useCallback(
-    async (justification: string) => {
+    async (justification: string, documentIds: string[]) => {
       if (!jobDialog?.task?.id) return
+      const body: Record<string, unknown> = {
+        taskId: jobDialog.task.id,
+        listId: selectedTaskList?.id,
+        workerId: userId,
+        occurrenceDate: date,
+        justification,
+      }
+      if (documentIds.length > 0) body.documentIds = documentIds
       await fetch('/api/v1/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          taskId: jobDialog.task.id,
-          listId: selectedTaskList?.id,
-          workerId: userId,
-          occurrenceDate: date,
-          justification,
-        }),
+        body: JSON.stringify(body),
       })
       await onRefresh()
     },
@@ -423,6 +425,7 @@ export const TaskGrid = ({
         taskName={jobDialog?.task?.name}
         isResubmit={jobDialog?.job?.status === 'VALIDATING'}
         isSubmitting={refreshingJobId !== null}
+        userId={userId}
         onRequest={handleRequestSubmit}
         onSubmit={handleSubmitWork}
         onReview={handleReviewWork}
