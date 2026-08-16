@@ -967,6 +967,18 @@
     "inviteLinkCopied": "Invite link copied",
     "inviteSent": "Invite sent",
     "inviteAccepted": "Invite accepted",
+    "sidebar": {
+      "directMessages": "Direct messages",
+      "organizations": "Organizations",
+      "sms": "SMS",
+      "virtualNumber": "Virtual number",
+      "searchDmPlaceholder": "Search friends to start a DM",
+      "createChannelPlaceholder": "Create a channel",
+      "createOrgPlaceholder": "Create an organization",
+      "refresh": "Refresh",
+      "noOrgs": "No organizations yet",
+      "noDms": "No direct messages yet"
+    },
     "virtualNumber": {
       "label": "Virtual number",
       "hint": "Choose your phone numbers. Incoming SMS to these numbers will appear in your chat.",
