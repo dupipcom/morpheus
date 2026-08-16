@@ -5,7 +5,7 @@ import { ApiError, toResponse } from '@/lib/services/errors'
 import { getViewerRole } from '@/lib/services/ownership'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
-import { formatDateLocal } from '@/lib/utils/taskUtils'
+import { formatDateLocal, getCounterWindow } from '@/lib/utils/taskUtils'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { calculateAndApplyJobEarnings, initializeJobInvoice, updateJobWithTaskValues } from '@/lib/services/job/earningsService'
 import { notifyUser } from '@/lib/services/notification'
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
     // Verify task belongs to list
     const task = await prisma.task.findUnique({
       where: { id: taskId },
-      select: { id: true, listId: true }
+      select: { id: true, listId: true, times: true, rrule: true }
     })
 
     if (!task) {
@@ -215,6 +215,32 @@ export async function POST(request: NextRequest) {
     }
     if (task.listId !== listId) {
       return NextResponse.json({ error: 'Task does not belong to the specified list' }, { status: 400 })
+    }
+
+    // Server-side counter cap: an ACCEPTED job is only allowed while the
+    // task's accepted count for the RRULE counter window is below `times`.
+    // This makes the counter model authoritative (rapid taps / races cannot
+    // overshoot the per-period target).
+    if ((status || 'REQUESTED') === 'ACCEPTED') {
+      const effectiveDate = occurrenceDate || formatDateLocal(new Date())
+      const win = getCounterWindow(task, effectiveDate)
+      const accepted = await prisma.job.count({
+        where: {
+          taskId,
+          status: 'ACCEPTED',
+          OR: [
+            { occurrenceDate: { gte: win.start, lte: win.end } },
+            // Legacy null-date jobs count toward undated accepts
+            ...(occurrenceDate ? [] : [{ occurrenceDate: null }])
+          ]
+        }
+      })
+      if (accepted >= (task.times || 1)) {
+        return NextResponse.json(
+          { error: 'Task already has the maximum accepted jobs for this period' },
+          { status: 409 }
+        )
+      }
     }
 
     const job = await prisma.job.create({
