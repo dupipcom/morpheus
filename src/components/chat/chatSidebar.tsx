@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SignInButton } from '@clerk/nextjs'
 import {
   ChevronRight,
+  Check,
   Hash,
   Inbox,
   Mail,
@@ -226,6 +227,7 @@ export function ChatSidebar({
   const { t, hasTranslation } = useI18n()
 
   const chatTitle = hasTranslation('chat.title') ? t('chat.title') : 'Chat'
+  const chatSubtitle = hasTranslation('chat.subtitle') ? t('chat.subtitle') : 'Organizations, channels, direct messages, and threads.'
   const anonymousLabel = hasTranslation('chat.anonymous') ? t('chat.anonymous') : 'Anonymous'
   const directMessageLabel = hasTranslation('chat.directMessage') ? t('chat.directMessage') : 'Direct message'
   const pendingInvitesTitle = hasTranslation('chat.pendingInvites') ? t('chat.pendingInvites') : 'Pending invites'
@@ -309,6 +311,8 @@ export function ChatSidebar({
       // anchored to the bounded chat card (a `relative` ancestor supplied by
       // the parent SidebarProvider wrapper) instead of the viewport.
       className="absolute inset-y-0 h-full"
+      mobileTitle={chatTitle}
+      mobileDescription={chatSubtitle}
     >
       <SidebarHeader>
         <div className="flex items-center gap-2 px-1">
@@ -368,7 +372,7 @@ export function ChatSidebar({
                           aria-label={acceptInviteLabel}
                           title={acceptInviteLabel}
                         >
-                          <Send className="h-4 w-4" />
+                          <Check className="h-4 w-4" />
                         </button>
                       </SidebarMenuAction>
                     ) : (
@@ -379,7 +383,7 @@ export function ChatSidebar({
                             aria-label={acceptInviteLabel}
                             title={acceptInviteLabel}
                           >
-                            <Send className="h-4 w-4" />
+                            <Check className="h-4 w-4" />
                           </button>
                         </SignInButton>
                       </SidebarMenuAction>
