@@ -4,6 +4,7 @@
  */
 
 import prisma from '@/lib/prisma'
+import { getWeekNumber } from '@/lib/utils/date'
 
 /**
  * List-level productivity data
@@ -155,7 +156,7 @@ export async function updateDayProgress(
   } else {
     // Create new Day record
     const date = new Date(occurrenceDate)
-    const week = getWeekNumber(date)
+    const week = getWeekNumber(date).week
     const month = date.getMonth() + 1
     const quarter = Math.ceil(month / 3)
     const semester = month <= 6 ? 1 : 2
@@ -175,21 +176,6 @@ export async function updateDayProgress(
       }
     })
   }
-}
-
-/**
- * Get week number from date (ISO 8601)
- */
-function getWeekNumber(date: Date): number {
-  const tempDate = new Date(date.valueOf())
-  const dayNum = (date.getDay() + 6) % 7
-  tempDate.setDate(tempDate.getDate() - dayNum + 3)
-  const firstThursday = tempDate.valueOf()
-  tempDate.setMonth(0, 1)
-  if (tempDate.getDay() !== 4) {
-    tempDate.setMonth(0, 1 + ((4 - tempDate.getDay()) + 7) % 7)
-  }
-  return 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000)
 }
 
 /**

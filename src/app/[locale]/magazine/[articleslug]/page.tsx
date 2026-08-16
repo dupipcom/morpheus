@@ -9,49 +9,16 @@ import { ArticleShareButton } from '@/components/articleShareButton';
 import { locales } from '@/app/constants';
 import { SocialLinkIcon, getSocialLabel } from '@/components/socialLinkIcon';
 import type { ProfileLink } from '@/lib/utils/profileUtils';
+import { cachedInternalGet } from '@/lib/public/internalFetch';
 
 export const dynamic = 'force-dynamic';
 
 // Helper function to fetch profile data
 async function getProfile(userName: string): Promise<any | null> {
   if (!userName) return null;
-  
-  try {
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    
-    const fetchHeaders: Record<string, string> = {
-      'Accept': 'application/json',
-    };
-    if (process.env.INTERNAL_FETCH_SECRET) {
-      fetchHeaders['x-internal-fetch-secret'] = process.env.INTERNAL_FETCH_SECRET;
-    }
 
-    const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`, {
-      headers: fetchHeaders,
-    });
-    
-    if (!response.ok) {
-      return null;
-    }
-    
-    // Check if response is actually JSON before parsing
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      // If we got HTML (error page), return null
-      return null;
-    }
-    
-    const data = await response.json();
-    return data.profile;
-  } catch (error) {
-    // Silently fail during build - profile data is optional
-    if (process.env.NODE_ENV === 'development') {
-      console.error(`Error fetching profile for ${userName}:`, error);
-    }
-    return null;
-  }
+  const data = await cachedInternalGet<{ profile?: any }>(`/api/v1/profile/${userName}`);
+  return data?.profile ?? null;
 }
 
 export async function generateStaticParams() {

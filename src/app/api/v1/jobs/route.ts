@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-import { getUserListRole } from '@/lib/services/auth'
+import { ApiError, toResponse } from '@/lib/services/errors'
+import { getViewerRole } from '@/lib/services/ownership'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
@@ -141,6 +142,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ jobs: processedJobs })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error fetching jobs:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -171,7 +175,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Authorization checks
-    const role = await getUserListRole(user.id, listId)
+    const role = await getViewerRole(user.id, 'list', listId)
     if (!role || !JOB_CREATION_ROLES.includes(role)) {
       return NextResponse.json({ error: 'Unauthorized: You must be a member of the list to create jobs' }, { status: 403 })
     }
@@ -246,6 +250,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ job })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error creating job:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

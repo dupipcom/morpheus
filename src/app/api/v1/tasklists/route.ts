@@ -18,7 +18,7 @@ import {
   getUserLocale,
   loadTranslationsForLocale,
   type NewTaskInput
-} from '@/lib/services/tasklist'
+} from '@/lib/services/list'
 
 const ALLOWED_VISIBILITIES: Visibility[] = ['PUBLIC', 'PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'HIDDEN']
 

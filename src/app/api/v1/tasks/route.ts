@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-import { getUserListRole } from '@/lib/services/auth'
+import { ApiError, toResponse } from '@/lib/services/errors'
+import { getViewerRole } from '@/lib/services/ownership'
 import { getTasksForDate } from '@/lib/services/task'
 import { resolveListBudget, resolveTaskFinancials } from '@/lib/services/finance/premiumService'
 import { sanitizeText } from '@/lib/utils/sanitize'
@@ -69,13 +70,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'List not found' }, { status: 404 })
     }
 
-    const hasAccess = list.users.some(
-      (userRef: { userId: string; role: string }) =>
-        userRef.userId === user.id &&
-        ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
-    )
+    const viewerRole = await getViewerRole(user.id, 'list', list)
 
-    if (!hasAccess) {
+    if (viewerRole === null) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
@@ -102,6 +99,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ tasks, date })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error fetching tasks:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -167,9 +167,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Check authorization - user must be OWNER or MANAGER of the list
-    const role = await getUserListRole(user.id, listId)
+    const role = await getViewerRole(user.id, 'list', listId)
 
-    if (!role || !['OWNER', 'MANAGER'].includes(role)) {
+    if (role !== 'OWNER' && role !== 'MANAGER') {
       return NextResponse.json(
         { error: 'Unauthorized: Only list owners and managers can create tasks' },
         { status: 403 }
@@ -223,6 +223,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ task })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error creating task:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

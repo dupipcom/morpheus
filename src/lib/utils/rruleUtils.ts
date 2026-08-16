@@ -2,6 +2,8 @@
  * RRULE string helpers (RFC-5545) used by services to build cadence values
  */
 
+import { slugify } from '@/lib/public/slug'
+
 const JS_DAY_TO_RRULE = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
 
 /**
@@ -59,14 +61,8 @@ export function rruleFromListRole(role: string | null | undefined): string | nul
 
 /**
  * Generate a URL-safe slug from a name, appending a short suffix for uniqueness
+ * (wrapper around the shared algorithm in src/lib/public/slug.ts)
  */
 export function slugifyList(name: string | null | undefined, idSuffix: string): string {
-  const base = (name || 'list')
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '') // strip accents
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 60) || 'list'
-  return `${base}-${idSuffix}`
+  return `${slugify(name)}-${idSuffix}`
 }

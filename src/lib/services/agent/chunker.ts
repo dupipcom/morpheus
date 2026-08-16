@@ -22,7 +22,7 @@ export function estimateTokens(text: string): number {
 }
 
 function isoWeekKey(date: string): string {
-  const [isoYear, week] = getWeekNumber(new Date(`${date}T00:00:00Z`))
+  const { year: isoYear, week } = getWeekNumber(new Date(`${date}T00:00:00Z`))
   return `${isoYear}-w${String(week).padStart(2, '0')}`
 }
 
