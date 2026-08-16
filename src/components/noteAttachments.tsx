@@ -13,6 +13,8 @@ export interface NoteDocumentRef {
   fileName?: string | null
   mimeType?: string | null
   kind?: string | null
+  /** Video cover frame URL (storage base); streamed via ?poster=1 on the pipe */
+  posterUrl?: string | null
 }
 
 interface NoteAttachmentsProps {
@@ -68,7 +70,12 @@ export function NoteAttachments({ documents, maxImages = 4, className }: NoteAtt
       )}
 
       {videos.map((doc) => (
-        <VideoPlayer key={doc.id} src={attachmentFileUrl(doc.id)} title={doc.fileName || undefined} />
+        <VideoPlayer
+          key={doc.id}
+          src={attachmentFileUrl(doc.id)}
+          poster={doc.posterUrl ? `${attachmentFileUrl(doc.id)}?poster=1` : undefined}
+          title={doc.fileName || undefined}
+        />
       ))}
 
       {audios.map((doc) => (

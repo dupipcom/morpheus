@@ -180,7 +180,7 @@ export async function GET(request: NextRequest) {
     if (allDocumentIds.length > 0) {
       const documents = await prisma.document.findMany({
         where: { id: { in: allDocumentIds } },
-        select: { id: true, fileName: true, mimeType: true, kind: true }
+        select: { id: true, fileName: true, mimeType: true, kind: true, posterUrl: true }
       })
       const docsById = new Map(documents.map((doc) => [doc.id, doc]))
       for (const note of sortedNotes) {

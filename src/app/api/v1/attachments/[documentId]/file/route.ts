@@ -47,7 +47,8 @@ export async function GET(
         kind: true,
         mimeType: true,
         fileName: true,
-        fileUrl: true
+        fileUrl: true,
+        posterUrl: true
       }
     })
     if (!document) {
@@ -74,8 +75,21 @@ export async function GET(
       }
     }
 
-    // The key is derived from fileUrl (bucket URL = PUBLIC_BASE_URL + '/' + key)
-    const key = document.fileUrl.replace(`${PUBLIC_BASE_URL}/`, '')
+    // The key is derived from fileUrl (bucket URL = PUBLIC_BASE_URL + '/' + key).
+    // `?poster=1` streams the video cover frame (Document.posterUrl) instead.
+    const { searchParams } = new URL(request.url)
+    const wantsPoster = searchParams.get('poster') === '1'
+
+    let key: string
+    if (wantsPoster) {
+      if (!document.posterUrl) {
+        throw new ApiError(404, 'NOT_FOUND', 'Poster not found')
+      }
+      key = document.posterUrl.replace(`${PUBLIC_BASE_URL}/`, '')
+    } else {
+      key = document.fileUrl.replace(`${PUBLIC_BASE_URL}/`, '')
+    }
+
     const range = request.headers.get('range')
 
     const object = await getObjectStream(key, range)
@@ -84,12 +98,13 @@ export async function GET(
     }
 
     const isInlinePreviewable =
+      wantsPoster ||
       document.kind === 'image' ||
       document.kind === 'video' ||
       document.mimeType === 'application/pdf'
 
     const headers = new Headers({
-      'Content-Type': object.contentType,
+      'Content-Type': wantsPoster ? 'image/jpeg' : object.contentType,
       'Content-Length': String(object.contentLength),
       'Accept-Ranges': 'bytes',
       'X-Content-Type-Options': 'nosniff',

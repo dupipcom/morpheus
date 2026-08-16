@@ -1059,7 +1059,8 @@
       "lists": "Tag lists",
       "tasks": "Tag tasks",
       "events": "Tag events"
-    }
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "المحادثة",

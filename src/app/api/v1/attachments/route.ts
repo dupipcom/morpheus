@@ -15,6 +15,7 @@ import {
   getFirstBytes,
   headObject,
   kindFamilyMatches,
+  PUBLIC_BASE_URL,
   publicUrlFor,
   type AttachmentKind,
   type AttachmentRole
@@ -22,6 +23,16 @@ import {
 import type { Prisma } from '@/generated/prisma/client'
 
 const ENTITY_TYPES = ['task', 'list', 'job', 'note', 'user'] as const
+
+/**
+ * Poster frames are client-uploaded JPEG objects; they must live under the
+ * storage base URL so the media pipe can derive their key from Document.posterUrl.
+ */
+function parsePosterUrl(value: unknown): string | null {
+  if (typeof value !== 'string' || !value.trim()) return null
+  const trimmed = value.trim()
+  return trimmed.startsWith(`${PUBLIC_BASE_URL}/`) ? trimmed : null
+}
 
 /** First bytes fetched for magic-byte inspection (plan §4.1: 4 KB). */
 const MAGIC_BYTE_SAMPLE = 4096
@@ -112,7 +123,7 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, 'INVALID_REQUEST', 'Invalid request body')
     }
 
-    const { key, fileName, kind, width, height, duration, location, entityType, entityId, role } =
+    const { key, fileName, kind, width, height, duration, location, entityType, entityId, role, posterUrl } =
       body
 
     // --- basic shape validation ---
@@ -213,6 +224,9 @@ export async function POST(request: NextRequest) {
         height: heightValue,
         fileDuration: durationValue,
         location: locationValue as Prisma.InputJsonValue | undefined,
+        // Video cover frame: a second client-uploaded object (JPEG). Must live
+        // under the storage base URL so the file route can derive its key.
+        posterUrl: parsePosterUrl(posterUrl),
         userId: user.id,
         // Keep both sides of the Task/Job/List/Note <-> Document reference
         // arrays in sync.

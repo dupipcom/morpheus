@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
 import type { ActivityItem } from "@/components/activityCard"
 import { ActivityGrid } from "@/components/activityGrid"
+import { requestEditNote } from "@/lib/editNoteStore"
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { GlobalContext } from "@/lib/contexts"
@@ -505,7 +506,12 @@ export function BeView({
               user: noteData?.user || templateData?.user || undefined,
               comments: (noteData as any)?.comments || (templateData as any)?.comments || undefined,
               _count: noteData?._count || templateData?._count,
-              documents: (noteData as any)?.documents || undefined
+              documents: (noteData as any)?.documents || undefined,
+              taskIds: (noteData as any)?.taskIds || undefined,
+              profileIds: (noteData as any)?.profileIds || undefined,
+              listIds: (noteData as any)?.listIds || undefined,
+              eventIds: (noteData as any)?.eventIds || undefined,
+              location: (noteData as any)?.location || undefined
             }
             return activityItem
           })}
@@ -524,6 +530,7 @@ export function BeView({
             fetchPublicNotes(1, false)
             fetchPublicTemplates(1, false)
           }}
+          onEditNote={(item) => requestEditNote({ ...item, content: item.content || '' })}
         />
         {(hasMoreNotes || hasMoreTemplates) && (
           <div className="flex justify-center mt-6">

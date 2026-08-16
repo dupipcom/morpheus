@@ -22,6 +22,8 @@ interface ActivityGridProps {
   isHighlighted?: (item: ActivityItem) => boolean
   /** Extra content rendered under each card (task chips, attachments, ...) */
   renderExtras?: (item: ActivityItem) => ReactNode
+  /** Edit hand-off to the Write composer (replaces the inline edit popover) */
+  onEditNote?: (item: ActivityItem) => void
   className?: string
 }
 
@@ -42,6 +44,7 @@ export function ActivityGrid({
   onNoteUpdated,
   isHighlighted,
   renderExtras,
+  onEditNote,
   className,
 }: ActivityGridProps) {
   const { t } = useI18n()
@@ -75,6 +78,7 @@ export function ActivityGrid({
             onCommentAdded={onCommentAdded}
             onNoteUpdated={onNoteUpdated}
             isHighlighted={isHighlighted?.(item) ?? false}
+            onEditNote={onEditNote}
           />
           {renderExtras?.(item)}
         </div>

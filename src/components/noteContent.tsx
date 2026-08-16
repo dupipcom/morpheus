@@ -4,11 +4,20 @@ import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
+import { MapPin, Users, ListChecks, Calendar } from 'lucide-react'
 import { LinkPreview } from '@/components/linkPreview'
 import { NoteAttachments, type NoteDocumentRef } from '@/components/noteAttachments'
 import { createUrlRegex, extractUrls } from '@/lib/utils/linkPreview'
 import { jsonFetcher } from '@/lib/utils/utils'
 import { useI18n } from '@/lib/contexts/i18n'
+
+/** Canonical note location shape (matches the notes API payload) */
+export interface NoteLocation {
+  lat: number
+  lng: number
+  name?: string
+  address?: string
+}
 
 interface NoteContentProps {
   content: string
@@ -18,6 +27,14 @@ interface NoteContentProps {
   children?: ReactNode
   /** Tagged task ids; chips render only for tasks resolvable from the viewer's own lists */
   taskIds?: string[] | null
+  /** Tagged profile ids (users); badges link to their public profiles */
+  profileIds?: string[] | null
+  /** Tagged list ids (the viewer's own lists); badges link to the Do list page */
+  listIds?: string[] | null
+  /** Tagged event ids (the viewer's own life events); badges link to the Feel view */
+  eventIds?: string[] | null
+  /** Note location; badge links to Google Maps */
+  location?: NoteLocation | null
   /** Attached documents (metadata from the notes API); renders images/videos/audio inline */
   documents?: NoteDocumentRef[] | null
 }
@@ -137,6 +154,150 @@ function useResolvableTaskLabels(taskIds: string[] | null | undefined): Array<{ 
   }, [taskIds, tasksData])
 }
 
+interface ProfileResult {
+  userId: string
+  userName?: string | null
+}
+
+interface EventResult {
+  id: string
+  name?: string | null
+}
+
+const LABEL_SWR_OPTIONS = {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  shouldRetryOnError: false,
+  dedupingInterval: 60000
+}
+
+/** Tagged people resolve via the profiles API (public profile handles). */
+function useResolvableProfileLabels(profileIds: string[] | null | undefined): Array<{ id: string; name: string }> {
+  const enabled = !!profileIds?.length
+  const ids = useMemo(() => (profileIds || []).join(','), [profileIds])
+  const { data } = useSWR<{ profiles?: ProfileResult[] }>(
+    enabled ? `/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids)}` : null,
+    jsonFetcher,
+    LABEL_SWR_OPTIONS
+  )
+  return useMemo(
+    () => (data?.profiles || []).map((p) => ({ id: p.userId, name: p.userName || p.userId })),
+    [data]
+  )
+}
+
+/** Tagged lists resolve only from the viewer's own lists (private lists stay hidden). */
+function useResolvableListLabels(listIds: string[] | null | undefined): Array<{ id: string; name: string }> {
+  const enabled = !!listIds?.length
+  const { data } = useSWR<{ taskLists?: TaskListResult[] }>(
+    enabled ? '/api/v1/tasklists' : null,
+    jsonFetcher,
+    LABEL_SWR_OPTIONS
+  )
+  return useMemo(() => {
+    if (!enabled) return []
+    const wanted = new Set(listIds || [])
+    return (data?.taskLists || [])
+      .filter((list) => wanted.has(list.id))
+      .map((list) => ({ id: list.id, name: list.name || list.id }))
+  }, [data, enabled, listIds])
+}
+
+/** Tagged events resolve from the viewer's own life events. */
+function useResolvableEventLabels(eventIds: string[] | null | undefined): Array<{ id: string; name: string }> {
+  const enabled = !!eventIds?.length
+  const { data } = useSWR<{ lifeEvents?: EventResult[] }>(
+    enabled ? '/api/v1/events' : null,
+    jsonFetcher,
+    LABEL_SWR_OPTIONS
+  )
+  return useMemo(() => {
+    if (!enabled) return []
+    const wanted = new Set(eventIds || [])
+    return (data?.lifeEvents || [])
+      .filter((event) => wanted.has(event.id))
+      .map((event) => ({ id: event.id, name: event.name || event.id }))
+  }, [data, enabled, eventIds])
+}
+
+/**
+ * Clickable badges for a note's tagged people, lists, events, and location.
+ * People link to their public profiles, lists to the Do list page, events to
+ * the Feel view, and the location opens Google Maps. Unresolvable ids (e.g.
+ * another user's private lists) are hidden, mirroring NoteTaskChips.
+ */
+export function NoteTagBadges({
+  profileIds,
+  listIds,
+  eventIds,
+  location,
+}: {
+  profileIds?: string[] | null
+  listIds?: string[] | null
+  eventIds?: string[] | null
+  location?: NoteLocation | null
+}) {
+  const { locale } = useI18n()
+  const router = useRouter()
+  const profiles = useResolvableProfileLabels(profileIds)
+  const lists = useResolvableListLabels(listIds)
+  const events = useResolvableEventLabels(eventIds)
+
+  if (profiles.length === 0 && lists.length === 0 && events.length === 0 && !location) return null
+
+  const badgeClass =
+    'inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-xs text-primary hover:bg-primary/20'
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 mb-2">
+      {profiles.map((profile) => (
+        <button
+          key={profile.id}
+          type="button"
+          onClick={() => router.push(`/${locale}/profile/${profile.name}`)}
+          className={badgeClass}
+        >
+          <Users className="h-3 w-3" aria-hidden />
+          {profile.name}
+        </button>
+      ))}
+      {lists.map((list) => (
+        <button
+          key={list.id}
+          type="button"
+          onClick={() => router.push(`/${locale}/app/do/${list.id}`)}
+          className={badgeClass}
+        >
+          <ListChecks className="h-3 w-3" aria-hidden />
+          {list.name}
+        </button>
+      ))}
+      {events.map((event) => (
+        <button
+          key={event.id}
+          type="button"
+          onClick={() => router.push(`/${locale}/app/feel`)}
+          className={badgeClass}
+        >
+          <Calendar className="h-3 w-3" aria-hidden />
+          {event.name}
+        </button>
+      ))}
+      {location && (
+        <a
+          href={`https://www.google.com/maps?q=${location.lat},${location.lng}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={badgeClass}
+        >
+          <MapPin className="h-3 w-3" aria-hidden />
+          {location.name || location.address || `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`}
+        </a>
+      )}
+    </div>
+  )
+}
+
 /**
  * Small badges for a note's tagged tasks, linking to the Do view. Only tasks
  * the viewer can resolve from their own lists render; others are hidden.
@@ -165,7 +326,18 @@ export function NoteTaskChips({ taskIds }: { taskIds?: string[] | null }) {
   )
 }
 
-export function NoteContent({ content, truncate = false, maxLength = 150, children, taskIds, documents }: NoteContentProps) {
+export function NoteContent({
+  content,
+  truncate = false,
+  maxLength = 150,
+  children,
+  taskIds,
+  profileIds,
+  listIds,
+  eventIds,
+  location,
+  documents,
+}: NoteContentProps) {
   const displayContent = useMemo(() => {
     if (!truncate || content.length <= maxLength) return content
     return `${content.slice(0, maxLength)}...`
@@ -182,6 +354,7 @@ export function NoteContent({ content, truncate = false, maxLength = 150, childr
       </p>
       {children}
       <NoteTaskChips taskIds={taskIds} />
+      <NoteTagBadges profileIds={profileIds} listIds={listIds} eventIds={eventIds} location={location} />
       <NoteAttachments documents={documents} />
       {urls.map((url) => (
         <LinkPreview key={url} url={url} />

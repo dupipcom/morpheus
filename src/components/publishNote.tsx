@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useContext, useMemo, useRef } from 'react'
+import { useState, useEffect, useContext, useMemo, useRef, useSyncExternalStore } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -15,9 +15,14 @@ import { LinkPreview } from "@/components/linkPreview"
 import { extractUrls } from "@/lib/utils/linkPreview"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
-import { AttachmentPicker, type PickedAttachment } from "@/components/attachmentPicker"
+import { AttachmentPicker, attachmentFileUrl, type PickedAttachment } from "@/components/attachmentPicker"
 import { PlacePicker, type PlaceLocation } from "@/components/placePicker"
 import { EntityTagPicker, type EntityTag } from "@/components/entityTagPicker"
+import {
+  subscribeEditingNote,
+  getEditingNote,
+  clearEditNote
+} from "@/lib/editNoteStore"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
@@ -52,7 +57,98 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
   const [eventTags, setEventTags] = useState<EntityTag[]>([])
   // Which extension popover is open (attach | place | profile | list | task | event)
   const [openPicker, setOpenPicker] = useState<string | null>(null)
+  // Controlled accordion state — opens automatically when a note is handed over for editing
+  const [accordionValue, setAccordionValue] = useState<string>('')
+  // Full-edit mode: a note handed over from the feed (see editNoteStore).
+  const editingNote = useSyncExternalStore(subscribeEditingNote, getEditingNote, () => null)
   
+  // Prefill the composer when a note is handed over for editing (see
+  // editNoteStore). Tag chips start with fallback labels so ids are never
+  // dropped on save; resolvable labels replace them as fetches land.
+  useEffect(() => {
+    if (!editingNote) return
+    setNoteContent(editingNote.content)
+    setNoteVisibility(editingNote.visibility || 'PRIVATE')
+    setAiEnabled(editingNote.aiEnabled ?? false)
+    setLocation(editingNote.location || null)
+    setAttachments((editingNote.documents || []).map((doc) => ({
+      key: doc.id,
+      publicUrl: attachmentFileUrl(doc.id),
+      fileName: doc.fileName || doc.id,
+      mimeType: doc.mimeType || 'application/octet-stream',
+      kind: (doc.kind || 'document') as PickedAttachment['kind'],
+      size: 0,
+      documentId: doc.id
+    })))
+
+    const fallback = (id: string) => `#${id.slice(-4)}`
+    setProfileTags((editingNote.profileIds || []).map((id) => ({ id, label: fallback(id) })))
+    setListTags((editingNote.listIds || []).map((id) => ({ id, label: fallback(id) })))
+    setTaskTags((editingNote.taskIds || []).map((id) => ({ id, label: fallback(id) })))
+    setEventTags((editingNote.eventIds || []).map((id) => ({ id, label: fallback(id) })))
+
+    const resolveLabels = async () => {
+      try {
+        if (editingNote.profileIds?.length) {
+          const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(editingNote.profileIds.join(','))}`)
+          if (res.ok) {
+            const data = await res.json()
+            const byId = new Map<string, string>(
+              (data.profiles || []).map((p: any) => [p.userId, p.userName || p.userId])
+            )
+            setProfileTags(editingNote.profileIds.map((id) => ({ id, label: byId.get(id) || fallback(id) })))
+          }
+        }
+      } catch {
+        // Labels stay as fallbacks
+      }
+      try {
+        if (editingNote.listIds?.length) {
+          const res = await fetch('/api/v1/tasklists')
+          if (res.ok) {
+            const data = await res.json()
+            const byId = new Map<string, string>((data.taskLists || []).map((l: any) => [l.id, l.name || l.id]))
+            setListTags(editingNote.listIds.map((id) => ({ id, label: byId.get(id) || fallback(id) })))
+          }
+        }
+      } catch {
+        // Labels stay as fallbacks
+      }
+      try {
+        if (editingNote.eventIds?.length) {
+          const res = await fetch('/api/v1/events')
+          if (res.ok) {
+            const data = await res.json()
+            const byId = new Map<string, string>((data.lifeEvents || []).map((e: any) => [e.id, e.name || e.id]))
+            setEventTags(editingNote.eventIds.map((id) => ({ id, label: byId.get(id) || fallback(id) })))
+          }
+        }
+      } catch {
+        // Labels stay as fallbacks
+      }
+    }
+    resolveLabels()
+  }, [editingNote])
+
+  // Open the composer accordion whenever an edit is requested
+  useEffect(() => {
+    if (editingNote) {
+      setAccordionValue('publish-note')
+    }
+  }, [editingNote])
+
+  const cancelEditing = () => {
+    clearEditNote()
+    setNoteContent('')
+    setAttachments([])
+    setLocation(null)
+    setProfileTags([])
+    setListTags([])
+    setTaskTags([])
+    setEventTags([])
+    setOpenPicker(null)
+  }
+
   // Use ref to track if we're updating from props to prevent loops
   const isUpdatingFromProps = useRef(false)
   const hasInitializedFromProps = useRef(false)
@@ -131,8 +227,9 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       if (taskTags.length > 0) body.taskIds = taskTags.map((tag) => tag.id)
       if (eventTags.length > 0) body.eventIds = eventTags.map((tag) => tag.id)
 
-      const response = await fetch('/api/v1/notes', {
-        method: 'POST',
+      const editing = editingNote
+      const response = await fetch(editing ? `/api/v1/notes/${editing.id}` : '/api/v1/notes', {
+        method: editing ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -140,46 +237,49 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       })
 
       if (response.ok) {
-        // Commit new uploads against the created note. The attachments API links
-        // the document (pushes documentIds into the note) for the given entity,
-        // so no follow-up PATCH is needed. Failures only break the attachment,
-        // never the note itself.
-        const createdNote = await response.json().catch(() => null)
-        const createdNoteId = createdNote?.note?.id as string | undefined
-        if (createdNoteId) {
-          await Promise.all(
-            attachments
-              .filter((attachment) => !attachment.documentId)
-              .map(async (attachment) => {
-                try {
-                  const commitResponse = await fetch('/api/v1/attachments', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    // The route requires the full descriptor (key, fileName, kind,
-                    // entityType, entityId) — the picker stores it all on the
-                    // pending attachment for exactly this create-flow commit.
-                    body: JSON.stringify({
-                      entityType: 'note',
-                      entityId: createdNoteId,
-                      key: attachment.key,
-                      fileName: attachment.fileName,
-                      kind: attachment.kind,
-                      mimeType: attachment.mimeType,
-                      ...(attachment.width !== undefined ? { width: attachment.width } : {}),
-                      ...(attachment.height !== undefined ? { height: attachment.height } : {}),
-                      ...(attachment.duration !== undefined ? { duration: attachment.duration } : {}),
-                      ...(attachment.location ? { location: attachment.location } : {}),
-                      ...(attachment.posterPublicUrl ? { posterUrl: attachment.posterPublicUrl } : {})
+        // Create-flow only: commit new uploads against the created note. The
+        // attachments API links the document (pushes documentIds into the
+        // note), so no follow-up PATCH is needed. In edit mode the picker
+        // commits against the existing note id directly. Failures only break
+        // the attachment, never the note itself.
+        if (!editing) {
+          const createdNote = await response.json().catch(() => null)
+          const createdNoteId = createdNote?.note?.id as string | undefined
+          if (createdNoteId) {
+            await Promise.all(
+              attachments
+                .filter((attachment) => !attachment.documentId)
+                .map(async (attachment) => {
+                  try {
+                    const commitResponse = await fetch('/api/v1/attachments', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      // The route requires the full descriptor (key, fileName, kind,
+                      // entityType, entityId) — the picker stores it all on the
+                      // pending attachment for exactly this create-flow commit.
+                      body: JSON.stringify({
+                        entityType: 'note',
+                        entityId: createdNoteId,
+                        key: attachment.key,
+                        fileName: attachment.fileName,
+                        kind: attachment.kind,
+                        mimeType: attachment.mimeType,
+                        ...(attachment.width !== undefined ? { width: attachment.width } : {}),
+                        ...(attachment.height !== undefined ? { height: attachment.height } : {}),
+                        ...(attachment.duration !== undefined ? { duration: attachment.duration } : {}),
+                        ...(attachment.location ? { location: attachment.location } : {}),
+                        ...(attachment.posterPublicUrl ? { posterUrl: attachment.posterPublicUrl } : {})
+                      })
                     })
-                  })
-                  if (!commitResponse.ok) {
-                    console.error('Error committing attachment:', await commitResponse.text())
+                    if (!commitResponse.ok) {
+                      console.error('Error committing attachment:', await commitResponse.text())
+                    }
+                  } catch (error) {
+                    console.error('Error committing attachment:', error)
                   }
-                } catch (error) {
-                  console.error('Error committing attachment:', error)
-                }
-              })
-          )
+                })
+            )
+          }
         }
 
         // Persist the AI analysis preference only if it changed
@@ -195,7 +295,8 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
             console.error('Error saving AI analysis preference:', error)
           }
         }
-        // Clear the note content after successful publish
+        // Clear the note content after successful publish (and exit edit mode)
+        if (editing) clearEditNote()
         setNoteContent('')
         setAttachments([])
         setLocation(null)
@@ -227,7 +328,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[340px] p-3" align="start">
-          <AttachmentPicker compact inlineResults entityType="note" kind="any" max={4} value={attachments} onChange={setAttachments} />
+          <AttachmentPicker compact inlineResults entityType="note" entityId={editingNote?.id ?? undefined} kind="any" max={4} value={attachments} onChange={setAttachments} />
         </PopoverContent>
       </Popover>
 
@@ -310,6 +411,14 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           setNoteContent(e.target.value)
         }}
       />
+      {editingNote && (
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-medium text-primary">{t('notes.editing') || 'Editing note'}</span>
+          <Button type="button" variant="ghost" size="sm" onClick={cancelEditing}>
+            {t('common.cancel') || 'Cancel'}
+          </Button>
+        </div>
+      )}
       {/* Controls row: extension icons → AI toggle → visibility → publish */}
       <div className="flex flex-wrap items-center gap-2 mb-2">
         {extensionIcons}
@@ -337,7 +446,11 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
               <Send className="h-4 w-4" />
             )}
             <span className="ml-1 hidden md:inline">
-              {isPublishing ? t('mood.publish.publishing') : t('mood.publish.action')}
+              {isPublishing
+                ? t('mood.publish.publishing')
+                : editingNote
+                  ? (t('common.save') || 'Save')
+                  : t('mood.publish.action')}
             </span>
           </Button>
         </div>
@@ -389,7 +502,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
 
   return (
     <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full sticky top-0 z-50 bg-muted backdrop-blur-sm mb-[calc(env(safe-area-inset-bottom)+16px)] md:mb-0 md:sticky md:top-4">
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full" value={accordionValue} onValueChange={setAccordionValue}>
         <AccordionItem value="publish-note" className="border-none">
           <AccordionTrigger className="py-0 px-0 hover:no-underline">
             <div className="flex items-center justify-between w-full gap-2">
