@@ -5,6 +5,7 @@ import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache'
 import { ensureUserAndProfile } from '@/lib/services/user/ensureUserAndProfile'
+import { getOrCreateDefaultWallet } from '@/lib/services/wallet'
 
 export async function POST(req: Request) {
     try {
@@ -45,6 +46,11 @@ export async function POST(req: Request) {
                 });
 
                 user = await prisma.user.findUnique({ where: { userId: clerkUserId } });
+                // Phase 6: default wallet at signup (idempotent — Clerk retries
+                // webhooks, and getOrCreateDefaultWallet never duplicates)
+                if (user) {
+                    await getOrCreateDefaultWallet(user.id);
+                }
                 if (clerkUsername) {
                     revalidatePath(`/@${clerkUsername}`);
                 }
@@ -55,6 +61,10 @@ export async function POST(req: Request) {
                 const sessionUserId: string | undefined = sessionData?.user_id || sessionData?.userId || clerkUserId;
                 if (sessionUserId) {
                     await ensureUserAndProfile(sessionUserId);
+                    const sessionUser = await prisma.user.findUnique({ where: { userId: sessionUserId }, select: { id: true } });
+                    if (sessionUser) {
+                        await getOrCreateDefaultWallet(sessionUser.id);
+                    }
                 }
                 break;
             }

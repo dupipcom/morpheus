@@ -19,9 +19,10 @@ import { Label } from '@/components/ui/label'
 import { WalletManager } from '@/components/walletManager'
 import { NFTGenerator } from '@/components/nftGenerator'
 import { TokenTransfer } from '@/components/tokenTransfer'
+import { WalletBalanceCard } from '@/components/walletBalanceCard'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { useUserData } from '@/lib/utils/userUtils'
+import { useUserData, useWallets } from '@/lib/utils/userUtils'
 import {
   DEFAULT_DAILY_PREMIUM_FACTOR,
   DEFAULT_WEEKLY_PREMIUM_FACTOR,
@@ -33,6 +34,9 @@ export function InvestView(): React.ReactElement {
   const { t } = useI18n()
   const { session } = useContext(GlobalContext)
   const { refreshUser, isLoading } = useUserData()
+  const { wallets } = useWallets()
+  const defaultWalletId =
+    wallets?.find((w: { isDefault?: boolean }) => w.isDefault)?.id ?? wallets?.[0]?.id
   const [consentChecked, setConsentChecked] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   
@@ -215,6 +219,7 @@ export function InvestView(): React.ReactElement {
           </div>
           <div className="space-y-4">
             <TokenTransfer />
+            {defaultWalletId && <WalletBalanceCard walletId={defaultWalletId} />}
             <NFTGenerator />
           </div>
         </div>

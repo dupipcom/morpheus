@@ -22,6 +22,7 @@ tags:
   - name: budgets
   - name: chat
   - name: comments
+  - name: cron
   - name: days
   - name: delegation
   - name: events
@@ -31,6 +32,7 @@ tags:
   - name: notes
   - name: notifications
   - name: places
+  - name: projects
   - name: profile
   - name: search
   - name: sms
@@ -1189,6 +1191,45 @@ paths:
         - { name: walletId, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Deleted }
+
+  /api/v1/wallet/[walletId]/statement:
+    get:
+      tags: [wallet]
+      summary: Paginated ledger entries for an owned wallet (newest first)
+      parameters:
+        - { name: walletId, in: path, required: true, schema: { type: string } }
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 50, maximum: 100 } }
+      responses:
+        '200': { description: Statement with nextCursor }
+
+  /api/v1/wallet/[walletId]/sync-onchain:
+    post:
+      tags: [wallet]
+      summary: Opt-in Kaleido mirror (address + balance refresh)
+      parameters:
+        - { name: walletId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Synced }
+        '503': { description: Kaleido unavailable }
+
+  /api/v1/wallet/resolve:
+    get:
+      tags: [wallet]
+      summary: Resolve a recipient across the shared /@ namespace
+      parameters:
+        - { name: username, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Recipient wallet }
+        '404': { description: Recipient not found }
+
+  /api/v1/cron/ledger-reconcile:
+    get:
+      tags: [cron]
+      summary: Ledger reconciliation sweep (abandoned PENDING + invariant checks)
+      security: []
+      responses:
+        '200': { description: Reconciliation report }
 
   /api/v1/wallet/nft:
     post:

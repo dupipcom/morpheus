@@ -89,11 +89,25 @@ credit({ walletId, amountMinor, kind, reference })// system-issued (allowances)
 getBalance(walletId) / getStatement(walletId, { cursor, kind })
 ```
 
-**Atomicity: a single interactive transaction, not compensation.** MongoDB Atlas runs as a replica
-set, so Prisma 6's interactive `prisma.$transaction(async (tx) => { … })` gives real multi-document
-atomicity. The whole movement — debit, credit, both ledger entries, transaction status — commits or
-aborts together. A `DATABASE_URL` without a replica set is a **deployment error**, asserted at boot
-(`assertTransactionalDatabase()`), because the ledger's correctness depends on it.
+**Atomicity: a single interactive transaction, not compensation — with a documented dual-mode
+deviation (user decision, 2026-08-17).** MongoDB Atlas runs as a replica set, so Prisma 6's
+interactive `prisma.$transaction(async (tx) => { … })` gives real multi-document atomicity. The
+whole movement — debit, credit, both ledger entries, transaction status — commits or aborts
+together. That remains the production path and the one the reconciliation invariants assume.
+
+**Deviation:** local development must not be blocked on a replica set. `ledgerService` detects
+transaction support at runtime (`supportsTransactions()`, a `hello` probe cached per process):
+
+- **Replica set present** → single interactive transaction (the flow below, unchanged).
+- **Standalone Mongo (dev)** → the same steps run sequentially with a compensating reversal on
+  failure. The compare-and-set debit (`updateMany { balance: { gte } }`) is atomic per document
+  even without transactions, so overspend protection holds; a crash mid-sequence can only leave a
+  PENDING row that the reconcile sweep alarms on. Do not run the standalone path where value moves
+  for real.
+
+`assertTransactionalDatabase()` warns on standalone Mongo and **fails loudly only when
+`LEDGER_REQUIRE_TRANSACTIONS=true`** — set that flag in production environments so a misconfigured
+replica set is a deployment error, not a silent fallback.
 
 ```
 transfer(...):
