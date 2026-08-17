@@ -39,10 +39,11 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Places | `places/CLAUDE.md` | `GET /places/autocomplete`, `GET /places/details`, `GET /places/geocode`, `GET /places/staticmap` |
 | Profile | `profile/CLAUDE.md` | `GET/POST /profile`, `GET /profile/{userName}`, `GET /profile/{userName}/notes` |
 | Profiles | `profiles/CLAUDE.md` | `GET /profiles`, `GET /profiles/by-ids` |
+| Projects | `projects/CLAUDE.md` | `GET/POST /projects`, `GET/PUT /projects/{projectId}`, `GET /projects/public`, `GET /projects/public/{username}` |
 | Search | `search/CLAUDE.md` | `GET /search` |
 | SMS | `sms/CLAUDE.md` | `GET /sms/conversations`, `GET/POST /sms/conversations/{id}/messages`, `POST /sms/conversations/{id}/read` |
-| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `GET/PUT/DELETE /tasklists/{taskListId}`, `POST /tasklists/{taskListId}/clone` |
-| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}` (DELETE with scope), `GET/POST /tasks/migrate` (deprecated no-op) |
+| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `GET/PUT/DELETE /tasklists/{taskListId}`, `POST /tasklists/{taskListId}/clone`, `GET /tasklists/public`, `GET /tasklists/public/{publicUrl}` |
+| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}` (DELETE with scope), `POST /tasks/{taskId}/apply`, `GET /tasks/{taskId}/applications`, `POST /tasks/{taskId}/applications/{applicationId}`, `GET/POST /tasks/migrate` (deprecated no-op) |
 | Templates | `templates/CLAUDE.md` | `GET/POST /templates`, `POST /templates/{templateId}/clone`, `GET /templates/public` |
 | Telnyx webhook | `telnyx/CLAUDE.md` | `POST /telnyx/webhook` (Ed25519 + 5-min timestamp) |
 | Things | `things/CLAUDE.md` | `GET/POST /things` |

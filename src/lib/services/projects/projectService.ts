@@ -77,6 +77,38 @@ export async function createProject(input: CreateProjectInput) {
 }
 
 /**
+ * Projects the viewer participates in (any role) — used by the Do-area project
+ * picker and the list form's project selector. Most recent first.
+ */
+export async function listProjectsForUser(userInternalId: string) {
+  return prisma.project.findMany({
+    where: { users: { some: { userId: userInternalId } } },
+    orderBy: { updatedAt: 'desc' }
+  })
+}
+
+/**
+ * Assert the viewer may attach a list to this project (OWNER/MANAGER/
+ * COLLABORATOR). Used by the list service when a list references a project.
+ */
+export async function assertProjectCollaborator(
+  viewerUserId: string,
+  projectId: string
+): Promise<void> {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    select: { users: true }
+  })
+  if (!project) {
+    throw new ApiError(404, 'NOT_FOUND', 'Project not found')
+  }
+  const ref = (project.users as ProjectUserRef[]).find((u) => u.userId === viewerUserId)
+  if (!ref || !['OWNER', 'MANAGER', 'COLLABORATOR'].includes(ref.role)) {
+    throw new ApiError(403, 'FORBIDDEN', 'Forbidden')
+  }
+}
+
+/**
  * Update a project's public-profile fields. OWNER/MANAGER only (same manage
  * capability as list updates). `collaborators` replaces the non-owner member
  * set, preserving every OWNER entry.

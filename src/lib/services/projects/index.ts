@@ -8,7 +8,9 @@ export {
   createProject,
   updateProject,
   getPublicProject,
-  listPublicProjects
+  listPublicProjects,
+  listProjectsForUser,
+  assertProjectCollaborator
 } from './projectService'
 
 export type {
