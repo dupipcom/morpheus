@@ -40,8 +40,10 @@ async function main() {
   let clerkOrgs = []
 
   try {
-    const { clerkClient } = await import('@clerk/nextjs/server')
-    const client = await clerkClient()
+    // @clerk/backend is importable from plain Node scripts (@clerk/nextjs is
+    // bundler-only and breaks under require()/dynamic import outside Next)
+    const { createClerkClient } = await import('@clerk/backend')
+    const client = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY || '' })
     clerkOrgs = []
     const first = await client.organizations.getOrganizationList({ limit: 500 })
     clerkOrgs = [...first.data]
@@ -73,8 +75,7 @@ async function main() {
             imageUrl: org.imageUrl ?? null,
             publicVisible: false,
             verified: false,
-            status: 'ACTIVE',
-            createdByUserId: ''
+            status: 'ACTIVE'
           }
         })
         created++
@@ -83,8 +84,10 @@ async function main() {
     console.log(`Clerk mirror: ${created} created, ${updated} updated`)
 
     // Memberships
-    const { clerkClient } = await import('@clerk/nextjs/server')
-    const client = await clerkClient()
+    // @clerk/backend is importable from plain Node scripts (@clerk/nextjs is
+    // bundler-only and breaks under require()/dynamic import outside Next)
+    const { createClerkClient } = await import('@clerk/backend')
+    const client = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY || '' })
     for (const org of clerkOrgs) {
       const mirror = await prisma.organization.findUnique({ where: { clerkOrgId: org.id }, select: { id: true } })
       if (!mirror) continue
@@ -138,7 +141,7 @@ async function main() {
           publicVisible: false,
           verified: false,
           status: 'ACTIVE',
-          createdByUserId: ''
+          createdByUserId: rows[0]?.userId ?? null
         }
       })
       for (const row of rows) {

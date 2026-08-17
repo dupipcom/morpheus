@@ -1,0 +1,90 @@
+name: E2E
+
+# Merge gate for dev: the whole-stack smoke + user journey must pass.
+# Required repo secrets (GitHub → Settings → Secrets and variables → Actions):
+#   CLERK_SECRET_KEY                 — Clerk backend key (DEVELOPMENT instance)
+#   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY — the app's publishable key
+#
+# DB: a fresh MongoDB container per run — migrations 0021–0028 run in order,
+# then `prisma db push` (0022 backfills Transaction.reference BEFORE the
+# unique index is pushed). The ledger runs its standalone-Mongo sequential
+# fallback here (dual-mode, Phase 6): overspend protection still holds via
+# the compare-and-set debit; the interactive-transaction path is exercised on
+# the Atlas replica set.
+
+on:
+  pull_request:
+    branches: [dev]
+  push:
+    branches: [dev]
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    services:
+      mongodb:
+        image: mongo:7
+        ports: ['27017:27017']
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: mongodb://localhost:27017/e2e
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      INTERNAL_FETCH_SECRET: e2e-internal-secret
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Prepare env
+        run: cp .env.public .env
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run migrations 0021–0028 (twice — idempotency proof)
+        run: |
+          for m in 0021-create-default-wallets 0022-normalize-transactions \
+                   0023-seed-system-wallets 0024-backfill-ledger-entries \
+                   0025-mirror-clerk-organizations 0026-backfill-owner-type \
+                   0027-split-life-events 0028-backfill-event-slugs; do
+            node "src/migrations/$m.js"
+            node "src/migrations/$m.js"   # re-run: must be a no-op
+          done
+
+      - name: Push schema (indexes/collections)
+        run: npx prisma db push --skip-generate
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npx playwright test
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

@@ -67,14 +67,16 @@ async function main() {
   }
   console.log(`Rewrote ${documents.length} documents`)
 
-  const days = await prisma.day.findMany({ where: { eventIds: { isEmpty: false } }, select: { id: true, eventIds: true } })
-  for (const day of days) {
-    await prisma.day.update({
-      where: { id: day.id },
-      data: { lifeEventIds: day.eventIds, eventIds: [] }
-    })
-  }
-  console.log(`Rewrote ${days.length} days`)
+  // Day: the old data lives under the DB field `eventIds`, which the new
+  // client maps to lifeEventIds — a raw $rename moves it (idempotent: the
+  // second run finds nothing to rename).
+  const renamed = await prisma.$runCommandRaw({
+    update: 'Day',
+    updates: [
+      { q: { eventIds: { $exists: true } }, u: { $rename: { eventIds: 'lifeEventIds' } }, multi: true }
+    ]
+  })
+  console.log(`Renamed eventIds → lifeEventIds on ${renamed.nModified ?? 0} days`)
 
   const comments = await prisma.comment.findMany({ where: { eventId: { not: null } }, select: { id: true, eventId: true } })
   for (const comment of comments) {

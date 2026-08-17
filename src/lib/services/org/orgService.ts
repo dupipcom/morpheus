@@ -68,6 +68,7 @@ export async function upsertOrganization(data: {
   // New mirror: generate the username handle from the name (or Clerk slug)
   const username = await generateOrgUsername(data.name || data.slug || 'org')
 
+  // createdByUserId is optional and filled by the first OWNER/ADMIN membership
   const created = await prisma.organization.create({
     data: {
       clerkOrgId: data.clerkOrgId,
@@ -76,8 +77,7 @@ export async function upsertOrganization(data: {
       imageUrl: data.imageUrl ?? null,
       publicVisible: false,
       verified: false,
-      status: 'ACTIVE',
-      createdByUserId: '' // filled by the membership webhook (creator)
+      status: 'ACTIVE'
     }
   })
   return { id: created.id }

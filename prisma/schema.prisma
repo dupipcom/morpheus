@@ -1357,7 +1357,7 @@ model Organization {
   verified        Boolean  @default(false)
   status          String   @default("ACTIVE")  // ACTIVE | ORPHANED (deleted in Clerk) | ARCHIVED
   deletedAt       DateTime?
-  createdByUserId String   @db.ObjectId
+  createdByUserId String?  @db.ObjectId   // creator/steward — filled by the first OWNER/ADMIN membership
   members         OrgMembership[]
   lists           List[]
   projects        Project[]
