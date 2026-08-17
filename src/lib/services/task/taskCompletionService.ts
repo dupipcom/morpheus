@@ -153,10 +153,12 @@ export async function updateTaskOccurrenceDates(
       if (count >= (task.times || 1)) {
         await materializeOccurrence(task, occurrenceDate)
       }
-    } else {
-      // Un-accept path. Deriving from the actual count (instead of trusting
-      // task.status) also self-heals rows corrupted by the old status-sync
-      // ordering bug: OPEN + completedOn set while count >= times.
+    } else if (task.completedOn === occurrenceDate) {
+      // Un-accept after a materialized completion: restore the occurrence and
+      // remove the child only if nothing has attached to it yet.
+      // Keyed on completedOn (the materialization marker), not status: the job
+      // route's status sync (CANCELLED -> OPEN) has already overwritten the
+      // task's COMPLETED status by the time this runs.
       const count = await countAcceptedForOccurrence(taskId, task.rrule, occurrenceDate)
       if (count >= (task.times || 1)) {
         if (task.status !== 'COMPLETED' || task.completedOn !== occurrenceDate) {

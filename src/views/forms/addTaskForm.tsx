@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useI18n } from '@/lib/contexts/i18n'
 import { CadencePicker } from '@/components/cadencePicker'
+import { Switch } from '@/components/ui/switch'
 
 /**
  * Create/edit task dialog (mirrors the AddListForm dialog pattern).
@@ -34,6 +35,7 @@ export const AddTaskForm = ({
   const [times, setTimes] = useState<number>(editTask?.times || 1)
   const [premium, setPremium] = useState<string>(editTask?.premium != null ? String(editTask.premium) : '')
   const [premiumType, setPremiumType] = useState<string>(editTask?.premiumType || 'FIAT')
+  const [redacted, setRedacted] = useState<boolean>(editTask?.redacted || false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Reset/sync form state whenever the dialog opens (create or edit)
@@ -45,12 +47,14 @@ export const AddTaskForm = ({
         setTimes(editTask.times || 1)
         setPremium(editTask.premium != null ? String(editTask.premium) : '')
         setPremiumType(editTask.premiumType || 'FIAT')
+        setRedacted(editTask.redacted || false)
       } else {
         setName('')
         setRRule(null)
         setTimes(1)
         setPremium('')
         setPremiumType('FIAT')
+        setRedacted(false)
       }
       setIsSubmitting(false)
     }
@@ -74,6 +78,7 @@ export const AddTaskForm = ({
             times: Math.max(1, Number(times) || 1),
             premium: parsedPremium,
             premiumType: parsedPremium != null ? premiumType : null,
+            redacted,
           }),
         })
       } else {
@@ -91,12 +96,16 @@ export const AddTaskForm = ({
             times: Math.max(1, Number(times) || 1),
             premium: parsedPremium,
             premiumType: parsedPremium != null ? premiumType : null,
+            redacted,
           }),
         })
       }
 
-      await onCreated()
+      // Close the dialog before awaiting the refresh: the parent's onCreated
+      // revalidates several SWR caches, and a slow/failed revalidation must
+      // never leave the modal overlay blocking the page.
       onOpenChange(false)
+      await onCreated()
     } catch (error) {
       console.error('Error saving task:', error)
     } finally {
@@ -162,6 +171,21 @@ export const AddTaskForm = ({
             {premiumType === 'PERCENT' && (
               <p className="text-xs text-muted-foreground">{t('forms.addTaskForm.premiumPercentHint', { defaultValue: 'Percent of the list budget' })}</p>
             )}
+          </div>
+          <div className="flex items-center justify-between gap-3 rounded-md border px-3 py-2">
+            <div className="space-y-0.5">
+              <Label htmlFor="task-redacted" className="text-sm">
+                {t('tasks.markAsSensitive', { defaultValue: 'Mark as sensitive' })}
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                {t('forms.addTaskForm.sensitiveHint', { defaultValue: 'Hides the task name until you choose to reveal it' })}
+              </p>
+            </div>
+            <Switch
+              id="task-redacted"
+              checked={redacted}
+              onCheckedChange={(checked) => setRedacted(checked === true)}
+            />
           </div>
         </div>
         <div className="flex gap-2 pt-2">

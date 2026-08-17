@@ -138,20 +138,24 @@ export function nextOccurrenceAfter(
  * Derive the date-scoped status for a task from its accepted-job count.
  * Extracted from getTasksForDate so materialization and past-pending paths
  * derive status identically. Only ACCEPTED jobs count.
+ *
+ * COMPLETED/DONE rows only read as completed while their accepted-job count
+ * still meets the target: a recurring occurrence whose completions were
+ * rolled back below `times` must fall through to the count-based statuses
+ * instead of displaying a stale "completed". One-off rows (no rrule) keep the
+ * passthrough even with fewer jobs — they have no per-date counter and are
+ * only marked COMPLETED/DONE deliberately (status menu).
  */
 export function deriveDateStatus(
-  task: { status: TaskStatus },
+  task: { status: TaskStatus; rrule?: string | null },
   acceptedCount: number,
   times?: number | null
 ): TaskStatus {
-  // Tasks with COMPLETED or DONE status should always show as completed
-  // regardless of date or job records. This is for tasks that were marked as
-  // permanently completed (e.g., one-time tasks that are done)
-  if (task.status === 'COMPLETED' || task.status === 'DONE') {
+  const required = times || 1
+
+  if ((task.status === 'COMPLETED' || task.status === 'DONE') && acceptedCount >= required) {
     return task.status
   }
-
-  const required = times || 1
   if (acceptedCount >= required) {
     return 'DONE'
   } else if (acceptedCount > 0) {
@@ -159,6 +163,10 @@ export function deriveDateStatus(
   } else if (task.status && ['READY', 'STEADY', 'IN_PROGRESS'].includes(task.status)) {
     // When no jobs exist for this date, respect manually-set task status
     // This allows users to mark tasks as "ready" or "steady" before completion
+    return task.status
+  } else if (!task.rrule && (task.status === 'COMPLETED' || task.status === 'DONE')) {
+    // Permanently completed one-off tasks (marked via the status menu) stay
+    // completed: they appear on every date and have no per-date counter.
     return task.status
   }
 

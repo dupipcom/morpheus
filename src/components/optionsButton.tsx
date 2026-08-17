@@ -69,7 +69,9 @@ export function OptionsButton({
           />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align}>
+      {/* Cap height to a proportion of the viewport so the menu scrolls on
+          small devices instead of overflowing the screen */}
+      <DropdownMenuContent align={align} className="max-h-[60vh] overflow-y-auto">
         {items.map((item, index) => (
           <div key={index}>
             {item.separator && index > 0 && <DropdownMenuSeparator />}

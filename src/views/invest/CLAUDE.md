@@ -83,6 +83,6 @@ Integration details:
 
 - **Consent-gated**: Entire view is blurred and non-interactive until consent checkbox is confirmed
 - **Consent check**: `hasConsented = user?.consents?.doInvestDemo?.consentedOn != null`
-- **Modal overlay fix**: Overrides Radix UI's `pointer-events: none` on body for bottom nav interaction
+- **Modal overlay fix**: Bottom nav stays interactive while the consent AlertDialog is open via the `.bottom-nav-interactive` class (`pointer-events: auto !important`); `<body>` restoration is handled by `ModalSurfaceGuard` in the dialog wrapper (no body style overrides here)
 - **Factor minimums**: Premium factors cannot go below `MIN_PREMIUM_FACTOR` (enforced client-side)
 - **Save feedback**: Settings are saved to user profile via `POST /api/v1/user`

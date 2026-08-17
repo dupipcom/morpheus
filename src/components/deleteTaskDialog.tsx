@@ -30,8 +30,11 @@ export const DeleteTaskDialog = ({ open, onOpenChange, task, date, onDeleted }: 
       const query = scope === 'all' ? '' : `?scope=${scope}&date=${date}`
       const res = await fetch(`/api/v1/tasks/${task.id}${query}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Failed to delete task')
-      await onDeleted()
+      // Close the dialog before awaiting the refresh: the parent's onDeleted
+      // revalidates several SWR caches, and a slow/failed revalidation must
+      // never leave the modal overlay blocking the page.
       onOpenChange(false)
+      await onDeleted()
     } catch (error) {
       console.error('Error deleting task:', error)
     } finally {
