@@ -1310,5 +1310,43 @@
     "statsMembers": "members",
     "statsLists": "published lists",
     "statsProjects": "projects"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Discover events and create your own",
+    "create": "New event",
+    "discover": "Discover",
+    "attending": "Going / Interested",
+    "mine": "Mine / Org",
+    "empty": "No events yet.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Event name...",
+      "summary": "Summary (one-liner)",
+      "description": "Description",
+      "startsAt": "Starts at",
+      "endsAt": "Ends at (optional)",
+      "timezone": "Timezone (IANA)",
+      "online": "Online event",
+      "onlineUrl": "Online URL",
+      "venue": "Venue name",
+      "capacity": "Capacity (optional)",
+      "visibility": "Visibility",
+      "owner": "Owner",
+      "ownerMe": "Me",
+      "createButton": "Create draft",
+      "cancel": "Cancel"
+    },
+    "public": {
+      "online": "Online event",
+      "going": "Going",
+      "interested": "Interested",
+      "like": "Like",
+      "buyPlaceholder": "Buy / Reserve (soon)",
+      "hostedBy": "Hosted by",
+      "about": "About",
+      "getInvolved": "Get involved",
+      "projects": "Projects"
+    }
   }
 }

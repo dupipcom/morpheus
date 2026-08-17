@@ -124,7 +124,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       }
       try {
         if (editingNote.eventIds?.length) {
-          const res = await fetch('/api/v1/events')
+          const res = await fetch('/api/v1/life-events')
           if (res.ok) {
             const data = await res.json()
             const byId = new Map<string, string>((data.lifeEvents || []).map((e: any) => [e.id, e.name || e.id]))

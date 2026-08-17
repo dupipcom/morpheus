@@ -411,7 +411,8 @@ model User {
   // Relations
   persons            Person[]
   things             Thing[]
-  events             Event[]
+  events             Event[]       @relation("PublicEvents")
+  lifeEvents         LifeEvent[]   @relation("LifeEvents")
   notes              Note[]
   sentNotes          Note[]    @relation("SentNotes")
   receivedNotes      Note[]    @relation("ReceivedNotes")
@@ -448,6 +449,8 @@ model User {
   listRequests       ListRequest[] @relation("ListRequests")
   taskApplications   TaskApplication[] @relation("TaskApplications")
   orgMemberships     OrgMembership[] @relation("OrgMemberships")
+  eventRsvps         EventRsvp[]     @relation("EventRsvps")
+  eventStaff         EventStaff[]    @relation("EventStaff")
   delegatedAccessGranted Delegation[] @relation("Delegator")
   delegatedAccessReceived Delegation[] @relation("Delegated")
   emailNotifications EmailNotification[]
@@ -558,7 +561,7 @@ model Day {
   // Reference arrays
   personIds       String[]       @default([]) @db.ObjectId
   thingIds        String[]       @default([]) @db.ObjectId
-  eventIds        String[]       @default([]) @db.ObjectId
+  lifeEventIds    String[]       @default([]) @db.ObjectId   // life events (Phase 8 split)
   chartIds        String[]       @default([]) @db.ObjectId
   noteIds         String[]       @default([]) @db.ObjectId
   commentIds      String[]       @default([]) @db.ObjectId
@@ -594,7 +597,8 @@ model Note {
   // Reference arrays
   personIds      String[]       @default([]) @db.ObjectId
   thingIds       String[]       @default([]) @db.ObjectId
-  eventIds       String[]       @default([]) @db.ObjectId
+  lifeEventIds   String[]       @default([]) @db.ObjectId   // life events (Phase 8 split)
+  eventIds       String[]       @default([]) @db.ObjectId   // public events (Phase 8): the event's discussion stream
   profileIds     String[]       @default([]) @db.ObjectId
   templateIds    String[]       @default([]) @db.ObjectId
   listIds         String[]       @default([]) @db.ObjectId
@@ -662,6 +666,8 @@ model Comment {
   profile    Profile?   @relation(fields: [profileId], references: [id], onDelete: Cascade)
   eventId    String?    @db.ObjectId
   event      Event?     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  lifeEventId String?   @db.ObjectId
+  lifeEvent  LifeEvent? @relation(fields: [lifeEventId], references: [id], onDelete: Cascade)
   likes      Like[]
   // Reference arrays
   noteIds    String[]   @default([]) @db.ObjectId
@@ -768,6 +774,8 @@ model List {
   taskIds              String[]           @default([]) @db.ObjectId
   noteIds              String[]           @default([]) @db.ObjectId
   documentIds          String[]           @default([]) @db.ObjectId
+  eventIds             String[]           @default([]) @db.ObjectId
+  events               Event[]            @relation("EventLists", fields: [eventIds], references: [id])
   raisedTransactionIds String[]           @default([]) @db.ObjectId
   raisedTransactions   Transaction[]      @relation("ListRaised", fields: [raisedTransactionIds], references: [id])
 
@@ -955,7 +963,8 @@ model Project {
   ownerType       String          @default("USER")
   orgId           String?         @db.ObjectId
   org             Organization?   @relation(fields: [orgId], references: [id])
-  // Phase 8 adds: eventIds/events inverse (declared there — both models exist from then on)
+  eventIds       String[]         @default([]) @db.ObjectId
+  events         Event[]          @relation("EventProjects", fields: [eventIds], references: [id])
 
   @@index([publicVisible])
   @@index([spotlight])
@@ -978,7 +987,12 @@ model Thing {
   @@index([userId])
 }
 
-model Event {
+/**
+ * Life event (the pre-Phase-8 `Event` model, renamed): a personal life event
+ * (name + quality) referenced from tasks, notes, days and comments. Public
+ * events took over the `Event` name in Phase 8.
+ */
+model LifeEvent {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -987,13 +1001,101 @@ model Event {
   visibility  Visibility @default(PRIVATE)
   // Relations
   userId      String     @db.ObjectId
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User       @relation("LifeEvents", fields: [userId], references: [id], onDelete: Cascade)
   comments    Comment[]
   // Reference arrays
   noteIds     String[]   @default([]) @db.ObjectId
   documentIds String[]   @default([]) @db.ObjectId
 
   @@index([userId])
+}
+
+/**
+ * Public event (Phase 8): pages, discovery, RSVP, lists/projects links.
+ * Ticketing/attendance relations (tiers, tickets, orders, soldCount,
+ * attendances, ticketsEnabled, refundPolicy, allowDoorDebt) are deliberately
+ * NOT declared here — they arrive in Phases 9/10, which list their inverse
+ * fields (schema-validity rule).
+ */
+model Event {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  // Identity
+  name          String
+  publicUrl     String   @unique           // slug-<id4>, ALWAYS generated at creation (never null:
+                                           // Prisma-on-Mongo cannot declare a sparse unique index,
+                                           // so multiple nulls would collide). Draft events simply
+                                           // 404 publicly because of `status`, not a missing slug.
+  summary       String?
+  description   String?
+  status        String   @default("DRAFT") // DRAFT | PUBLISHED | CANCELLED | COMPLETED
+  visibility    Visibility @default(PRIVATE)
+  // When
+  startsAt      DateTime
+  endsAt        DateTime?
+  timezone      String   @default("UTC")   // IANA; the event's own wall clock
+  doorsAt       DateTime?
+  // Where
+  isOnline      Boolean  @default(false)
+  onlineUrl     String?
+  location      Json?                      // { lat, lng, placeId?, name?, address? }
+  venueName     String?
+  // Media
+  coverDocumentId String? @db.ObjectId
+  flierDocumentId String? @db.ObjectId
+  // Capacity & money (used by Phase 9)
+  capacity      Int?
+  currency      String   @default("DPIP")
+  walletId      String?  @db.ObjectId      // proceeds wallet (kind: EVENT)
+  // Ownership
+  ownerType     String   @default("USER")  // USER | ORG
+  userId        String   @db.ObjectId      // creator/steward
+  user          User     @relation("PublicEvents", fields: [userId], references: [id], onDelete: Cascade)
+  orgId         String?  @db.ObjectId
+  org           Organization? @relation(fields: [orgId], references: [id])
+  // Relations
+  listIds       String[] @default([]) @db.ObjectId
+  lists         List[]   @relation("EventLists", fields: [listIds], references: [id])
+  projectIds    String[] @default([]) @db.ObjectId
+  projects      Project[] @relation("EventProjects", fields: [projectIds], references: [id])
+  rsvps         EventRsvp[]
+  staff         EventStaff[]
+  comments      Comment[]
+  noteIds       String[] @default([]) @db.ObjectId
+  documentIds   String[] @default([]) @db.ObjectId
+  categories    Category[]
+  tags          String[] @default([])
+
+  @@index([status, startsAt])
+  @@index([ownerType, orgId])
+  @@index([startsAt])
+}
+
+model EventRsvp {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String   // INTERESTED | GOING | NOT_GOING
+  eventId   String   @db.ObjectId
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  user      User     @relation("EventRsvps", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([eventId, status])
+}
+
+model EventStaff {          // door/gate permissions (used by Phase 10)
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  eventId   String   @db.ObjectId
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  user      User     @relation("EventStaff", fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("SCANNER")   // SCANNER | MANAGER
+
+  @@unique([eventId, userId])
 }
 
 model Budget {
@@ -1260,6 +1362,7 @@ model Organization {
   lists           List[]
   projects        Project[]
   wallets         Wallet[]
+  events          Event[]
 
   @@index([publicVisible])
   @@index([status])

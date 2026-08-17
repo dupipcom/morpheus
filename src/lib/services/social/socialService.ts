@@ -38,6 +38,7 @@ const LIKEABLE_ENTITIES: Record<string, { model: string; relationField: string |
   comment:  { model: 'comment',  relationField: 'commentId' },
   project:  { model: 'project',  relationField: null },   // like tasklist: persists with entityType/entityId only
   org:      { model: 'organization', relationField: null },
+  event:    { model: 'event',    relationField: null },  // enabled in Phase 8 (Like has no eventId — persists like tasklist)
 }
 
 // Entity types the comments route accepts today (canonical keys after

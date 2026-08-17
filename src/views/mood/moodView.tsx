@@ -275,9 +275,9 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
 
   // Fetch life events
   const { data: lifeEventsData, mutate: mutateLifeEvents, isLoading: lifeEventsLoading } = useSWR(
-    session?.user ? `/api/v1/events` : null,
+    session?.user ? `/api/v1/life-events` : null,
     async () => {
-      const response = await fetch('/api/v1/events')
+      const response = await fetch('/api/v1/life-events')
       if (response.ok) {
         const data = await response.json()
         setLifeEvents(data.lifeEvents || [])
@@ -648,7 +648,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     if (!newLifeEventText.trim()) return
 
     try {
-      const response = await fetch('/api/v1/events', {
+      const response = await fetch('/api/v1/life-events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
