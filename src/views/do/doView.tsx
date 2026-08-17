@@ -24,6 +24,7 @@ const formatDateLocal = (date: Date): string => {
 export const DoView = ({
   selectedTaskListId,
   selectedDate,
+  initialTaskId,
   showAddTask,
   showAddList,
   isEditingList,
@@ -33,6 +34,8 @@ export const DoView = ({
 }: {
   selectedTaskListId?: string
   selectedDate?: Date
+  /** Deep-linked task id (/app/do/list/{id}/{taskId}): shown first + highlighted */
+  initialTaskId?: string
   onDateChange?: (date: Date | undefined) => void
   showAddTask?: boolean
   showAddList?: boolean
@@ -221,6 +224,7 @@ export const DoView = ({
           collabProfiles={collabProfiles}
           date={date}
           userId={userId || ''}
+          initialTaskId={initialTaskId}
           jobs={jobsFromApi}
           onRefresh={handleRefreshJobData}
           onRefreshUser={refreshUser}

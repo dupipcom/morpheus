@@ -88,6 +88,8 @@ export async function getPublicTaskList(publicUrl: string, viewerUserId: string 
   ])
 
   return {
+    id: list.id,
+    publicUrl: list.publicUrl,
     name: list.name,
     publicTagline: list.publicTagline,
     bio: list.bio,

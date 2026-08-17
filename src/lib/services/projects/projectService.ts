@@ -192,6 +192,7 @@ export async function getPublicProject(username: string, viewerUserId: string | 
   ])
 
   return {
+    id: project.id,
     name: project.name,
     username: project.username,
     bio: project.bio,
