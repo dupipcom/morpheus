@@ -9,10 +9,11 @@ never enters the browser bundle.
 ## Routes
 - `GET /api/v1/places/autocomplete?input=&sessionToken=`
 - `GET /api/v1/places/details?placeId=&sessionToken=`
+- `GET /api/v1/places/geocode?lat=&lng=` — reverse-geocode coordinates into `{ lat, lng, placeId, name, address }` (LRU 5 min, per-user rate limit 30/10min)
 - `GET /api/v1/places/staticmap?lat=&lng=&zoom=&size=`
 
 ## Auth
-All three require Clerk auth (`auth()` from `@clerk/nextjs/server`) → `401 { error: 'Unauthorized' }`
+All four require Clerk auth (`auth()` from `@clerk/nextjs/server`) → `401 { error: 'Unauthorized' }`
 when the session is missing. `GET` requests from `<img>` tags send cookies, so `locationMap`
 renders fine against the staticmap route.
 

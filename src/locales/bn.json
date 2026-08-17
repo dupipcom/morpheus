@@ -243,7 +243,11 @@
     "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
     "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
     "review": "Review",
-    "decline": "Decline"
+    "decline": "Decline",
+    "error": {
+      "updateFailed": "Couldn't update the task"
+    },
+    "updating": "Updating…"
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -791,7 +795,9 @@
         "uploadFailed": "Upload failed",
         "saveFailed": "Could not save the attachment",
         "generic": "Could not add this file"
-      }
+      },
+      "locationSaveFailed": "Couldn't save the location",
+      "locationRetry": "Retry"
     },
     "imageCropper": {
       "title": "Crop image",
@@ -845,7 +851,12 @@
     "unlikeComment": "মন্তব্য পছন্দ সরান",
     "addComment": "মন্তব্য যোগ করুন...",
     "showMore": "আরও দেখান",
-    "showLess": "কম দেখান"
+    "showLess": "কম দেখান",
+    "updated": "Comment updated successfully",
+    "updateFailed": "Failed to update comment",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "deleted": "Comment deleted successfully",
+    "deleteFailed": "Failed to delete comment"
   },
   "invest": {
     "notice": "এই অ্যাপে বর্তমানে কোনও আসল অর্থ পরিচালনা করা হচ্ছে না। Dupip Invest এখনও পরিকল্পনার পর্যায়ে রয়েছে। এটি কেবল প্রদর্শনের উদ্দেশ্যে একটি পরীক্ষার পরিবেশ।",
@@ -1167,6 +1178,13 @@
       "JOB_ACCEPTED": "{{actorName}} approved your work request",
       "JOB_REJECTED": "{{actorName}} declined your work request",
       "LIST_INVITE": "{{actorName}} added you to a list"
+    },
+    "relativeTime": {
+      "justNow": "Just now",
+      "minutesAgo": "{m}m ago",
+      "hoursAgo": "{h}h ago",
+      "daysAgo": "{d}d ago",
+      "weeksAgo": "{w}w ago"
     }
   },
   "components": {

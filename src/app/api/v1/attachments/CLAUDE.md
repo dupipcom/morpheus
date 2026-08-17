@@ -5,6 +5,7 @@
 - `POST /api/v1/attachments` — confirm upload, inspect real bytes, create + link `Document`
 - `GET /api/v1/attachments` — list own documents (`?kind=cv&mine=true`)
 - `DELETE /api/v1/attachments/[documentId]` — unlink, delete object, delete row
+- `PATCH /api/v1/attachments/[documentId]` — update the document's location (`{ location }` or null to clear; owner-only)
 - `GET /api/v1/attachments/[documentId]/file` — authenticated media pipe (see below)
 
 ## Auth

@@ -35,6 +35,8 @@ interface TaskItemProps {
   isPendingRequest?: boolean
   /** Shown as a badge when the card represents a past occurrence (e.g. "Past · 2026-08-10") */
   dateBadge?: string
+  /** In-flight mutation for this entry: disables the tap + shows a spinner */
+  isPending?: boolean
 }
 
 // Get job status badge configuration
@@ -98,6 +100,7 @@ export const TaskItem = ({
   isCurrentUserWorker = false,
   isPendingRequest = false,
   dateBadge,
+  isPending = false,
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
   const dateCount = task?.dateCount ?? 0
@@ -119,8 +122,10 @@ export const TaskItem = ({
         variant={variant}
         className={`rounded-md leading-7 text-sm min-h-[40px] h-auto w-full whitespace-normal break-words py-2 flex items-center gap-2 justify-start ${className}`}
         onClick={onClick}
+        disabled={isPending}
         aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}
       >
+        {isPending && <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" aria-hidden />}
         <OptionsButton
           items={optionsMenuItems}
           statusColor={statusColor}

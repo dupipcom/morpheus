@@ -15,6 +15,8 @@ export interface NoteDocumentRef {
   kind?: string | null
   /** Video cover frame URL (storage base); streamed via ?poster=1 on the pipe */
   posterUrl?: string | null
+  /** Attachment location (shareable past-upload; see PATCH /attachments/[id]) */
+  location?: { lat: number; lng: number; placeId?: string; name?: string; address?: string } | null
 }
 
 interface NoteAttachmentsProps {

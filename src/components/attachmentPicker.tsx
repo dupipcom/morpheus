@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react'
-import { Film, FileText, Image as ImageIcon, Loader, MapPin, Upload, X } from 'lucide-react'
+import { Film, FileText, Image as ImageIcon, Loader, Upload, X } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
@@ -106,6 +106,8 @@ export const AttachmentPicker = ({
   const pipelineRef = useRef<Map<string, ItemPipeline>>(new Map())
   const uiRef = useRef<ItemUi[]>([])
   const [ui, setUi] = useState<ItemUi[]>([])
+  // Per-item PATCH failures for location persistence (with Retry)
+  const [locationErrors, setLocationErrors] = useState<Record<string, string>>({})
   const [isDragging, setIsDragging] = useState(false)
   const [, forceRender] = useReducer((x: number) => x + 1, 0)
 
@@ -409,15 +411,66 @@ export const AttachmentPicker = ({
     }
   }
 
+  /**
+   * PATCH the committed document's location (serialized through the pipeline
+   * queue so rapid edits cannot land out of order; fire-and-forget with a
+   * per-item error + retry surface).
+   */
+  const persistLocation = (item: ItemPipeline, loc: PlaceLocation | null) => {
+    const documentId = item.descriptor?.documentId
+    if (!documentId) return
+    const saveFailed = t('forms.attachmentPicker.locationSaveFailed', {
+      defaultValue: "Couldn't save the location",
+    })
+    const run = async () => {
+      try {
+        const res = await fetch(`/api/v1/attachments/${documentId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ location: loc }),
+        })
+        setLocationErrors((prev) => {
+          if (res.ok) {
+            const next = { ...prev }
+            delete next[item.id]
+            return next
+          }
+          return { ...prev, [item.id]: saveFailed }
+        })
+      } catch {
+        setLocationErrors((prev) => ({ ...prev, [item.id]: saveFailed }))
+      }
+    }
+    queueRef.current = queueRef.current.then(run, run)
+  }
+
+  /**
+   * Single write path for location changes: pipeline item, descriptor,
+   * parent value (onChange), and — for committed documents — the PATCH.
+   * This keeps the location shareable AFTER the upload completed.
+   */
+  const applyLocation = (item: ItemPipeline, loc: PlaceLocation | null) => {
+    item.location = loc
+    if (item.descriptor) {
+      item.descriptor.location = loc
+      const next = committedRef.current.map((a) =>
+        a.key === item.descriptor?.key ? { ...a, location: loc } : a
+      )
+      committedRef.current = next
+      onChange(next)
+    }
+    forceRender()
+    persistLocation(item, loc)
+  }
+
   const toggleUsePhotoLocation = (item: ItemPipeline, on: boolean) => {
     item.useExifLocation = on
-    item.location = on ? item.exifLocation : null
-    forceRender()
+    applyLocation(item, on ? item.exifLocation : null)
   }
 
   const setLocation = (item: ItemPipeline, loc: PlaceLocation | null) => {
-    item.location = loc
-    forceRender()
+    item.useExifLocation = false
+    applyLocation(item, loc)
   }
 
   const setItemState = (id: string, state: ItemUi['state'], progress: number) => {
@@ -530,7 +583,9 @@ export const AttachmentPicker = ({
             if (!item) return null
             const busy = u.state === 'compressing' || u.state === 'uploading'
             const done = u.state === 'done'
-            const editable = !done
+            // Location controls stay editable after upload (and on errors):
+            // only a busy item (compressing/uploading) locks them.
+            const editable = !busy && u.state !== 'error'
             return (
               <li key={u.id} className="flex items-start gap-3 rounded-md border bg-card p-2">
                 {renderThumb(item, done)}
@@ -600,11 +655,24 @@ export const AttachmentPicker = ({
                     />
                   )}
 
-                  {done && item.descriptor?.location && (
-                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                      <MapPin className="h-3 w-3" aria-hidden />
-                      {t('forms.attachmentPicker.locationAttached', { defaultValue: 'Location attached' })}
-                    </span>
+                  {locationErrors[u.id] && (
+                    <div className="flex items-center gap-2 text-xs text-destructive">
+                      <span>{locationErrors[u.id]}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          persistLocation(item, item.location)
+                          setLocationErrors((prev) => {
+                            const next = { ...prev }
+                            delete next[item.id]
+                            return next
+                          })
+                        }}
+                        className="underline underline-offset-2 hover:no-underline"
+                      >
+                        {t('forms.attachmentPicker.locationRetry', { defaultValue: 'Retry' })}
+                      </button>
+                    </div>
                   )}
                 </div>
               </li>

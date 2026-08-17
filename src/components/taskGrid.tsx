@@ -70,6 +70,9 @@ export const TaskGrid = ({
   const [requestReviewDialog, setRequestReviewDialog] = useState<{ job: any; task: any } | null>(null)
   const [deleteTask, setDeleteTask] = useState<any>(null)
   const [refreshingJobId, setRefreshingJobId] = useState<string | null>(null)
+  // Optimistic counter/times overlays keyed by entry key (taskId:occurrenceDate);
+  // dropped on server consolidation (the status-map init effect rebuilds).
+  const [countOverlays, setCountOverlays] = useState<Record<string, { dateCount?: number; times?: number }>>({})
 
   const { taskStatuses } = useTaskStatuses({
     tasks,
@@ -78,6 +81,7 @@ export const TaskGrid = ({
   })
 
   const {
+    pendingKeys,
     handleTaskClick,
     handleStatusChange,
     handleIncrementTimes,
@@ -92,6 +96,14 @@ export const TaskGrid = ({
     selectedTaskList,
     onRefresh,
     onRequestWork: (task) => setJobDialog({ mode: 'request', task }),
+    onOptimistic: (key, patch) =>
+      setCountOverlays((prev) => ({ ...prev, [key]: { ...prev[key], ...patch } })),
+    onOptimisticRevert: (key) =>
+      setCountOverlays((prev) => {
+        const next = { ...prev }
+        delete next[key]
+        return next
+      }),
   })
 
   const getUserRole = useCallback((): UserRole => {
@@ -100,25 +112,42 @@ export const TaskGrid = ({
     return userEntry?.role || 'COLLABORATOR'
   }, [selectedTaskList, userId])
 
-  // Sort tasks by status order
-  const sortedTasks = useMemo(() => {
-    const getStatusForSort = (task: any): TaskStatus => {
+  // Effective status for a card: the optimistic overlay wins (derived from the
+  // patched count/times, mirroring the server's deriveDateStatus); otherwise
+  // the server-derived map, then the task payload.
+  const getEffectiveStatus = useCallback(
+    (task: any): TaskStatus => {
       const key = getTaskEntryKey(task, date)
+      const overlay = countOverlays[key]
+      if (overlay) {
+        const count = overlay.dateCount ?? task.dateCount ?? 0
+        const times = overlay.times ?? task.times ?? 1
+        if (count >= times) return 'done'
+        if (count > 0) return 'in progress'
+        return 'open'
+      }
       return taskStatuses[key] || getTaskStatus(task) || 'open'
+    },
+    [countOverlays, taskStatuses, date]
+  )
+
+  // Sort tasks by status order. Each task's status index is derived at most
+  // once per pass (per-key cache), so the comparator is two Map lookups and
+  // never re-derives status mid-comparison.
+  const sortedTasks = useMemo(() => {
+    const indexCache = new Map<string, number>()
+    const indexFor = (task: any): number => {
+      const key = getTaskEntryKey(task, date)
+      let idx = indexCache.get(key)
+      if (idx === undefined) {
+        idx = STATUS_OPTIONS.indexOf(getEffectiveStatus(task))
+        indexCache.set(key, idx)
+      }
+      return idx
     }
 
-    return [...tasks].sort((a: any, b: any) => {
-      const aStatusIndex = STATUS_OPTIONS.indexOf(getStatusForSort(a))
-      const bStatusIndex = STATUS_OPTIONS.indexOf(getStatusForSort(b))
-      if (aStatusIndex !== bStatusIndex) {
-        return aStatusIndex - bStatusIndex
-      }
-      const aDone = getStatusForSort(a) === 'done' || getStatusForSort(a) === 'completed'
-      const bDone = getStatusForSort(b) === 'done' || getStatusForSort(b) === 'completed'
-      if (aDone === bDone) return 0
-      return aDone ? 1 : -1
-    })
-  }, [tasks, taskStatuses])
+    return [...tasks].sort((a: any, b: any) => indexFor(a) - indexFor(b))
+  }, [tasks, getEffectiveStatus, date])
 
   // Job dialog actions
   const handleRequestSubmit = useCallback(
@@ -219,7 +248,8 @@ export const TaskGrid = ({
   )
 
   // Renders one task card (today's or a past occurrence). Past cards pass
-  // their own occurrence-scoped jobs and a date badge.
+  // their own occurrence-scoped jobs and a date badge. `key` is the entry key
+  // (taskId:occurrenceDate) — used for optimistic overlays and pending state.
   const renderTaskCard = (
     task: any,
     key: string,
@@ -228,6 +258,9 @@ export const TaskGrid = ({
     occurrenceDate?: string
   ) => {
     const isDone = taskStatus === 'done' || taskStatus === 'completed'
+    // Optimistic counter/times overlay patches what TaskItem renders
+    const displayTask = countOverlays[key] ? { ...task, ...countOverlays[key] } : task
+    const isPending = pendingKeys.has(key)
 
     const activeJob = taskJobs.find(
       (j: any) => !['ACCEPTED', 'REJECTED', 'CANCELLED'].includes(j.status)
@@ -312,7 +345,7 @@ export const TaskGrid = ({
         icon: task?.redacted ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />,
         separator: true,
       },
-      ...((task.times || 1) > 1 && (task.dateCount || 0) > 0
+      ...((task.times || 1) > 1 && (task.dateCount || 0) > 0 && isOwnerOrManager
         ? [
             {
               label: t('tasks.decrementCount', { defaultValue: 'Decrement count' }),
@@ -364,8 +397,9 @@ export const TaskGrid = ({
       <div key={`task__container--${key}`} className="flex flex-col">
         <TaskItem
           key={`task__item--${key}`}
-          task={task}
+          task={displayTask}
           taskStatus={taskStatus}
+          isPending={isPending}
           statusColor={getStatusColor(taskStatus, 'css')}
           iconColor={getIconColor(taskStatus)}
           optionsMenuItems={finalOptionsMenuItems}
@@ -499,14 +533,15 @@ export const TaskGrid = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
         {sortedTasks.map((task: any) => {
           const key = getTaskEntryKey(task, date)
-          const taskStatus = taskStatuses[key] || getTaskStatus(task)
+          const taskStatus = getEffectiveStatus(task)
           // Jobs for this task (API returns them newest-first)
           const taskJobs = jobs.filter((j: any) => j.taskId === task.id)
           return renderTaskCard(task, key, taskJobs, taskStatus)
         })}
 
         {/* Past-day occurrences still pending / under review, merged into
-            the same grid after today's tasks */}
+            the same grid after today's tasks. They read through the same
+            entry-keyed status map/overlay (pastOccurrenceDate precedence). */}
         {pastEntries.map((entry: any) => {
           const pastTask = {
             ...entry.task,
@@ -514,8 +549,8 @@ export const TaskGrid = ({
             dateStatus: entry.dateStatus,
             dateCount: entry.dateCount,
           }
-          const key = `past:${pastTask.id}:${entry.occurrenceDate}`
-          const taskStatus = getTaskStatus(pastTask)
+          const key = getTaskEntryKey(pastTask, date)
+          const taskStatus = getEffectiveStatus(pastTask)
           return renderTaskCard(pastTask, key, entry.jobs || [], taskStatus, entry.occurrenceDate)
         })}
       </div>

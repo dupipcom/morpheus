@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import type { Task, TaskStatus } from '@/generated/prisma/client'
-import { getWeekRange, nextOccurrenceAfter, rruleFrequency } from './recurrenceService'
+import { nextOccurrenceAfter } from './recurrenceService'
+import { getCounterWindow } from '@/lib/utils/taskUtils'
 
 /**
  * Task completion data for a specific date
@@ -98,21 +99,23 @@ function calculateNonRecurringTaskStatus(
 }
 
 /**
- * Count ACCEPTED jobs for a specific occurrence of a task.
- * Weekly tasks aggregate across the whole Monday-Sunday week (same rule as
- * getTasksForDate); all others match the exact occurrence date.
+ * Count ACCEPTED jobs for a specific occurrence of a task, within the task's
+ * RRULE counter window (ISO week for WEEKLY, calendar month for MONTHLY,
+ * calendar year for YEARLY, exact date otherwise — same rule as
+ * getTasksForDate).
  */
 export async function countAcceptedForOccurrence(
   taskId: string,
   rrule: string | null,
   occurrenceDate: string
 ): Promise<number> {
-  const dates =
-    rruleFrequency(rrule) === 'WEEKLY'
-      ? getWeekRange(occurrenceDate).allDates
-      : [occurrenceDate]
+  const win = getCounterWindow({ rrule }, occurrenceDate)
   return prisma.job.count({
-    where: { taskId, status: 'ACCEPTED', occurrenceDate: { in: dates } }
+    where: {
+      taskId,
+      status: 'ACCEPTED',
+      occurrenceDate: { gte: win.start, lte: win.end }
+    }
   })
 }
 
@@ -150,11 +153,19 @@ export async function updateTaskOccurrenceDates(
       if (count >= (task.times || 1)) {
         await materializeOccurrence(task, occurrenceDate)
       }
-    } else if (task.status === 'COMPLETED' && task.completedOn === occurrenceDate) {
-      // Un-accept after a materialized completion: restore the occurrence and
-      // remove the child only if nothing has attached to it yet
+    } else {
+      // Un-accept path. Deriving from the actual count (instead of trusting
+      // task.status) also self-heals rows corrupted by the old status-sync
+      // ordering bug: OPEN + completedOn set while count >= times.
       const count = await countAcceptedForOccurrence(taskId, task.rrule, occurrenceDate)
-      if (count < (task.times || 1)) {
+      if (count >= (task.times || 1)) {
+        if (task.status !== 'COMPLETED' || task.completedOn !== occurrenceDate) {
+          // Still a completed occurrence — re-materialize idempotently
+          await materializeOccurrence(task, occurrenceDate)
+        }
+      } else if (task.status === 'COMPLETED' && task.completedOn === occurrenceDate) {
+        // Un-accept after a materialized completion: restore the occurrence and
+        // remove the child only if nothing has attached to it yet
         await prisma.task.update({
           where: { id: taskId },
           data: { status: 'OPEN', completedOn: null }

@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import type { Job, Task, TaskStatus } from '@/generated/prisma/client'
 import { deriveDateStatus } from './recurrenceService'
+import { getCounterWindow } from '@/lib/utils/taskUtils'
 
 /**
  * Job statuses that count as "pending or under review" for past occurrences
@@ -102,13 +103,19 @@ export async function getPastPendingEntries(params: {
 
   const entries: PastPendingEntry[] = []
   if (orderedKeys.length > 0) {
-    const taskIds = Array.from(new Set(orderedKeys.map((key) => key.split('|')[0])))
-    const occurrenceDates = Array.from(new Set(orderedKeys.map((key) => key.split('|')[1])))
+    // Per-group counter windows (RRULE-derived: week/month/year/exact date)
+    // drive dateCount/dateStatus; the entry's `jobs` stay exact-occurrence.
+    const groupWindows = orderedKeys.map((key) => {
+      const group = groups.get(key)!
+      return { key, taskId: group.task.id, ...getCounterWindow(group.task, group.occurrenceDate) }
+    })
 
     const allJobs = await prisma.job.findMany({
       where: {
-        taskId: { in: taskIds },
-        occurrenceDate: { in: occurrenceDates }
+        OR: groupWindows.map(({ taskId, start, end }) => ({
+          taskId,
+          occurrenceDate: { gte: start, lte: end }
+        }))
       },
       include: {
         task: true,
@@ -126,10 +133,19 @@ export async function getPastPendingEntries(params: {
       jobsByKey.get(key)!.push(job)
     }
 
+    const windowByKey = new Map(groupWindows.map((win) => [win.key, win]))
+
     for (const key of orderedKeys) {
       const group = groups.get(key)!
+      const win = windowByKey.get(key)!
       const groupJobs = jobsByKey.get(key) || []
-      const acceptedCount = groupJobs.filter((j) => j.status === 'ACCEPTED').length
+      const acceptedCount = allJobs.filter((j) =>
+        j.taskId === group.task.id &&
+        j.status === 'ACCEPTED' &&
+        j.occurrenceDate &&
+        j.occurrenceDate >= win.start &&
+        j.occurrenceDate <= win.end
+      ).length
       entries.push({
         task: group.task,
         jobs: groupJobs,
