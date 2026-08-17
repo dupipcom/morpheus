@@ -792,7 +792,9 @@
         "uploadFailed": "Upload failed",
         "saveFailed": "Could not save the attachment",
         "generic": "Could not add this file"
-      }
+      },
+      "locationSaveFailed": "Couldn't save the location",
+      "locationRetry": "Retry"
     },
     "imageCropper": {
       "title": "Crop image",

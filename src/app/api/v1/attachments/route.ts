@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { ApiError, toResponse } from '@/lib/services/errors'
 import { assertCan } from '@/lib/services/ownership'
+import { isValidObjectId, parseLocation } from '@/lib/utils/attachments'
 import type { EntityKind } from '@/lib/services/ownership'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import {
@@ -37,11 +38,6 @@ function parsePosterUrl(value: unknown): string | null {
 /** First bytes fetched for magic-byte inspection (plan §4.1: 4 KB). */
 const MAGIC_BYTE_SAMPLE = 4096
 const MAX_LIST_TAKE = 50
-const OBJECT_ID_PATTERN = /^[0-9a-fA-F]{24}$/
-
-function isValidObjectId(id: string): boolean {
-  return OBJECT_ID_PATTERN.test(id)
-}
 
 /**
  * file-type v22 is ESM-only ("type": "module"); dynamic import keeps this
@@ -65,18 +61,6 @@ function parseNonNegativeNumber(value: unknown, field: string): number | undefin
     throw new ApiError(400, 'INVALID_FIELD', `${field} must be a non-negative number`)
   }
   return num
-}
-
-function parseLocation(value: unknown): Record<string, unknown> | undefined {
-  if (value === undefined || value === null) return undefined
-  if (typeof value !== 'object' || Array.isArray(value)) {
-    throw new ApiError(400, 'INVALID_LOCATION', 'location must be an object')
-  }
-  const location = value as Record<string, unknown>
-  if (typeof location.lat !== 'number' || typeof location.lng !== 'number') {
-    throw new ApiError(400, 'INVALID_LOCATION', 'location requires numeric lat and lng')
-  }
-  return location
 }
 
 async function entityExists(entityType: string, entityId: string): Promise<boolean> {

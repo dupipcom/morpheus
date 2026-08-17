@@ -3,14 +3,72 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { ApiError, toResponse } from '@/lib/services/errors'
 import { PUBLIC_BASE_URL, deleteObject } from '@/lib/storage/s3'
+import { isValidObjectId, parseLocation } from '@/lib/utils/attachments'
 import type { Prisma } from '@/generated/prisma/client'
-
-const OBJECT_ID_PATTERN = /^[0-9a-fA-F]{24}$/
 
 /** Recover the object key embedded in a fileUrl; null when it cannot be derived. */
 function keyFromFileUrl(fileUrl: string): string | null {
   if (!PUBLIC_BASE_URL || !fileUrl.startsWith(PUBLIC_BASE_URL)) return null
   return fileUrl.slice(PUBLIC_BASE_URL.length).replace(/^\//, '')
+}
+
+/**
+ * PATCH /api/v1/attachments/[documentId]
+ * Owner-only. Updates the document's location (or clears it with null).
+ * This is how photo locations stay shareable AFTER the upload completed.
+ */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ documentId: string }> }
+) {
+  try {
+    const { userId } = await auth()
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { userId },
+      select: { id: true }
+    })
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    const { documentId } = await params
+    if (!isValidObjectId(documentId)) {
+      throw new ApiError(404, 'DOCUMENT_NOT_FOUND', 'Attachment not found')
+    }
+
+    const document = await prisma.document.findUnique({ where: { id: documentId } })
+    if (!document) {
+      throw new ApiError(404, 'DOCUMENT_NOT_FOUND', 'Attachment not found')
+    }
+    if (document.userId !== user.id) {
+      throw new ApiError(403, 'FORBIDDEN', 'Forbidden')
+    }
+
+    const body = await request.json().catch(() => null)
+    if (!body || typeof body !== 'object' || !('location' in body)) {
+      throw new ApiError(400, 'INVALID_REQUEST', 'location is required (object or null)')
+    }
+
+    // Canonical { lat, lng, placeId?, name?, address? } shape, or null to clear
+    const parsed = body.location === null ? null : parseLocation(body.location)
+
+    const updated = await prisma.document.update({
+      where: { id: documentId },
+      data: { location: parsed as Prisma.InputJsonValue | null }
+    })
+
+    return NextResponse.json({ document: updated })
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
+    console.error('Error updating attachment:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
 
 /**
@@ -37,7 +95,7 @@ export async function DELETE(
     }
 
     const { documentId } = await params
-    if (!OBJECT_ID_PATTERN.test(documentId)) {
+    if (!isValidObjectId(documentId)) {
       throw new ApiError(404, 'DOCUMENT_NOT_FOUND', 'Attachment not found')
     }
 
