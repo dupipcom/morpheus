@@ -4,12 +4,19 @@ import { PayloadSDK } from "@payloadcms/sdk";
 import React from "react";
 
 // Initialize Payload SDK with baseURL from environment variable
-const sdk = new PayloadSDK({
-  baseURL: process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '',
-});
+const CMS_BASE_URL = process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || ''
+const sdk = new PayloadSDK({ baseURL: CMS_BASE_URL })
+
+// Without a CMS base URL (CI/e2e, or local without env) the SDK builds
+// relative request URLs that throw ERR_INVALID_URL — e.g. while Next collects
+// page data for the [[...page]] catch-all. Treat "no CMS" as "empty CMS" so
+// builds succeed and CMS pages degrade to notFound instead of crashing.
+const cmsDisabled = !CMS_BASE_URL
+const emptyDocs = Promise.resolve({ docs: [] } as any)
 
 // Dupip Pages
 export const fetchPages = React.cache((locale?: string) => {
+  if (cmsDisabled) return emptyDocs
   return sdk.find({
     collection: "pages",
     locale,
@@ -22,6 +29,7 @@ export const fetchPages = React.cache((locale?: string) => {
 });
 
 export const fetchPageBySlug = React.cache((slug: string, locale?: string) => {
+  if (cmsDisabled) return Promise.resolve(null)
   return sdk
     .find({
       collection: "pages",
@@ -57,6 +65,7 @@ export const fetchPageBySlug = React.cache((slug: string, locale?: string) => {
 });
 
 export const fetchPageBlocks = React.cache((pageId: string, locale?: string) => {
+  if (cmsDisabled) return Promise.resolve([])
   // Fetch the page by ID to get its content/blocks
   return sdk
     .findByID({
@@ -74,6 +83,7 @@ export const fetchPageBlocks = React.cache((pageId: string, locale?: string) => 
 
 // Dupip Articles (Posts)
 export const fetchArticles = React.cache((locale?: string) => {
+  if (cmsDisabled) return emptyDocs
   return sdk.find({
     collection: "posts",
     locale,
@@ -86,6 +96,7 @@ export const fetchArticles = React.cache((locale?: string) => {
 });
 
 export const fetchEpisodeBySlug = React.cache((slug: string, locale?: string) => {
+  if (cmsDisabled) return Promise.resolve(null)
   return sdk
     .find({
       collection: "posts",
@@ -101,6 +112,7 @@ export const fetchEpisodeBySlug = React.cache((slug: string, locale?: string) =>
 });
 
 export const fetchEpisodeBlocks = React.cache((pageId: string, locale?: string) => {
+  if (cmsDisabled) return Promise.resolve([])
   // Fetch the post by ID to get its content/blocks
   return sdk
     .findByID({
@@ -117,6 +129,7 @@ export const fetchEpisodeBlocks = React.cache((pageId: string, locale?: string) 
 
 // Fetch all pages with pagination handling (for sitemap)
 export async function fetchAllPages() {
+  if (cmsDisabled) return emptyDocs
   // Make initial request to get first page and totalPages
   const firstResponse = await sdk.find({
     collection: "pages",
@@ -159,6 +172,7 @@ export async function fetchAllPages() {
 
 // Fetch all articles with pagination handling (for sitemap)
 export async function fetchAllArticles(locale?: string) {
+  if (cmsDisabled) return emptyDocs
   // Make initial request to get first page and totalPages
   const firstResponse = await sdk.find({
     collection: "posts",
