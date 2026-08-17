@@ -56,18 +56,10 @@ export function InvestView(): React.ReactElement {
     }
   }, [user?.settings])
   
-  // Override Radix UI's pointer-events: none on body to allow bottom nav interaction
-  useEffect(() => {
-    if (showModal) {
-      const originalPointerEvents = document.body.style.pointerEvents
-      document.body.style.pointerEvents = 'auto'
-      
-      return () => {
-        document.body.style.pointerEvents = originalPointerEvents
-      }
-    }
-  }, [showModal])
-  
+  // The consent AlertDialog leaves pointer-events: none on <body> while open;
+  // the bottom nav stays interactive through the .bottom-nav-interactive
+  // class, and ModalSurfaceGuard restores <body> when the dialog closes.
+
   // Save premium factors to user settings
   const savePremiumFactors = useCallback(async () => {
     setIsSavingFactors(true)

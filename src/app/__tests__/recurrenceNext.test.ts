@@ -56,9 +56,22 @@ test('deriveDateStatus: count reaching times is DONE', () => {
   assert.equal(deriveDateStatus({ status: 'OPEN' }, 2, 2), 'DONE')
 })
 
-test('deriveDateStatus: COMPLETED/DONE passthrough regardless of count', () => {
-  assert.equal(deriveDateStatus({ status: 'COMPLETED' }, 0), 'COMPLETED')
-  assert.equal(deriveDateStatus({ status: 'DONE' }, 0), 'DONE')
+test('deriveDateStatus: one-off COMPLETED/DONE stays completed without jobs', () => {
+  assert.equal(deriveDateStatus({ status: 'COMPLETED', rrule: null }, 0), 'COMPLETED')
+  assert.equal(deriveDateStatus({ status: 'DONE', rrule: null }, 0), 'DONE')
+})
+
+test('deriveDateStatus: recurring COMPLETED below target is not completed', () => {
+  // Regression: a recurring occurrence reduced below its counter must never
+  // display as completed (drink water 0/3 bug)
+  assert.equal(deriveDateStatus({ status: 'COMPLETED', rrule: 'FREQ=DAILY' }, 0, 3), 'OPEN')
+  assert.equal(deriveDateStatus({ status: 'COMPLETED', rrule: 'FREQ=DAILY' }, 1, 3), 'IN_PROGRESS')
+  assert.equal(deriveDateStatus({ status: 'DONE', rrule: 'FREQ=DAILY' }, 2, 3), 'IN_PROGRESS')
+})
+
+test('deriveDateStatus: COMPLETED/DONE kept when count meets target', () => {
+  assert.equal(deriveDateStatus({ status: 'COMPLETED', rrule: 'FREQ=DAILY' }, 3, 3), 'COMPLETED')
+  assert.equal(deriveDateStatus({ status: 'DONE', rrule: 'FREQ=DAILY' }, 3, 3), 'DONE')
 })
 
 test('deriveDateStatus: manual READY/STEADY/IN_PROGRESS preserved without jobs', () => {

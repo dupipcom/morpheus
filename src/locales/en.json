@@ -308,6 +308,7 @@
       "cancel": "Cancel",
       "premiumLabel": "Premium (optional)",
       "premiumPercentHint": "Percent of the list budget",
+      "sensitiveHint": "Hides the task name until you choose to reveal it",
       "cadenceLabel": "Repeats",
       "cadence": {
         "none": "Does not repeat",

@@ -5,6 +5,7 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { ModalSurfaceGuard } from "@/lib/utils/modalBodyGuard"
 
 const AlertDialog = AlertDialogPrimitive.Root
 
@@ -36,6 +37,9 @@ const AlertDialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
 >(({ className, ...props }, ref) => (
   <AlertDialogPortal>
+    {/* Guard against Radix leaving pointer-events: none on <body> (see
+        ModalSurfaceGuard for details) */}
+    <ModalSurfaceGuard />
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}

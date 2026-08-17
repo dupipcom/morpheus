@@ -5,6 +5,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils/utils"
+import { ModalSurfaceGuard } from "@/lib/utils/modalBodyGuard"
 
 function Dialog({
   ...props
@@ -56,6 +57,9 @@ function DialogContent({
 }) {
   return (
     <DialogPortal data-slot="dialog-portal z-[9999]">
+      {/* Guard against Radix leaving pointer-events: none on <body> (dialog
+          opened while another modal layer, e.g. a dropdown menu, is closing) */}
+      <ModalSurfaceGuard />
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
