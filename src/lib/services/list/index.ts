@@ -66,3 +66,6 @@ export {
   calculateYearCompletionFromJobs,
   getListCompletionData
 } from './listCompletionService'
+
+// Public list surface (Phase 5)
+export { getPublicTaskList, listPublicTaskLists } from './publicListService'

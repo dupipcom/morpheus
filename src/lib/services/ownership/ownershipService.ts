@@ -12,6 +12,9 @@
  *   (task → Task.listId → List.users, job → Job.listId → List.users). Roles are the
  *   legacy ListRole set (OWNER, MANAGER, COLLABORATOR, FOLLOWER); FOLLOWER
  *   canonicalises to VIEWER.
+ * - 'project' — ownership lives on Project.users (embedded UserReference, same role
+ *   set as lists); fallback owner is Project.createdByUserId. Phase 5 adds USER
+ *   ownership only; Phase 7 adds the ORG branch for projects.
  * - 'note' | 'event' | 'document' | 'profile' | 'wallet' — direct userId ownership
  *   (owner only for now; MEMBER/VIEWER semantics arrive with the Phase 7 org branch).
  */
@@ -20,7 +23,7 @@ import prisma from '@/lib/prisma'
 import { ApiError } from '@/lib/services/errors'
 
 export type OwnerRef = { type: 'USER' | 'ORG'; userId?: string; orgId?: string }
-export type EntityKind = 'list' | 'task' | 'job' | 'note' | 'event' | 'document' | 'profile' | 'wallet'
+export type EntityKind = 'list' | 'task' | 'job' | 'project' | 'note' | 'event' | 'document' | 'profile' | 'wallet'
 export type Capability = 'view' | 'edit' | 'manage' | 'delete' | 'moderate'
 export type ViewerRole = 'OWNER' | 'MANAGER' | 'COLLABORATOR' | 'MEMBER' | 'VIEWER'
 
@@ -83,6 +86,14 @@ export function resolveOwner(kind: EntityKind, entity: Record<string, unknown>):
     case 'task':
     case 'job':
       return { type: 'USER', userId: undefined }
+    case 'project': {
+      const users = (entity.users as ListUserRef[] | undefined) || []
+      const owner = users.find((u) => u.role === 'OWNER')
+      return {
+        type: 'USER',
+        userId: owner?.userId ?? (typeof entity.createdByUserId === 'string' ? entity.createdByUserId : undefined)
+      }
+    }
     case 'note':
     case 'event':
     case 'document':
@@ -105,7 +116,8 @@ export async function getViewerRole(
   switch (kind) {
     case 'list':
     case 'task':
-    case 'job': {
+    case 'job':
+    case 'project': {
       const users = await resolveListUsers(kind, entityOrId)
       if (!users) return null
       const ref = users.find((u) => u.userId === viewerUserId)
@@ -159,13 +171,13 @@ export async function assertCan(
 
 /** Owning list's users for list-backed kinds, reusing embedded data when possible. */
 async function resolveListUsers(
-  kind: 'list' | 'task' | 'job',
+  kind: 'list' | 'task' | 'job' | 'project',
   entityOrId: EntityOrId
 ): Promise<ListUserRef[] | null> {
   if (typeof entityOrId !== 'string') {
-    if (kind === 'list') {
+    if (kind === 'list' || kind === 'project') {
       if (Array.isArray(entityOrId.users)) return entityOrId.users as ListUserRef[]
-      if (typeof entityOrId.id === 'string') return fetchListUsers(entityOrId.id)
+      if (typeof entityOrId.id === 'string') return fetchOwnerUsers(kind, entityOrId.id)
       return null
     }
     const embeddedList = entityOrId.list as { users?: unknown } | undefined
@@ -173,18 +185,20 @@ async function resolveListUsers(
       return embeddedList.users as ListUserRef[]
     }
   }
-  const listId = await resolveListId(kind, entityOrId)
-  if (!listId) return null
-  return fetchListUsers(listId)
+  // For task/job the resolved id is the owning LIST id; for project it is the
+  // project id itself.
+  const ownerId = await resolveListId(kind, entityOrId)
+  if (!ownerId) return null
+  return fetchOwnerUsers(kind === 'project' ? 'project' : 'list', ownerId)
 }
 
-/** The owning list id for list-backed kinds. */
+/** The owning list id for list-backed kinds ('project' resolves to the project id itself). */
 async function resolveListId(
-  kind: 'list' | 'task' | 'job',
+  kind: 'list' | 'task' | 'job' | 'project',
   entityOrId: EntityOrId
 ): Promise<string | null> {
   if (typeof entityOrId === 'string') {
-    if (kind === 'list') return entityOrId
+    if (kind === 'list' || kind === 'project') return entityOrId
     if (kind === 'task') {
       const task = await prisma.task.findUnique({ where: { id: entityOrId }, select: { listId: true } })
       return task?.listId ?? null
@@ -192,16 +206,26 @@ async function resolveListId(
     const job = await prisma.job.findUnique({ where: { id: entityOrId }, select: { listId: true } })
     return job?.listId ?? null
   }
-  if (kind === 'list') return typeof entityOrId.id === 'string' ? entityOrId.id : null
+  if (kind === 'list' || kind === 'project') return typeof entityOrId.id === 'string' ? entityOrId.id : null
   return typeof entityOrId.listId === 'string' ? entityOrId.listId : null
 }
 
-async function fetchListUsers(listId: string): Promise<ListUserRef[] | null> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
+async function fetchOwnerUsers(
+  kind: 'list' | 'project',
+  id: string
+): Promise<ListUserRef[] | null> {
+  if (kind === 'list') {
+    const list = await prisma.list.findUnique({
+      where: { id },
+      select: { users: true }
+    })
+    return (list?.users as ListUserRef[] | undefined) || null
+  }
+  const project = await prisma.project.findUnique({
+    where: { id },
     select: { users: true }
   })
-  return (list?.users as ListUserRef[] | undefined) || null
+  return (project?.users as ListUserRef[] | undefined) || null
 }
 
 /** Direct-owner kinds: resolve the owning user id from the entity or its record. */
