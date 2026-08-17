@@ -1291,5 +1291,24 @@
     "supportUrlLabel": "Support / donate link",
     "createButton": "Create",
     "cancel": "Cancel"
+  },
+  "org": {
+    "directoryTitle": "Organizations",
+    "directorySubtitle": "Create and manage organizations",
+    "create": "New organization",
+    "createButton": "Create",
+    "cancel": "Cancel",
+    "nameLabel": "Name",
+    "namePlaceholder": "Organization name...",
+    "published": "Public",
+    "publishToggle": "Publish organization",
+    "empty": "You are not part of any organization yet.",
+    "like": "Like",
+    "about": "About",
+    "lists": "Lists",
+    "projects": "Projects",
+    "statsMembers": "members",
+    "statsLists": "published lists",
+    "statsProjects": "projects"
   }
 }

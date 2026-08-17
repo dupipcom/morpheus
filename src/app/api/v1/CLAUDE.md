@@ -35,6 +35,7 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Meet me | `meet-me/CLAUDE.md` | `POST /meet-me`, `GET /meet-me/availability` |
 | Notes | `notes/CLAUDE.md` | `GET/POST /notes`, `PUT/PATCH/DELETE /notes/{noteId}`, `GET/POST /notes/{noteId}/comments`, `GET /notes/public` |
 | Notifications | `notifications/CLAUDE.md` | `GET /notifications` (last 30 + unread), `POST /notifications` (mark read) |
+| Organizations | `orgs/CLAUDE.md` | `GET/POST /orgs`, `GET/PUT /orgs/{orgId}`, `GET/POST /orgs/{orgId}/members`, `GET /orgs/public/{username}` |
 | Persons | `persons/CLAUDE.md` | `GET/POST /persons`, `PUT/DELETE /persons/{id}` |
 | Places | `places/CLAUDE.md` | `GET /places/autocomplete`, `GET /places/details`, `GET /places/geocode`, `GET /places/staticmap` |
 | Profile | `profile/CLAUDE.md` | `GET/POST /profile`, `GET /profile/{userName}`, `GET /profile/{userName}/notes` |

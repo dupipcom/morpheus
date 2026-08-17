@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache'
 import { ensureUserAndProfile } from '@/lib/services/user/ensureUserAndProfile'
 import { getOrCreateDefaultWallet } from '@/lib/services/wallet'
+import { upsertOrganization, upsertMembership, markOrphaned, removeMembership } from '@/lib/services/org'
 
 export async function POST(req: Request) {
     try {
@@ -125,6 +126,46 @@ export async function POST(req: Request) {
                         userId: clerkUserId,
                     },
                 });
+                break;
+            }
+            // Phase 7: organization mirror (idempotent upserts keyed on clerkOrgId)
+            case 'organization.created':
+            case 'organization.updated': {
+                const orgData: any = evt.data;
+                await upsertOrganization({
+                    clerkOrgId: orgData?.id ?? clerkUserId,
+                    name: orgData?.name ?? null,
+                    slug: orgData?.slug ?? null,
+                    imageUrl: orgData?.image_url ?? orgData?.imageUrl ?? null,
+                });
+                break;
+            }
+            case 'organization.deleted': {
+                const orgData: any = evt.data;
+                await markOrphaned(orgData?.id ?? clerkUserId);
+                break;
+            }
+            case 'organizationMembership.created':
+            case 'organizationMembership.updated': {
+                const membershipData: any = evt.data;
+                const orgId = membershipData?.organization?.id;
+                const memberUserId = membershipData?.public_user_data?.user_id ?? clerkUserId;
+                if (orgId && memberUserId) {
+                    await upsertMembership({
+                        clerkOrgId: orgId,
+                        clerkUserId: memberUserId,
+                        role: membershipData?.role ?? 'MEMBER',
+                    });
+                }
+                break;
+            }
+            case 'organizationMembership.deleted': {
+                const membershipData: any = evt.data;
+                const orgId = membershipData?.organization?.id;
+                const memberUserId = membershipData?.public_user_data?.user_id ?? clerkUserId;
+                if (orgId && memberUserId) {
+                    await removeMembership(orgId, memberUserId);
+                }
                 break;
             }
             default:

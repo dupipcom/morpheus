@@ -25,7 +25,7 @@ import { ApiError } from '@/lib/services/errors'
 export type OwnerRef = { type: 'USER' | 'ORG'; userId?: string; orgId?: string }
 export type EntityKind = 'list' | 'task' | 'job' | 'project' | 'note' | 'event' | 'document' | 'profile' | 'wallet'
 export type Capability = 'view' | 'edit' | 'manage' | 'delete' | 'moderate'
-export type ViewerRole = 'OWNER' | 'MANAGER' | 'COLLABORATOR' | 'MEMBER' | 'VIEWER'
+export type ViewerRole = 'OWNER' | 'MANAGER' | 'COLLABORATOR' | 'MEMBER' | 'VIEWER' | 'STAFF'
 
 /** Embedded List.users reference shape (UserReference in the Prisma schema). */
 interface ListUserRef {
@@ -47,6 +47,21 @@ const ROLE_MAP: Record<string, ViewerRole | null> = {
   MANAGER: 'MANAGER',
   COLLABORATOR: 'COLLABORATOR',
   FOLLOWER: 'VIEWER'
+}
+
+/**
+ * Phase 7 ORG branch: canonicalise an OrgMembership role to the kit's viewer
+ * roles. ADMIN is the org-level equivalent of OWNER (both manage everything);
+ * MEMBER maps to MEMBER (view-only — edit/manage require MANAGER+, per the
+ * phase-07 acceptance criteria, which supersede the older MEMBER→COLLABORATOR
+ * note); STAFF is Phase 10's door scanner.
+ */
+const ORG_ROLE_MAP: Record<string, ViewerRole | null> = {
+  OWNER: 'OWNER',
+  ADMIN: 'OWNER',
+  MANAGER: 'MANAGER',
+  MEMBER: 'MEMBER',
+  STAFF: 'STAFF'
 }
 
 /**
@@ -76,6 +91,10 @@ const DELETE_ROLES_BY_KIND: Partial<Record<EntityKind, ViewerRole[]>> = {
 export function resolveOwner(kind: EntityKind, entity: Record<string, unknown>): OwnerRef {
   switch (kind) {
     case 'list': {
+      // Phase 7: org-owned lists resolve to the org
+      if (entity.ownerType === 'ORG' && typeof entity.orgId === 'string') {
+        return { type: 'ORG', orgId: entity.orgId }
+      }
       const users = (entity.users as ListUserRef[] | undefined) || []
       const owner = users.find((u) => u.role === 'OWNER')
       return {
@@ -87,6 +106,10 @@ export function resolveOwner(kind: EntityKind, entity: Record<string, unknown>):
     case 'job':
       return { type: 'USER', userId: undefined }
     case 'project': {
+      // Phase 7: org-owned projects resolve to the org
+      if (entity.ownerType === 'ORG' && typeof entity.orgId === 'string') {
+        return { type: 'ORG', orgId: entity.orgId }
+      }
       const users = (entity.users as ListUserRef[] | undefined) || []
       const owner = users.find((u) => u.role === 'OWNER')
       return {
@@ -118,7 +141,20 @@ export async function getViewerRole(
     case 'task':
     case 'job':
     case 'project': {
-      const users = await resolveListUsers(kind, entityOrId)
+      // Phase 7 ORG branch: org-owned entities resolve roles from the viewer's
+      // OrgMembership (the embedded users array still names the steward, who
+      // keeps OWNER access even after leaving the org)
+      const owner = await resolveOwnerContext(kind, entityOrId)
+      if (owner && owner.ownerType === 'ORG' && owner.orgId) {
+        const stewardIds = owner.users.filter((u) => u.role === 'OWNER').map((u) => u.userId)
+        if (stewardIds.includes(viewerUserId)) return 'OWNER'
+        const membership = await prisma.orgMembership.findUnique({
+          where: { orgId_userId: { orgId: owner.orgId, userId: viewerUserId } },
+          select: { role: true }
+        })
+        return membership ? (ORG_ROLE_MAP[membership.role] ?? null) : null
+      }
+      const users = owner?.users ?? (await resolveListUsers(kind, entityOrId))
       if (!users) return null
       const ref = users.find((u) => u.userId === viewerUserId)
       if (!ref) return null
@@ -167,6 +203,69 @@ export async function assertCan(
   if (!(await can(viewerUserId, capability, kind, entityOrId))) {
     throw new ApiError(403, 'FORBIDDEN', 'Forbidden')
   }
+}
+
+/** Owner context (ownerType/orgId + users) for list-backed kinds. */
+interface OwnerContext {
+  ownerType: string | null
+  orgId: string | null
+  users: ListUserRef[]
+}
+
+/**
+ * Resolve the ownership context (ownerType/orgId/users) for list-backed kinds.
+ * For task/job the owning LIST's context is returned. Entities already fetched
+ * with their list/users embedded are reused; otherwise the record is fetched.
+ */
+async function resolveOwnerContext(
+  kind: 'list' | 'task' | 'job' | 'project',
+  entityOrId: EntityOrId
+): Promise<OwnerContext | null> {
+  if (typeof entityOrId !== 'string') {
+    if (kind === 'project' && entityOrId.ownerType === 'ORG') {
+      return {
+        ownerType: 'ORG',
+        orgId: typeof entityOrId.orgId === 'string' ? entityOrId.orgId : null,
+        users: (entityOrId.users as ListUserRef[] | undefined) || []
+      }
+    }
+    if (kind === 'list' && entityOrId.ownerType === 'ORG') {
+      return {
+        ownerType: 'ORG',
+        orgId: typeof entityOrId.orgId === 'string' ? entityOrId.orgId : null,
+        users: (entityOrId.users as ListUserRef[] | undefined) || []
+      }
+    }
+    const embeddedList = entityOrId.list as { ownerType?: string; orgId?: string; users?: unknown } | undefined
+    if (embeddedList && embeddedList.ownerType === 'ORG') {
+      return {
+        ownerType: 'ORG',
+        orgId: typeof embeddedList.orgId === 'string' ? embeddedList.orgId : null,
+        users: (embeddedList.users as ListUserRef[] | undefined) || []
+      }
+    }
+  }
+
+  const ownerId = await resolveListId(kind, entityOrId)
+  if (!ownerId) return null
+
+  if (kind === 'project') {
+    const project = await prisma.project.findUnique({
+      where: { id: ownerId },
+      select: { ownerType: true, orgId: true, users: true }
+    })
+    return project
+      ? { ownerType: project.ownerType, orgId: project.orgId, users: project.users as ListUserRef[] }
+      : null
+  }
+
+  const list = await prisma.list.findUnique({
+    where: { id: ownerId },
+    select: { ownerType: true, orgId: true, users: true }
+  })
+  return list
+    ? { ownerType: list.ownerType, orgId: list.orgId, users: list.users as ListUserRef[] }
+    : null
 }
 
 /** Owning list's users for list-backed kinds, reusing embedded data when possible. */

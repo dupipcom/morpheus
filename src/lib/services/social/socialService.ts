@@ -12,6 +12,7 @@ const SOCIAL_ENTITIES = {
   tasklist: { model: 'list',     visibilityField: 'visibility' },
   comment:  { model: 'comment',  visibilityField: null },
   project:  { model: 'project',  visibilityField: null },           // Phase 5 — likes only (publicVisible gates reads, not visibility)
+  org:      { model: 'organization', visibilityField: null },       // Phase 7 — likes only (publicVisible gates reads, not visibility)
   event:    { model: 'event',    visibilityField: 'visibility' },   // enabled in Phase 8 — do NOT enable routes for it now
   task:     { model: 'task',     visibilityField: 'visibility' },   // enabled in Phase 5 — do NOT enable routes for it now
 } as const
@@ -36,6 +37,7 @@ const LIKEABLE_ENTITIES: Record<string, { model: string; relationField: string |
   tasklist: { model: 'list',     relationField: null },
   comment:  { model: 'comment',  relationField: 'commentId' },
   project:  { model: 'project',  relationField: null },   // like tasklist: persists with entityType/entityId only
+  org:      { model: 'organization', relationField: null },
 }
 
 // Entity types the comments route accepts today (canonical keys after
@@ -57,6 +59,7 @@ const MODEL_DELEGATES: Record<string, FindUniqueById> = {
   comment: prisma.comment,
   profile: prisma.profile,
   project: prisma.project,
+  organization: prisma.organization,
   event: prisma.event,
   task: prisma.task,
 }
