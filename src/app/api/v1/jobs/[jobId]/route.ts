@@ -8,7 +8,7 @@ import { validateStatusTransition, isAuthorizedForTransition } from '@/lib/servi
 import { TASK_STATUS_MAP } from '@/lib/services/job/taskSync'
 import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
 import { notifyUser } from '@/lib/services/notification'
-import { formatDateLocal } from '@/lib/utils/taskUtils'
+import { formatDateLocal, getCounterWindow } from '@/lib/utils/taskUtils'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import type { ListUser, UpdateJobRequest } from '@/lib/services/job/types'
 
@@ -130,8 +130,12 @@ async function updateJobWithRetry({
           select: { id: true, status: true }
         })
 
-        // Sync task status based on job status
-        if (newStatus && newStatus !== existingJob.status) {
+        // Sync task status based on job status — EXCEPT when the job was
+        // ACCEPTED: TASK_STATUS_MAP['CANCELLED'] = 'OPEN' would clobber the
+        // row's COMPLETED/completedOn state before the post-transaction
+        // updateTaskOccurrenceDates('delete') can evaluate it, leaking the
+        // done occurrence onto every future date (see taskCompletionService).
+        if (newStatus && newStatus !== existingJob.status && existingJob.status !== 'ACCEPTED') {
           const newTaskStatus = TASK_STATUS_MAP[newStatus]
           if (newTaskStatus) {
             taskUpdate = await tx.task.update({
@@ -345,30 +349,36 @@ export async function PUT(
         )
       }
 
-      // Prevent duplicate acceptance - check if another job is already accepted for this task on this date
+      // Counter-model guard: the task may hold up to `times` ACCEPTED jobs per
+      // RRULE counter window (not just one). Approving beyond the period's
+      // target is rejected, mirroring the POST /jobs cap.
       if (newStatus === 'ACCEPTED') {
+        const task = await prisma.task.findUnique({
+          where: { id: existingJob.taskId },
+          select: { times: true, rrule: true }
+        })
+
+        if (!task) {
+          return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+        }
+
         const whereClause: any = {
           taskId: existingJob.taskId,
           status: 'ACCEPTED',
           id: { not: jobId }
         }
 
-        // If this job has an occurrenceDate, only check for duplicates on the same date
         if (existingJob.occurrenceDate) {
-          whereClause.occurrenceDate = existingJob.occurrenceDate
+          const win = getCounterWindow(task, existingJob.occurrenceDate)
+          whereClause.occurrenceDate = { gte: win.start, lte: win.end }
         }
 
-        const existingAccepted = await prisma.job.findFirst({
-          where: whereClause
-        })
+        const acceptedCount = await prisma.job.count({ where: whereClause })
 
-        if (existingAccepted) {
+        if (acceptedCount >= (task.times || 1)) {
           return NextResponse.json(
-            { error: existingJob.occurrenceDate
-              ? 'Task already has an accepted job for this date'
-              : 'Task already has an accepted job'
-            },
-            { status: 400 }
+            { error: 'Task already has the maximum accepted jobs for this period' },
+            { status: 409 }
           )
         }
       }

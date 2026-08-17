@@ -1,6 +1,6 @@
 import { rrulestr, type RRule } from 'rrule'
 import prisma from '@/lib/prisma'
-import type { Task, Job, TaskStatus } from '@/generated/prisma/client'
+import type { Task, TaskStatus } from '@/generated/prisma/client'
 
 /**
  * Task with date-specific status and completion data
@@ -42,13 +42,9 @@ function parseRuleForTask(
   }
 }
 
-/**
- * Extract the FREQ value from an RRULE string (e.g. "WEEKLY"), or null
- */
-export function rruleFrequency(rrule: string | null | undefined): string | null {
-  const match = (rrule || '').match(/FREQ=([A-Z]+)/i)
-  return match ? match[1].toUpperCase() : null
-}
+// Shared with client handlers via taskUtils (pure); re-exported for API stability
+import { rruleFrequency, getCounterWindow } from '@/lib/utils/taskUtils'
+export { rruleFrequency } from '@/lib/utils/taskUtils'
 
 /**
  * Parse a YYYY-MM-DD date as UTC midnight to avoid timezone/DST drift
@@ -229,8 +225,6 @@ export async function getTasksForDate(
   targetDate: string,
   listRole?: string | null
 ): Promise<TaskForDate[]> {
-  const weekRange = getWeekRange(targetDate)
-
   // Determine if this is a one-off list (should show all tasks including COMPLETED)
   // Use provided listRole if available, otherwise fetch from DB
   let role = listRole
@@ -283,20 +277,13 @@ export async function getTasksForDate(
       continue
     }
 
-    // Weekly tasks aggregate jobs across the whole week
-    const isWeeklyTask = rruleFrequency(task.rrule) === 'WEEKLY'
-
-    // Filter jobs based on task type
-    let relevantJobs: Job[]
-    if (isWeeklyTask) {
-      // For weekly tasks, get all jobs within the same week
-      relevantJobs = task.jobs.filter(j =>
-        j.occurrenceDate && weekRange.allDates.includes(j.occurrenceDate)
-      )
-    } else {
-      // For non-weekly tasks, only get jobs for the specific date
-      relevantJobs = task.jobs.filter(j => j.occurrenceDate === targetDate)
-    }
+    // The counter window derives from the task's RRULE frequency: ISO week for
+    // WEEKLY, calendar month for MONTHLY, calendar year for YEARLY, exact date
+    // otherwise. Jobs within the window drive dateCount/dateStatus.
+    const win = getCounterWindow(task, targetDate)
+    const relevantJobs = task.jobs.filter(j =>
+      j.occurrenceDate && j.occurrenceDate >= win.start && j.occurrenceDate <= win.end
+    )
 
     // Calculate status based on relevant jobs
     const acceptedJobs = relevantJobs.filter(j => j.status === 'ACCEPTED')

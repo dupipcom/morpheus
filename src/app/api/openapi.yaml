@@ -609,6 +609,34 @@ paths:
         - { name: documentId, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: '{ message: Attachment deleted }' }
+    patch:
+      tags: [attachments]
+      summary: Update the attachment location (owner only; null clears it)
+      parameters:
+        - { name: documentId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [location]
+              properties:
+                location:
+                  oneOf:
+                    - type: object
+                      properties:
+                        lat: { type: number }
+                        lng: { type: number }
+                        placeId: { type: string }
+                        name: { type: string }
+                        address: { type: string }
+                    - type: 'null'
+      responses:
+        '200': { description: '{ document }' }
+        '400': { description: Invalid location shape }
+        '401': { description: Unauthorized }
+        '403': { description: Not the owner }
+        '404': { description: Attachment not found }
 
   /api/v1/attachments/{documentId}/file:
     get:
@@ -662,6 +690,17 @@ paths:
         - { name: sessionToken, in: query, schema: { type: string } }
       responses:
         '200': { description: '{ location: { lat, lng, placeId, name, address } }' }
+
+  /api/v1/places/geocode:
+    get:
+      tags: [places]
+      summary: Reverse-geocode lat/lng into enriched place metadata (server proxy)
+      parameters:
+        - { name: lat, in: query, required: true, schema: { type: number } }
+        - { name: lng, in: query, required: true, schema: { type: number } }
+      responses:
+        '200': { description: '{ location: { lat, lng, placeId, name, address } }' }
+        '503': { description: Places not configured }
 
   /api/v1/places/staticmap:
     get:

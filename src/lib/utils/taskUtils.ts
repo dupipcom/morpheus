@@ -26,6 +26,70 @@ export function getTaskEntryKey(task: any, dateKey?: string): string {
 }
 
 /**
+ * Extract the FREQ value from an RRULE string (e.g. "WEEKLY"), or null.
+ * Pure and client-safe (moved from services/task/recurrenceService so both
+ * server aggregation and client handlers share one implementation).
+ */
+export function rruleFrequency(rrule: string | null | undefined): string | null {
+  const match = (rrule || '').match(/FREQ=([A-Z]+)/i)
+  return match ? match[1].toUpperCase() : null
+}
+
+export interface CounterWindow {
+  /** Inclusive start, YYYY-MM-DD (UTC) */
+  start: string
+  /** Inclusive end, YYYY-MM-DD (UTC) */
+  end: string
+}
+
+const DAY_MS = 86400000
+
+/** YYYY-MM-DD of the Monday starting the ISO week containing `dateStr`. */
+function weekStartOf(dateStr: string): string {
+  const date = new Date(`${dateStr}T00:00:00.000Z`)
+  const day = date.getUTCDay()
+  const diff = day === 0 ? -6 : 1 - day // Sunday → previous Monday
+  const monday = new Date(date.getTime() + diff * DAY_MS)
+  return monday.toISOString().slice(0, 10)
+}
+
+/**
+ * The counting window for a task's completions, derived from its RRULE
+ * frequency: WEEKLY → the ISO week (Mon–Sun) containing the date,
+ * MONTHLY → the calendar month, YEARLY → the calendar year,
+ * DAILY / no rrule / unknown FREQ → the exact date.
+ * `times` completions are counted within this window (server caps and
+ * client counters use the same period).
+ */
+export function getCounterWindow(
+  task: { rrule?: string | null },
+  date: string
+): CounterWindow {
+  const freq = rruleFrequency(task.rrule)
+
+  if (freq === 'WEEKLY') {
+    const start = weekStartOf(date)
+    const sunday = new Date(`${start}T00:00:00.000Z`)
+    sunday.setUTCDate(sunday.getUTCDate() + 6)
+    return { start, end: sunday.toISOString().slice(0, 10) }
+  }
+
+  if (freq === 'MONTHLY') {
+    const [year, month] = date.split('-').map(Number)
+    const start = `${date.slice(0, 7)}-01`
+    // Day 0 of the next month = last day of this month (UTC)
+    const lastDay = new Date(Date.UTC(year, month, 0))
+    return { start, end: lastDay.toISOString().slice(0, 10) }
+  }
+
+  if (freq === 'YEARLY') {
+    return { start: `${date.slice(0, 4)}-01-01`, end: `${date.slice(0, 4)}-12-31` }
+  }
+
+  return { start: date, end: date }
+}
+
+/**
  * Get status color for CSS or Tailwind
  */
 export function getStatusColor(status: TaskStatus, format: 'css' | 'tailwind' = 'css'): string {

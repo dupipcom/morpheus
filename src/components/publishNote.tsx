@@ -85,7 +85,8 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       mimeType: doc.mimeType || 'application/octet-stream',
       kind: (doc.kind || 'document') as PickedAttachment['kind'],
       size: 0,
-      documentId: doc.id
+      documentId: doc.id,
+      ...(doc.location ? { location: doc.location } : {})
     })))
 
     const fallback = (id: string) => `#${id.slice(-4)}`
@@ -199,6 +200,30 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
     }
   }, [contextSelectedDate]) // Only depend on contextSelectedDate to avoid loops
 
+  /**
+   * Resolve the note-level location: the explicit PlacePicker chip wins;
+   * otherwise the first attachment's location (EXIF GPS opt-in or picked)
+   * becomes the note's location, enriched through the Places geocode API when
+   * it only carries raw coordinates.
+   */
+  const resolveNoteLocation = async (): Promise<PlaceLocation | null> => {
+    if (location) return location
+    const withLocation = attachments.find((a) => a.location)
+    if (!withLocation?.location) return null
+    const loc = withLocation.location
+    if (loc.name || loc.address) return loc
+    try {
+      const res = await fetch(`/api/v1/places/geocode?lat=${loc.lat}&lng=${loc.lng}`)
+      if (res.ok) {
+        const data = await res.json()
+        return (data?.location as PlaceLocation) || loc
+      }
+    } catch {
+      // Fall through to the raw coordinates
+    }
+    return loc
+  }
+
   const handlePublishNote = async () => {
     if (!noteContent.trim() || isPublishing) return
 
@@ -228,7 +253,12 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         recipientId
       }
       if (committedDocumentIds.length > 0) body.documentIds = committedDocumentIds
-      if (location) body.location = location
+      // Note location: explicit chip, else enriched from the first attachment
+      const noteLocation = await resolveNoteLocation()
+      if (noteLocation) {
+        setLocation(noteLocation)
+        body.location = noteLocation
+      }
       if (profileTags.length > 0) body.profileIds = profileTags.map((tag) => tag.id)
       if (listTags.length > 0) body.listIds = listTags.map((tag) => tag.id)
       if (taskTags.length > 0) body.taskIds = taskTags.map((tag) => tag.id)

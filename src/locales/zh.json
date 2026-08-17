@@ -243,7 +243,11 @@
     "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
     "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
     "review": "Review",
-    "decline": "Decline"
+    "decline": "Decline",
+    "error": {
+      "updateFailed": "Couldn't update the task"
+    },
+    "updating": "Updating…"
   },
   "settings": {
     "title": "设置",
@@ -808,7 +812,9 @@
         "uploadFailed": "Upload failed",
         "saveFailed": "Could not save the attachment",
         "generic": "Could not add this file"
-      }
+      },
+      "locationSaveFailed": "Couldn't save the location",
+      "locationRetry": "Retry"
     },
     "imageCropper": {
       "title": "Crop image",
@@ -845,7 +851,12 @@
     "unlikeComment": "取消赞评论",
     "addComment": "添加评论...",
     "showMore": "显示更多",
-    "showLess": "显示更少"
+    "showLess": "显示更少",
+    "updated": "Comment updated successfully",
+    "updateFailed": "Failed to update comment",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "deleted": "Comment deleted successfully",
+    "deleteFailed": "Failed to delete comment"
   },
   "invest": {
     "notice": "此应用程序目前不管理任何实际资金。Dupip Invest 仍处于规划阶段。这只是一个用于演示目的的测试环境。",
@@ -1167,6 +1178,13 @@
       "JOB_ACCEPTED": "{{actorName}} approved your work request",
       "JOB_REJECTED": "{{actorName}} declined your work request",
       "LIST_INVITE": "{{actorName}} added you to a list"
+    },
+    "relativeTime": {
+      "justNow": "Just now",
+      "minutesAgo": "{m}m ago",
+      "hoursAgo": "{h}h ago",
+      "daysAgo": "{d}d ago",
+      "weeksAgo": "{w}w ago"
     }
   },
   "components": {

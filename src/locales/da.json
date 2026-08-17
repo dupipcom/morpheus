@@ -247,7 +247,11 @@
     "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
     "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
     "review": "Review",
-    "decline": "Decline"
+    "decline": "Decline",
+    "error": {
+      "updateFailed": "Couldn't update the task"
+    },
+    "updating": "Updating…"
   },
   "actions": {
     "drankWater": "Drak vand",
@@ -795,7 +799,9 @@
         "uploadFailed": "Upload failed",
         "saveFailed": "Could not save the attachment",
         "generic": "Could not add this file"
-      }
+      },
+      "locationSaveFailed": "Couldn't save the location",
+      "locationRetry": "Retry"
     },
     "imageCropper": {
       "title": "Crop image",
@@ -849,7 +855,12 @@
     "unlikeComment": "Synes ikke godt om kommentar",
     "addComment": "Tilføj en kommentar...",
     "showMore": "Vis mere",
-    "showLess": "Vis mindre"
+    "showLess": "Vis mindre",
+    "updated": "Comment updated successfully",
+    "updateFailed": "Failed to update comment",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "deleted": "Comment deleted successfully",
+    "deleteFailed": "Failed to delete comment"
   },
   "invest": {
     "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål.",
@@ -1171,6 +1182,13 @@
       "JOB_ACCEPTED": "{{actorName}} approved your work request",
       "JOB_REJECTED": "{{actorName}} declined your work request",
       "LIST_INVITE": "{{actorName}} added you to a list"
+    },
+    "relativeTime": {
+      "justNow": "Just now",
+      "minutesAgo": "{m}m ago",
+      "hoursAgo": "{h}h ago",
+      "daysAgo": "{d}d ago",
+      "weeksAgo": "{w}w ago"
     }
   },
   "components": {
