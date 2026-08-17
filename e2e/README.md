@@ -13,7 +13,10 @@ Two specs, run serially against one app server + one database:
   users + sessions; the tests place a Backend-API session token in the
   `__session` cookie). Production instances reject sessions for unverified
   test users.
-- A database with the Phase 5–8 schema pushed. First run (or CI):
+- A database with the Phase 5–8 schema pushed. CI starts from a fresh Mongo
+  container, so `npx prisma db push` alone is enough there — the 0021–0028
+  data migrations are no-ops on an empty DB. Local runs reuse your dev DB;
+  apply the data migrations to it once, in order:
 
   ```bash
   node src/migrations/0021-create-default-wallets.js   # + 0022 → 0028, in order

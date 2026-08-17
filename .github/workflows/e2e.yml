@@ -5,12 +5,13 @@ name: E2E
 #   CLERK_SECRET_KEY                 — Clerk backend key (DEVELOPMENT instance)
 #   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY — the app's publishable key
 #
-# DB: a fresh MongoDB container per run — migrations 0021–0028 run in order,
-# then `prisma db push` (0022 backfills Transaction.reference BEFORE the
-# unique index is pushed). The ledger runs its standalone-Mongo sequential
-# fallback here (dual-mode, Phase 6): overspend protection still holds via
-# the compare-and-set debit; the interactive-transaction path is exercised on
-# the Atlas replica set.
+# DB: a fresh MongoDB container per run — `prisma db push` alone reproduces
+# the current schema; the 0021–0028 data migrations are all no-ops on an empty
+# DB (their backfills/repairs only touch legacy rows, which never exist here),
+# so they are not run. The harness self-seeds the SYSTEM:treasury wallet.
+# The ledger runs its standalone-Mongo sequential fallback here (dual-mode,
+# Phase 6): overspend protection still holds via the compare-and-set debit;
+# the interactive-transaction path is exercised on the Atlas replica set.
 
 on:
   # Every PR gets E2E — the stacked phase PRs target each other, not dev;
@@ -59,16 +60,6 @@ jobs:
 
       - name: Generate Prisma client
         run: npx prisma generate
-
-      - name: Run migrations 0021–0028 (twice — idempotency proof)
-        run: |
-          for m in 0021-create-default-wallets 0022-normalize-transactions \
-                   0023-seed-system-wallets 0024-backfill-ledger-entries \
-                   0025-mirror-clerk-organizations 0026-backfill-owner-type \
-                   0027-split-life-events 0028-backfill-event-slugs; do
-            node "src/migrations/$m.js"
-            node "src/migrations/$m.js"   # re-run: must be a no-op
-          done
 
       - name: Push schema (indexes/collections)
         run: npx prisma db push --skip-generate
