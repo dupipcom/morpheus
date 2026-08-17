@@ -153,7 +153,7 @@ issuer) and `SYSTEM:escrow` (holds ticket funds until an event settles).
 | `GET /api/v1/wallet` | Now returns DB `balance`/`pendingBalance` first; on-chain balance moves to an optional `?includeOnChain=true` (never blocks the response). |
 | `POST /api/v1/wallet/transfer` | Rewritten over `ledgerService.transfer`. Body `{ toAddress \| toWalletId \| toUsername, amount, note?, reference? }`. Server generates `reference` if absent. Returns the settled transaction + new balance. |
 | `GET /api/v1/wallet/[walletId]/statement?cursor=` | New — paginated ledger entries with running balance. |
-| `GET /api/v1/wallet/resolve?username=` | Resolve a recipient's default wallet for the transfer UI. |
+| `GET /api/v1/wallet/resolve?username=` | Resolve a recipient's default wallet for the transfer UI. Honours the shared `/@` namespace: resolves users, orgs and projects (project wallets arrive with the post-Phase-6 donate follow-up; resolve returns 404 for a project until then). |
 | `POST /api/v1/wallet/[walletId]/sync-onchain` | Explicit, manual Kaleido mirror (admin/opt-in). |
 
 ## 6.6 UI

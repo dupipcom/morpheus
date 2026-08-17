@@ -77,6 +77,8 @@ model Event {
   // Relations
   listIds       String[] @default([]) @db.ObjectId
   lists         List[]   @relation("EventLists", fields: [listIds], references: [id])
+  projectIds    String[] @default([]) @db.ObjectId
+  projects      Project[] @relation("EventProjects", fields: [projectIds], references: [id])
   rsvps         EventRsvp[]
   staff         EventStaff[]
   comments      Comment[]
@@ -125,6 +127,12 @@ Semantics: a linked list is the event's production backlog (its tasks/jobs are t
 published list surfaces "Events" on its public page while the event page surfaces "Get involved"
 linking to the list's job board.
 
+`Project` gains the inverse here too (Phase 5 introduced it; this is the phase where both models
+exist, per the schema-validity rule): `eventIds String[] @default([]) @db.ObjectId` +
+`events Event[] @relation("EventProjects", ...)`. Semantics: a project's events are its public
+programme — the project page's Events section (stubbed in Phase 5) renders them, and the event
+page credits the host project next to the host user/org.
+
 Also add `Note.eventIds` (the new events) — notes referencing an event are the event's
 **comment/discussion stream**, satisfying requirement 2c without a second comment system. The
 polymorphic `Comment` model stays available for short replies (`entityType: 'event'`, one line in
@@ -144,10 +152,11 @@ running now" checks at the door. Never store wall-clock strings. All formatting 
 | `POST /api/v1/events` | Create; `ownerType/orgId` honoured via `assertCan(..., 'manage', 'org', orgId)`. Generates `publicUrl`, creates the event wallet (`kind: 'EVENT'`). |
 | `GET/PUT/DELETE /api/v1/events/[eventId]` | Detail/update/cancel. DELETE on a published event with tickets → `status: CANCELLED` (soft), never a hard delete. |
 | `POST /api/v1/events/[eventId]/publish` | DRAFT → PUBLISHED with validation (name, startsAt, location-or-online, cover). |
-| `GET /api/v1/events/public?from=&to=&q=&near=&category=&cursor=` | Public discovery; `PUBLISHED` + `visibility PUBLIC` only; `near=lat,lng,radiusKm` filters by bounding box computed server-side. |
+| `GET /api/v1/events/public?from=&to=&q=&near=&category=&project=&cursor=` | Public discovery; `PUBLISHED` + `visibility PUBLIC` only; `near=lat,lng,radiusKm` filters by bounding box computed server-side; `project` filters by `projectIds` membership. |
 | `GET /api/v1/events/public/[publicUrl]` | Unauthenticated event payload (allowlist projection) + `viewer` block when authenticated. |
 | `POST /api/v1/events/[eventId]/rsvp` | `{ status }` → upsert `EventRsvp`; returns fresh counts. |
 | `POST /api/v1/events/[eventId]/lists` · `DELETE .../lists/[listId]` | Link/unlink lists (m:m). |
+| `POST /api/v1/events/[eventId]/projects` · `DELETE .../projects/[projectId]` | Link/unlink projects (m:m); requires project manage rights. |
 | `GET/POST/DELETE /api/v1/events/[eventId]/staff` | Manage door staff. |
 | `POST /api/v1/likes` | `entityType: 'event'`. |
 | `GET/POST /api/v1/comments?entityType=event` | Already polymorphic; registry entry only. |
@@ -167,11 +176,12 @@ Counts (`interestedCount`, `goingCount`, `likeCount`, `commentCount`) are comput
   structured data for search/social. Sections: cover, title/date/venue, action bar (Like ·
   Interested · Going · Buy/Reserve placeholder until Phase 9), description with inline link
   previews, flier (A3, click to open full size), map (`locationMap`) or online badge, host
-  (user or org) card, linked lists / "Get involved" job board links, discussion (notes + comments).
+  (user or org) card, host project card (when linked), linked lists / "Get involved" job board
+  links, discussion (notes + comments).
 - `src/components/eventCard.tsx`, `src/views/be/eventsView.tsx`,
   `src/views/forms/addEventForm.tsx` (name, summary, description, date/time + timezone, online
   toggle/URL, PlacePicker, cover + flier pickers with the Phase 4 crop presets, capacity,
-  visibility, linked lists, owner selector).
+  visibility, linked lists, linked projects picker, owner selector).
 - `beView.tsx` activity feed gains event cards (published events from friends/orgs you follow),
   merged into the existing notes+templates merge.
 - `src/app/sitemap.ts` — published public events.
@@ -198,5 +208,7 @@ Counts (`interestedCount`, `goingCount`, `likeCount`, `commentCount`) are comput
   converted local time for a viewer in `Europe/Lisbon`.
 - Interested/Going toggles are idempotent and counts stay correct under double-click.
 - Link a list → the event page links to its job board and the public list page lists the event.
+- Link a project → the event page credits the host project and the project page's Events section
+  lists the event; discovery with `?project=` returns only that project's events.
 - Post a note tagging the event → it appears in the event discussion; a private note does not.
 - Org-owned event: only MANAGER+ of the org can edit; the public page credits the org.
