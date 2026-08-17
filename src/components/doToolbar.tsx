@@ -191,7 +191,7 @@ export const DoToolbar = ({
                         <Plus className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="max-h-[60vh] overflow-y-auto">
+                    <DropdownMenuContent align="end" className="max-h-[30vh] overflow-y-auto">
                       <DropdownMenuItem onClick={onShowAddTask}>
                         {t('common.newTask') || 'New task'}
                       </DropdownMenuItem>
