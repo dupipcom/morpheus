@@ -229,9 +229,9 @@ export default function DoPage({ locale, listId, taskId }: DoPageProps) {
     let cancelled = false
     fetch(`/api/v1/tasklists/${listId}`)
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: any) => {
+      .then((data: { taskList?: { tasks?: Array<{ id: string; dtstart?: string | null }> } } | null) => {
         if (cancelled || !data?.taskList?.tasks) return
-        const task = data.taskList.tasks.find((t: any) => t.id === taskId)
+        const task = data.taskList.tasks.find((t) => t.id === taskId)
         if (task?.dtstart) {
           const parsed = new Date(task.dtstart + 'T00:00:00')
           if (!isNaN(parsed.getTime())) {

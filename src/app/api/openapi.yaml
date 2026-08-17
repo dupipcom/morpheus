@@ -964,6 +964,31 @@ paths:
       responses:
         '200': { description: Cloned }
 
+  /api/v1/tasklists/public:
+    get:
+      tags: [tasklists]
+      summary: Job-board discovery feed across published lists (public)
+      security: []
+      parameters:
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: area, in: query, schema: { type: string } }
+        - { name: category, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200': { description: Published task lists with nextCursor }
+
+  /api/v1/tasklists/public/{publicUrl}:
+    get:
+      tags: [tasklists]
+      summary: Public list payload — allowlist projection (public, 404 unless published)
+      security: []
+      parameters:
+        - { name: publicUrl, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Public task list }
+        '404': { description: Unpublished or missing }
+
   /api/v1/tasks:
     get:
       tags: [tasks]
@@ -1031,6 +1056,40 @@ paths:
       summary: Migrate legacy embedded tasks (deprecated no-op)
       responses:
         '200': { description: Migration result }
+
+  /api/v1/tasks/{taskId}/apply:
+    post:
+      tags: [tasks]
+      summary: Apply to a public job post (body: message?, documentIds?)
+      parameters:
+        - { name: taskId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Application created }
+        '400': { description: Applications closed / position filled }
+        '404': { description: Unpublished or non-public task }
+        '409': { description: Already applied }
+
+  /api/v1/tasks/{taskId}/applications:
+    get:
+      tags: [tasks]
+      summary: List applications for a task (owner/manager of the owning list)
+      parameters:
+        - { name: taskId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Applications with applicant profiles }
+        '403': { description: Not owner/manager }
+
+  /api/v1/tasks/{taskId}/applications/{applicationId}:
+    post:
+      tags: [tasks]
+      summary: Accept / shortlist / decline / withdraw an application (body: status)
+      parameters:
+        - { name: taskId, in: path, required: true, schema: { type: string } }
+        - { name: applicationId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated application }
+        '400': { description: Invalid status }
+        '403': { description: Not owner/manager }
 
   /api/v1/templates:
     get:
@@ -1266,6 +1325,59 @@ paths:
         '200': { description: Processed }
         '400': { description: Invalid JSON }
         '401': { description: Invalid signature or expired timestamp }
+
+  /api/v1/projects:
+    get:
+      tags: [projects]
+      summary: Projects the viewer participates in (project picker)
+      responses:
+        '200': { description: Projects }
+    post:
+      tags: [projects]
+      summary: Create a project (creator = OWNER, always unpublished; body: name, bio?, photoDocumentId?, coverDocumentId?, links?, supportUrl?, collaborators?)
+      responses:
+        '200': { description: Created project }
+
+  /api/v1/projects/{projectId}:
+    get:
+      tags: [projects]
+      summary: Project detail with member lists (members only)
+      parameters:
+        - { name: projectId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Project }
+        '403': { description: Not a member }
+    put:
+      tags: [projects]
+      summary: Update project public-profile fields (OWNER/MANAGER)
+      parameters:
+        - { name: projectId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+        '403': { description: Not owner/manager }
+
+  /api/v1/projects/public:
+    get:
+      tags: [projects]
+      summary: Project discovery feed (spotlight first, cursor pagination, q filter)
+      security: []
+      parameters:
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200': { description: Published projects with nextCursor }
+
+  /api/v1/projects/public/{username}:
+    get:
+      tags: [projects]
+      summary: Public project payload — allowlist projection (public, 404 unless published)
+      security: []
+      parameters:
+        - { name: username, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Public project }
+        '404': { description: Unpublished or missing }
 
 components:
   securitySchemes:

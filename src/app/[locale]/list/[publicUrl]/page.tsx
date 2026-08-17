@@ -10,6 +10,7 @@ interface PublicListPayload {
   bio?: string | null
   profilePhoto?: string | null
   cover?: string | null
+  publicTasks?: Array<{ id: string; [key: string]: unknown }>
   [key: string]: unknown
 }
 

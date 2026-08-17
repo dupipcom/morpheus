@@ -19,7 +19,7 @@ const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i
 /**
  * GET /api/v1/projects
  */
-export async function GET(request: NextRequest): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   try {
     const { userId } = await auth()
     if (!userId) {

@@ -4,11 +4,16 @@ import { I18nProvider } from '@/lib/contexts/i18n'
 import { cachedInternalGet } from '@/lib/public/internalFetch'
 import { PublicJobView } from '@/views/list/publicJobView'
 
+interface PublicTaskCard {
+  id: string
+  [key: string]: unknown
+}
+
 interface PublicListPayload {
   name?: string | null
   publicUrl?: string | null
   profilePhoto?: string | null
-  publicTasks?: Array<Record<string, unknown>>
+  publicTasks?: PublicTaskCard[]
   [key: string]: unknown
 }
 
@@ -27,7 +32,7 @@ export async function generateMetadata({
   const { publicUrl, taskId } = await params
 
   const taskList = await getList(publicUrl)
-  const task = taskList?.publicTasks?.find((t: any) => t.id === taskId)
+  const task = taskList?.publicTasks?.find((t) => t.id === taskId)
 
   if (!taskList || !task) {
     return { title: 'Job Not Found' }
@@ -61,7 +66,7 @@ export default async function PublicJobPage({
   const { locale, publicUrl, taskId } = await params
 
   const taskList = await getList(publicUrl)
-  const task = taskList?.publicTasks?.find((t: any) => t.id === taskId)
+  const task = taskList?.publicTasks?.find((t) => t.id === taskId)
 
   if (!taskList || !task) {
     notFound()

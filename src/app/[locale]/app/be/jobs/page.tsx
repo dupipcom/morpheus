@@ -12,6 +12,25 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AddProjectForm } from '@/views/forms/addProjectForm'
 
+interface PublicListCard {
+  id: string
+  name?: string | null
+  publicTagline?: string | null
+  bio?: string | null
+  publicUrl?: string | null
+  area?: string | null
+  categories?: string[]
+  likeCount?: number
+  ownerProfile?: { userName?: string | null }
+  project?: { username: string }
+}
+
+interface ProjectCard {
+  id: string
+  name: string
+  username: string
+}
+
 /**
  * Job board discovery: public lists across the platform, filtered locally
  * (SWR fetch once + local filters per the frontend rules), plus the viewer's
@@ -26,23 +45,23 @@ export default function JobsPage() {
   const [category, setCategory] = useState('')
   const [showAddProject, setShowAddProject] = useState(false)
 
-  const { data } = useSWR<{ taskLists: any[] }>(
+  const { data } = useSWR<{ taskLists: PublicListCard[] }>(
     '/api/v1/tasklists/public?limit=50',
     jsonFetcher,
     { revalidateOnFocus: false, dedupingInterval: 10000 }
   )
-  const { data: projectsData, mutate: mutateProjects } = useSWR<{ projects: any[] }>(
+  const { data: projectsData, mutate: mutateProjects } = useSWR<{ projects: ProjectCard[] }>(
     '/api/v1/projects',
     jsonFetcher,
     { revalidateOnFocus: false }
   )
 
-  const taskLists = data?.taskLists || []
-  const projects = projectsData?.projects || []
+  const taskLists = useMemo(() => data?.taskLists || [], [data])
+  const projects = useMemo(() => projectsData?.projects || [], [projectsData])
 
   const filtered = useMemo(() => {
     const normalizedQuery = q.trim().toLowerCase()
-    return taskLists.filter((list: any) => {
+    return taskLists.filter((list) => {
       if (area && list.area !== area) return false
       if (category && !(list.categories || []).includes(category)) return false
       if (normalizedQuery) {
@@ -54,11 +73,11 @@ export default function JobsPage() {
   }, [taskLists, q, area, category])
 
   const areas = useMemo(
-    () => Array.from(new Set(taskLists.map((l: any) => l.area).filter(Boolean))) as string[],
+    () => Array.from(new Set(taskLists.map((l) => l.area).filter(Boolean))) as string[],
     [taskLists]
   )
   const categories = useMemo(
-    () => Array.from(new Set(taskLists.flatMap((l: any) => l.categories || []).filter(Boolean))) as string[],
+    () => Array.from(new Set(taskLists.flatMap((l) => l.categories || []).filter(Boolean))) as string[],
     [taskLists]
   )
 
@@ -113,7 +132,7 @@ export default function JobsPage() {
         <section>
           <h2 className="font-semibold mb-2">{t('project.myProjects', { defaultValue: 'My projects' })}</h2>
           <div className="flex flex-wrap gap-2">
-            {projects.map((p: any) => (
+            {projects.map((p) => (
               <Link key={p.id} href={`/${locale}/p/${p.username}`}>
                 <Card className="hover:shadow-md transition-shadow">
                   <CardContent className="py-2 px-3">
@@ -129,7 +148,7 @@ export default function JobsPage() {
 
       {/* Board */}
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((list: any) => (
+        {filtered.map((list) => (
           <Link key={list.id} href={`/${locale}/list/${list.publicUrl}`}>
             <Card className="h-full hover:shadow-md transition-shadow">
               <CardContent className="pt-4 space-y-1">

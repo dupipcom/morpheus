@@ -333,7 +333,15 @@
         "after": "After",
         "onDate": "On date",
         "occurrences": "occurrences"
-      }
+      },
+      "publishAsJob": "Publish as job",
+      "publishAsJobHint": "Makes the task a public job post on this list's job board",
+      "jobDescriptionLabel": "Job description",
+      "jobDescriptionPlaceholder": "Describe the role, expectations, and how to apply...",
+      "requirementsLabel": "Requirements",
+      "requirementsPlaceholder": "Skills, tools, availability...",
+      "openingsLabel": "Openings",
+      "applyByLabel": "Apply by (YYYY-MM-DD)"
     },
     "recurrencePicker": {
       "frequency": "Repeat",
@@ -439,7 +447,22 @@
       "noBudgets": "No budgets yet — add one below.",
       "newBudgetName": "Budget name",
       "confirmDelete": "Delete this list and all its tasks? This cannot be undone.",
-      "delete": "Delete"
+      "delete": "Delete",
+      "publicProfileTitle": "Public profile (optional)",
+      "publishLabel": "Publish list",
+      "taglineLabel": "Tagline",
+      "taglinePlaceholder": "One line about this list...",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "About this list...",
+      "coverLabel": "Cover document ID (Phase 4 upload)",
+      "linksLabel": "Links",
+      "linkLabelPlaceholder": "Label",
+      "addLink": "+ Add link",
+      "jobBoardLabel": "Enable job board",
+      "projectLabel": "Project",
+      "projectPlaceholder": "None",
+      "noProject": "None",
+      "publicUrlLabel": "Public URL"
     },
     "addTemplateForm": {
       "title": "Create New Template",
@@ -1070,7 +1093,16 @@
       }
     },
     "attachedDocuments": "Attached documents",
-    "viewDocument": "View document"
+    "viewDocument": "View document",
+    "board": {
+      "title": "Job board",
+      "subtitle": "Open positions across published lists and projects",
+      "searchPlaceholder": "Search jobs...",
+      "area": "Area",
+      "category": "Category",
+      "all": "All",
+      "empty": "No open positions yet."
+    }
   },
   "notes": {
     "updated": "Note updated successfully",
@@ -1215,5 +1247,49 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "list": {
+    "public": {
+      "like": "Like",
+      "partOfProject": "Part of",
+      "requestPending": "Request pending",
+      "requestToJoin": "Request to join",
+      "about": "About",
+      "openPositions": "Open positions",
+      "applyBy": "Apply by",
+      "requirements": "Requirements",
+      "openings": "Openings",
+      "applied": "Applied",
+      "apply": "Apply",
+      "applyTo": "Apply to",
+      "applyMessage": "Message (optional)",
+      "applyMessagePlaceholder": "Tell the owner why you are a fit...",
+      "submitApply": "Submit application",
+      "cancel": "Cancel",
+      "applyError": "Could not apply. Try again."
+    }
+  },
+  "project": {
+    "like": "Like",
+    "donate": "Support / Donate",
+    "about": "About",
+    "jobBoards": "Job boards",
+    "statsLists": "job boards",
+    "statsMembers": "members",
+    "statsLikes": "likes",
+    "create": "New project",
+    "myProjects": "My projects",
+    "nameLabel": "Name",
+    "namePlaceholder": "Project name...",
+    "bioLabel": "Bio",
+    "bioPlaceholder": "What is this project about?",
+    "photoLabel": "Photo document ID (Phase 4 upload)",
+    "coverLabel": "Cover document ID (16:9)",
+    "linksLabel": "Links",
+    "linkLabelPlaceholder": "Label",
+    "addLink": "+ Add link",
+    "supportUrlLabel": "Support / donate link",
+    "createButton": "Create",
+    "cancel": "Cancel"
   }
 }
