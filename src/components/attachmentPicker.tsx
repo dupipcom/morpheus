@@ -12,6 +12,7 @@ import {
   ACCEPT_BY_KIND,
   CAPS,
   COMPRESS_FAILED,
+  capForKind,
   compressImageFile,
   compressVideoFile,
   extensionOf,
@@ -278,7 +279,7 @@ export const AttachmentPicker = ({
     const item = pipelineRef.current.get(id)
     if (!item?.file) return
 
-    const check = preCheckFile(item.file, kindProp)
+    const check = preCheckFile(item.file, kindProp, role)
     if (!check.ok) {
       setItemError(id, check.reason === 'too-large' ? 'TOO_LARGE' : 'UNSUPPORTED')
       return
@@ -314,7 +315,9 @@ export const AttachmentPicker = ({
       }
       // 'document'/'cv': PDF passthrough — nothing to compress.
 
-      const cap = kind === 'cv' ? CAPS.cv : kind === 'video' ? CAPS.video : CAPS.image
+      // Role-aware cap: fliers compress toward CAPS.flier and must be checked
+      // against it, not the smaller image cap (the server allows 8 MB).
+      const cap = capForKind(kind, role)
       if (blob.size > cap) throw new Error('TOO_LARGE_AFTER')
 
       const mimeType = blob.type || item.file.type

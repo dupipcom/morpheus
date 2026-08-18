@@ -1332,6 +1332,10 @@
       "online": "Online event",
       "onlineUrl": "Online URL",
       "venue": "Venue name",
+      "venuePlaceholder": "Venue name...",
+      "venueAddress": "Address (optional)",
+      "venueLocation": "Location",
+      "venueLocationHint": "Search for the venue, or use Enter coordinates when it is not found.",
       "capacity": "Capacity (optional)",
       "visibility": "Visibility",
       "owner": "Owner",
@@ -1339,6 +1343,7 @@
       "createButton": "Create draft",
       "cancel": "Cancel",
       "cover": "Cover image",
+      "coverHint": "Ideal 16:9 (e.g. 1920×1080) — displays in full on cards and the event page.",
       "flier": "Flier image",
       "publish": "Publish",
       "draftSaved": "A draft was saved — fix the fields above and try publishing again."

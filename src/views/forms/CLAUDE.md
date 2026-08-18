@@ -12,6 +12,7 @@ Minimal forms for creating and editing tasks and task lists (rebuilt in the Do r
 | `addListForm.tsx` | Create/edit lists: name, visibility, collaborators, budget (fiat or % of budget sources), delete |
 | `addEventForm.tsx` | Create event drafts: profile fields, visibility, owner (Me/org), cover/flier images (create-flow contract), returns the created event via `onCreated(event)` |
 | `manageEventForm.tsx` | Manage an event: edit profile + cover/flier, Save (PUT), Publish (POST), Delete/Cancel (DELETE); opened automatically on a new draft and from Mine/Org cards |
+| `eventVenueFields.tsx` | Venue section shared by both event forms: venue name + address text fields plus the place search/coordinates picker (Google Places fills the text fields; manual coordinates keep typed details) |
 
 ## Common Patterns
 - Dialogs controlled via `open` / `onOpenChange` (shadcn Dialog)
@@ -39,6 +40,8 @@ Minimal forms for creating and editing tasks and task lists (rebuilt in the Do r
 
 - **Event create-flow contract**: cover/flier uploads in `addEventForm` run with `entityId=null`; after the event is created the form commits each pending descriptor via `commitAttachmentToEntity` (exported by `attachmentPicker.tsx`) and links the ids onto the event with a PUT. Failures only break the image, never the event.
 - **Manage dialog media**: `manageEventForm` seeds existing cover/flier as done picker items (rendered via `attachmentFileUrl`) and commits new uploads directly against `event.id`.
+- **Venue composition**: `eventVenueFields.tsx` keeps venue name/address and coordinates in one merged value — Google Places picks fill the text fields, manual coordinates keep whatever was typed (fallback when Places cannot find the venue). The forms persist `location` only when lat/lng are present and `venueName` from the name field.
+- **Cover proportions**: event covers render 16:9 everywhere (`EventCard`, `EventDetailView`); both forms show the `events.form.coverHint` helper so conforming covers display entirely without cropping.
 
 ## User Stories
 1. **As a user**, I can create tasks with a Google-Calendar-like cadence and a completion counter
