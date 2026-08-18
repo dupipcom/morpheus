@@ -1,8 +1,8 @@
 /**
  * Event publish API Route Handler (Phase 8)
  *
- * POST: DRAFT → PUBLISHED with validation (name, startsAt, location-or-online,
- * cover). Owner/manager only.
+ * POST: DRAFT → PUBLISHED with validation (name, startsAt, location-or-online).
+ * Owner/manager only.
  */
 
 import { NextRequest, NextResponse } from 'next/server'

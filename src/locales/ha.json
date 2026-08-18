@@ -853,7 +853,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Buga sharhi",
+    "signIn": "Shiga don shiga cikin tattaunawar."
   },
   "invest": {
     "notice": "Babu kuɗi na gaske da ake sarrafa a halin yanzu a cikin wannan app. Dupip Invest har yanzu yana cikin lokacin tsarawa. Wannan kawai yanayin gwaji ne don dalilai na nunawa.",
@@ -1213,6 +1215,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Hoton murfi",
+      "flier": "Hoton fola"
+    },
+    "manage": {
+      "title": "Sarrafa taron",
+      "short": "Sarrafa",
+      "publish": "Buga",
+      "save": "Ajiye",
+      "delete": "Share taron",
+      "confirmDelete": "Share wannan taron? Rubutun da ba a buga ba ana share su har abada; tarukan da aka buga ana soke su.",
+      "published": "An buga taron",
+      "view": "Duba taron"
+    },
+    "public": {
+      "flier": "Fola",
+      "nearby": "Tarukan da ke kusa",
+      "comments": "Sharhi"
+    },
+    "portal": {
+      "back": "Koma ga tarukan",
+      "unavailable": "Wannan taron ba ya samuwa ga jama'a."
     }
   }
 }

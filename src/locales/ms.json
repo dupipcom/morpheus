@@ -860,7 +860,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Siarkan komen",
+    "signIn": "Log masuk untuk menyertai perbualan."
   },
   "invest": {
     "notice": "Tiada wang sebenar yang dikendalikan pada masa ini dalam aplikasi ini. Dupip Invest masih dalam fasa perancangan. Ini hanyalah persekitaran ujian untuk tujuan demonstrasi.",
@@ -1220,6 +1222,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Imej muka depan",
+      "flier": "Imej risalah"
+    },
+    "manage": {
+      "title": "Urus acara",
+      "short": "Urus",
+      "publish": "Terbitkan",
+      "save": "Simpan",
+      "delete": "Padam acara",
+      "confirmDelete": "Padam acara ini? Draf dipadamkan secara kekal; acara yang diterbitkan dibatalkan.",
+      "published": "Acara diterbitkan",
+      "view": "Lihat acara"
+    },
+    "public": {
+      "flier": "Risalah",
+      "nearby": "Acara berdekatan",
+      "comments": "Komen"
+    },
+    "portal": {
+      "back": "Kembali ke acara",
+      "unavailable": "Acara ini tidak tersedia secara awam."
     }
   }
 }

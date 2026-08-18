@@ -3,7 +3,7 @@
 ## Routes
 - `GET/POST /api/v1/events` — management feed (`scope=mine|org:<id>|attending`) / create (DRAFT)
 - `GET/PUT/DELETE /api/v1/events/[eventId]` — detail / update / cancel (published → soft CANCELLED)
-- `POST /api/v1/events/[eventId]/publish` — DRAFT → PUBLISHED with validation
+- `POST /api/v1/events/[eventId]/publish` — DRAFT → PUBLISHED with validation (name, startsAt, location-or-online; cover optional)
 - `POST /api/v1/events/[eventId]/rsvp` — idempotent RSVP upsert, fresh counts
 - `POST/DELETE /api/v1/events/[eventId]/lists` — link/unlink lists (m:m)
 - `POST/DELETE /api/v1/events/[eventId]/projects` — link/unlink projects (m:m)

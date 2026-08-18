@@ -859,7 +859,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Argitaratu iruzkina",
+    "signIn": "Hasi saioa elkarrizketan parte hartzeko."
   },
   "invest": {
     "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da.",
@@ -1219,6 +1221,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Azaleko irudia",
+      "flier": "Esku-orriaren irudia"
+    },
+    "manage": {
+      "title": "Kudeatu ekitaldia",
+      "short": "Kudeatu",
+      "publish": "Argitaratu",
+      "save": "Gorde",
+      "delete": "Ezabatu ekitaldia",
+      "confirmDelete": "Ekitaldi hau ezabatu? Zirriborroak betiko kentzen dira; argitaratutako ekitaldiak bertan behera uzten dira.",
+      "published": "Ekitaldia argitaratuta",
+      "view": "Ikusi ekitaldia"
+    },
+    "public": {
+      "flier": "Esku-orria",
+      "nearby": "Gertuko ekitaldiak",
+      "comments": "Iruzkinak"
+    },
+    "portal": {
+      "back": "Itzuli ekitaldietara",
+      "unavailable": "Ekitaldi hau ez dago publikoki eskuragarri."
     }
   }
 }

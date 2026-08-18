@@ -860,7 +860,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Skriv kommentar",
+    "signIn": "Log ind for at deltage i samtalen."
   },
   "invest": {
     "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål.",
@@ -1220,6 +1222,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Forsidebillede",
+      "flier": "Flyer-billede"
+    },
+    "manage": {
+      "title": "Administrer begivenhed",
+      "short": "Administrer",
+      "publish": "Udgiv",
+      "save": "Gem",
+      "delete": "Slet begivenhed",
+      "confirmDelete": "Slet denne begivenhed? Udkast fjernes permanent; udgivne begivenheder annulleres.",
+      "published": "Begivenhed udgivet",
+      "view": "Se begivenhed"
+    },
+    "public": {
+      "flier": "Flyer",
+      "nearby": "Begivenheder i nærheden",
+      "comments": "Kommentarer"
+    },
+    "portal": {
+      "back": "Tilbage til begivenheder",
+      "unavailable": "Denne begivenhed er ikke offentligt tilgængelig."
     }
   }
 }

@@ -138,7 +138,8 @@ export async function updateEvent(eventId: string, data: Record<string, unknown>
 }
 
 /**
- * DRAFT → PUBLISHED with validation (name, startsAt, location-or-online, cover).
+ * DRAFT → PUBLISHED with validation (name, startsAt, location-or-online).
+ * A cover is optional — publishing must not be blocked on an attachment.
  */
 export async function publishEvent(eventId: string) {
   const event = await prisma.event.findUnique({ where: { id: eventId } })
@@ -150,7 +151,6 @@ export async function publishEvent(eventId: string) {
   if (!event.name?.trim()) problems.push('name')
   if (!event.startsAt) problems.push('startsAt')
   if (!event.isOnline && !event.location) problems.push('location (or isOnline)')
-  if (!event.coverDocumentId) problems.push('cover')
   if (problems.length > 0) {
     throw new ApiError(400, 'VALIDATION', `Cannot publish — missing: ${problems.join(', ')}`)
   }

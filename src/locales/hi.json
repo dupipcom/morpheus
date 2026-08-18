@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "टिप्पणी पोस्ट करें",
+    "signIn": "बातचीत में शामिल होने के लिए साइन इन करें।"
   },
   "invest": {
     "notice": "इस ऐप में वर्तमान में कोई वास्तविक धन प्रबंधित नहीं किया जा रहा है। Dupip Invest अभी भी योजना चरण में है। यह केवल प्रदर्शन उद्देश्यों के लिए एक परीक्षण वातावरण है।",
@@ -1216,6 +1218,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "कवर छवि",
+      "flier": "फ्लायर छवि"
+    },
+    "manage": {
+      "title": "इवेंट प्रबंधित करें",
+      "short": "प्रबंधित करें",
+      "publish": "प्रकाशित करें",
+      "save": "सहेजें",
+      "delete": "इवेंट हटाएं",
+      "confirmDelete": "यह इवेंट हटाएं? ड्राफ्ट स्थायी रूप से हटा दिए जाते हैं; प्रकाशित इवेंट रद्द कर दिए जाते हैं।",
+      "published": "इवेंट प्रकाशित हुआ",
+      "view": "इवेंट देखें"
+    },
+    "public": {
+      "flier": "फ्लायर",
+      "nearby": "आस-पास के इवेंट",
+      "comments": "टिप्पणियाँ"
+    },
+    "portal": {
+      "back": "इवेंट पर वापस जाएं",
+      "unavailable": "यह इवेंट सार्वजनिक रूप से उपलब्ध नहीं है।"
     }
   }
 }

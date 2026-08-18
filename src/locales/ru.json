@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Опубликовать комментарий",
+    "signIn": "Войдите, чтобы присоединиться к обсуждению."
   },
   "invest": {
     "notice": "В настоящее время в этом приложении не управляются реальные деньги. Dupip Invest все еще находится в стадии планирования. Это просто тестовая среда для демонстрационных целей.",
@@ -1216,6 +1218,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Изображение обложки",
+      "flier": "Изображение флаера"
+    },
+    "manage": {
+      "title": "Управление событием",
+      "short": "Управлять",
+      "publish": "Опубликовать",
+      "save": "Сохранить",
+      "delete": "Удалить событие",
+      "confirmDelete": "Удалить это событие? Черновики удаляются навсегда; опубликованные события отменяются.",
+      "published": "Событие опубликовано",
+      "view": "Посмотреть событие"
+    },
+    "public": {
+      "flier": "Флаер",
+      "nearby": "События поблизости",
+      "comments": "Комментарии"
+    },
+    "portal": {
+      "back": "Назад к событиям",
+      "unavailable": "Это событие недоступно публично."
     }
   }
 }

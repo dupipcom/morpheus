@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EventCard } from '@/components/eventCard'
 import { AddEventForm } from '@/views/forms/addEventForm'
 import { ManageEventForm } from '@/views/forms/manageEventForm'
+import { EventPortalDetail } from './eventPortalDetail'
 import type { EventSummary, EventManage } from './eventTypes'
 
 /**
@@ -23,6 +24,7 @@ export function EventsView() {
   const [tab, setTab] = useState('discover')
   const [showCreate, setShowCreate] = useState(false)
   const [manageEvent, setManageEvent] = useState<EventManage | null>(null)
+  const [portalEvent, setPortalEvent] = useState<{ publicUrl: string } | null>(null)
 
   const discoverKey = '/api/v1/events/public?limit=50'
   const attendingKey = '/api/v1/events?scope=attending&limit=50'
@@ -65,6 +67,13 @@ export function EventsView() {
         </Button>
       </div>
 
+      {portalEvent ? (
+        <EventPortalDetail
+          publicUrl={portalEvent.publicUrl}
+          locale={locale}
+          onBack={() => setPortalEvent(null)}
+        />
+      ) : (
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="discover">{t('events.discover', { defaultValue: 'Discover' })}</TabsTrigger>
@@ -79,6 +88,7 @@ export function EventsView() {
                 event={event}
                 locale={locale}
                 status={event.status}
+                onOpen={() => setPortalEvent({ publicUrl: event.publicUrl })}
                 onManage={tab === 'mine' ? () => setManageEvent(event as EventManage) : undefined}
               />
             ))}
@@ -90,6 +100,7 @@ export function EventsView() {
           </section>
         </TabsContent>
       </Tabs>
+      )}
 
       <AddEventForm
         open={showCreate}

@@ -853,7 +853,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Δημοσίευση σχολίου",
+    "signIn": "Συνδεθείτε για να συμμετάσχετε στη συζήτηση."
   },
   "invest": {
     "notice": "Δεν διαχειρίζονται πραγματικά χρήματα αυτή τη στιγμή σε αυτήν την εφαρμογή. Το Dupip Invest βρίσκεται ακόμα στη φάση σχεδιασμού. Αυτό είναι μόνο ένα περιβάλλον δοκιμών για επίδειξη.",
@@ -1213,6 +1215,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Εικόνα εξωφύλλου",
+      "flier": "Εικόνα φυλλαδίου"
+    },
+    "manage": {
+      "title": "Διαχείριση εκδήλωσης",
+      "short": "Διαχείριση",
+      "publish": "Δημοσίευση",
+      "save": "Αποθήκευση",
+      "delete": "Διαγραφή εκδήλωσης",
+      "confirmDelete": "Διαγραφή αυτής της εκδήλωσης; Τα προσχέδια διαγράφονται οριστικά· οι δημοσιευμένες εκδηλώσεις ακυρώνονται.",
+      "published": "Η εκδήλωση δημοσιεύτηκε",
+      "view": "Προβολή εκδήλωσης"
+    },
+    "public": {
+      "flier": "Φυλλάδιο",
+      "nearby": "Κοντινές εκδηλώσεις",
+      "comments": "Σχόλια"
+    },
+    "portal": {
+      "back": "Επιστροφή στις εκδηλώσεις",
+      "unavailable": "Αυτή η εκδήλωση δεν είναι δημόσια διαθέσιμη."
     }
   }
 }

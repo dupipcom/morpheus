@@ -31,3 +31,31 @@ export interface EventManage extends EventSummary {
   visibility?: string
   ownerType?: string
 }
+
+/** Enriched public payload from GET /api/v1/events/public/[publicUrl]. */
+export interface EventDetailPayload {
+  id: string
+  name: string
+  publicUrl?: string
+  summary?: string | null
+  description?: string | null
+  startsAt?: string | null
+  endsAt?: string | null
+  timezone?: string | null
+  isOnline?: boolean
+  onlineUrl?: string | null
+  location?: { name?: string; address?: string; lat?: number; lng?: number } | null
+  venueName?: string | null
+  cover?: string | null
+  flier?: string | null
+  capacity?: number | null
+  host?: {
+    type?: string
+    org?: { name?: string | null; username?: string | null } | null
+    profile?: { userName?: string | null } | null
+  } | null
+  lists?: Array<{ id: string; name: string; publicUrl?: string | null; publicTagline?: string | null }>
+  projects?: Array<{ id: string; name: string; username?: string | null }>
+  counts?: { going?: number; interested?: number; likes?: number }
+  viewer?: { rsvp?: string | null; isLiked?: boolean }
+}

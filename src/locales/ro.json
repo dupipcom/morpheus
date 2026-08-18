@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Publică comentariul",
+    "signIn": "Conectează-te pentru a te alătura conversației."
   },
   "invest": {
     "notice": "Nu există bani reali gestionați în prezent în această aplicație. Dupip Invest este încă în faza de planificare. Acesta este doar un mediu de testare în scopuri de demonstrație.",
@@ -1216,6 +1218,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Imagine de copertă",
+      "flier": "Imagine flyer"
+    },
+    "manage": {
+      "title": "Gestionează evenimentul",
+      "short": "Gestionează",
+      "publish": "Publică",
+      "save": "Salvează",
+      "delete": "Șterge evenimentul",
+      "confirmDelete": "Ștergi acest eveniment? Ciornele sunt șterse definitiv; evenimentele publicate sunt anulate.",
+      "published": "Eveniment publicat",
+      "view": "Vezi evenimentul"
+    },
+    "public": {
+      "flier": "Flyer",
+      "nearby": "Evenimente în apropiere",
+      "comments": "Comentarii"
+    },
+    "portal": {
+      "back": "Înapoi la evenimente",
+      "unavailable": "Acest eveniment nu este disponibil public."
     }
   }
 }

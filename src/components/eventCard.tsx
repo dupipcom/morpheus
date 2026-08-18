@@ -18,15 +18,19 @@ export const EventCard = ({
   event,
   locale,
   status,
+  onOpen,
   onManage
 }: {
   event: EventSummary
   locale: string
   status?: string
+  onOpen?: () => void
   onManage?: () => void
 }) => {
   const { t } = useI18n()
   const startsAt = event.startsAt ? new Date(event.startsAt) : null
+  // Discovery payloads carry no status — treat them as published.
+  const isPublished = status === undefined || status === 'PUBLISHED'
 
   const cardInner = (
     <Card className="h-full hover:shadow-md transition-shadow overflow-hidden">
@@ -56,7 +60,48 @@ export const EventCard = ({
     </Card>
   )
 
-  if (onManage && status !== 'PUBLISHED') {
+  const manageOverlay = onManage && status === 'PUBLISHED' && (
+    <Button
+      size="sm"
+      variant="outline"
+      className="absolute top-2 right-2 z-10"
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        onManage()
+      }}
+    >
+      {t('events.manage.short', { defaultValue: 'Manage' })}
+    </Button>
+  )
+
+  // In-app detail (portal tab) — replaces the public-page navigation.
+  if (onOpen && isPublished) {
+    return (
+      <div className="relative h-full">
+        <div
+          role="button"
+          tabIndex={0}
+          className="cursor-pointer rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring h-full"
+          onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              onOpen()
+            }
+          }}
+          aria-label={event.name}
+        >
+          {cardInner}
+        </div>
+        {manageOverlay}
+      </div>
+    )
+  }
+
+  // Draft/cancelled events have no public page (404) — manage is their
+  // destination.
+  if (onManage && !isPublished) {
     return (
       <div
         role="button"
@@ -81,20 +126,7 @@ export const EventCard = ({
       <Link href={`/${locale}/event/${event.publicUrl}`} className="block h-full">
         {cardInner}
       </Link>
-      {onManage && (
-        <Button
-          size="sm"
-          variant="outline"
-          className="absolute top-2 right-2 z-10"
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onManage()
-          }}
-        >
-          {t('events.manage.short', { defaultValue: 'Manage' })}
-        </Button>
-      )}
+      {manageOverlay}
     </div>
   )
 }

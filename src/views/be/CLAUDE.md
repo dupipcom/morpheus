@@ -7,9 +7,11 @@ The BeView is the social hub of the application. It displays a combined activity
 ## Files
 
 - `beView.tsx` - Tabbed social hub (activity | friends | events | spaces | organizations)
-- `eventsView.tsx` - Events browse/create/manage view; shared by the BeView Events tab and the standalone `/be/events` page. After creating a draft it auto-switches to Mine/Org and opens the manage dialog
-- `publicEventView.tsx` - Single public event page body (RSVP, like, cover/flier via the media pipe)
-- `eventTypes.ts` - Shared `EventSummary` / `EventManage` interfaces (also used by the event forms and `EventCard`)
+- `eventsView.tsx` - Events browse/create/manage view; shared by the BeView Events tab and the standalone `/be/events` page. After creating a draft it auto-switches to Mine/Org and opens the manage dialog; clicking a published card swaps the tab for the in-tab event detail
+- `eventPortalDetail.tsx` - In-tab event detail: fetches the public payload by `publicUrl` and renders `EventDetailView` with a back button (the standalone `/event/[publicUrl]` page stays canonical)
+- `eventDetailView.tsx` - Event detail body shared by the public page and the in-tab portal: RSVP/like, host, linked lists/projects, proximity suggestions, comments
+- `publicEventView.tsx` - Public event page shell (`main` container around `EventDetailView`)
+- `eventTypes.ts` - Shared `EventSummary` / `EventManage` / `EventDetailPayload` interfaces (also used by the event forms, `EventCard` and the public page)
 
 ## Component Architecture
 
@@ -78,7 +80,10 @@ BeView
 10. **As a user**, I can reach the same events experience on the standalone `/be/events` page
 11. **As a user**, after creating a draft I land on Mine/Org with the manage dialog open, where I can edit the profile, add cover/flier images, and publish to the selected audience
 12. **As a user**, I can manage any of my events (edit, publish, delete/cancel) from the Mine/Org tab; draft/cancelled cards open the manage dialog instead of a public page
-13. **As a user**, I can see space and organization features are planned (disabled tabs)
+13. **As a user**, clicking a published event card opens the event inside the events tab (back button returns to the list) while the shareable `/event/[publicUrl]` URL keeps working
+14. **As a user**, I can see proximity-based event suggestions and a comments section on the event detail
+15. **As a user**, I can publish an event without a cover image
+16. **As a user**, I can see space and organization features are planned (disabled tabs)
 
 ## API Endpoints
 
@@ -95,6 +100,10 @@ BeView
 | `/api/v1/events/{eventId}/publish` | POST | Publish a draft (validates name, startsAt, location-or-online, cover) |
 | `/api/v1/orgs` | GET | Orgs for the create-event form |
 | `/api/v1/attachments` | POST | Commit cover/flier uploads (`entityType: 'event'`) |
+| `/api/v1/events/public/[publicUrl]` | GET | Enriched public payload for the in-tab portal detail |
+| `/api/v1/events/public?near=lat,lng,radiusKm` | GET | Proximity suggestions on the event detail |
+| `/api/v1/comments?entityType=event&entityId=` | GET | Event comments (public) |
+| `/api/v1/comments` | POST | Post an event comment (auth) |
 
 ## Loading States
 

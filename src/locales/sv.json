@@ -859,7 +859,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Publicera kommentar",
+    "signIn": "Logga in för att delta i konversationen."
   },
   "invest": {
     "notice": "Det finns för närvarande inga riktiga pengar som hanteras i denna app. Dupip Invest är fortfarande i planeringsfasen. Detta är bara en testmiljö i demonstrationssyfte.",
@@ -1219,6 +1221,31 @@
       "removeTag": "Remove tag",
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
+    }
+  },
+  "events": {
+    "form": {
+      "cover": "Omslagsbild",
+      "flier": "Flyerbild"
+    },
+    "manage": {
+      "title": "Hantera evenemang",
+      "short": "Hantera",
+      "publish": "Publicera",
+      "save": "Spara",
+      "delete": "Ta bort evenemang",
+      "confirmDelete": "Ta bort det här evenemanget? Utkast tas bort permanent; publicerade evenemang avbryts.",
+      "published": "Evenemang publicerat",
+      "view": "Visa evenemang"
+    },
+    "public": {
+      "flier": "Flyer",
+      "nearby": "Evenemang i närheten",
+      "comments": "Kommentarer"
+    },
+    "portal": {
+      "back": "Tillbaka till evenemang",
+      "unavailable": "Det här evenemanget är inte offentligt tillgängligt."
     }
   }
 }
