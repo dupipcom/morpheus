@@ -63,16 +63,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check required secrets
-        run: |
-          missing=()
-          [ -n "${CLERK_SECRET_KEY}" ] || missing+=(CLERK_SECRET_KEY)
-          [ -n "${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}" ] || missing+=(NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)
-          if [ ${#missing[@]} -gt 0 ]; then
-            echo "Missing repo secrets: ${missing[*]}. The E2E harness creates real users on a Clerk DEVELOPMENT instance and cannot run without them."
-            exit 1
-          fi
-
       - name: Start MongoDB (single-node replica set)
         run: |
           set -euo pipefail
