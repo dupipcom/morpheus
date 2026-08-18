@@ -138,7 +138,7 @@ export async function GET(
  * back-references were populated on Document).
  */
 async function isViewerLinkedToDocument(documentId: string, viewerId: string): Promise<boolean> {
-  const [job, task, list, note] = await Promise.all([
+  const [job, task, list, note, event] = await Promise.all([
     prisma.job.findFirst({
       where: {
         documentIds: { has: documentId },
@@ -169,10 +169,17 @@ async function isViewerLinkedToDocument(documentId: string, viewerId: string): P
         OR: [{ userId: viewerId }, { visibility: 'PUBLIC' }]
       },
       select: { id: true }
+    }),
+    prisma.event.findFirst({
+      where: {
+        documentIds: { has: documentId },
+        OR: [{ userId: viewerId }, { visibility: 'PUBLIC' }]
+      },
+      select: { id: true }
     })
   ])
 
-  return Boolean(job || task || list || note)
+  return Boolean(job || task || list || note || event)
 }
 
 /** Strip characters that would break a Content-Disposition header value. */

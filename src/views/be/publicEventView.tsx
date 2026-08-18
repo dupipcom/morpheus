@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useI18n } from '@/lib/contexts/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Heart, CalendarDays, MapPin, Globe } from 'lucide-react'
+import { Heart, CalendarDays, MapPin, Globe, Image as ImageIcon } from 'lucide-react'
+import { attachmentFileUrl } from '@/components/attachmentPicker'
 
 /**
  * Public event page body (server shell + client action islands: RSVP, like).
@@ -70,7 +71,7 @@ export function PublicEventView({ event, locale }: { event: any; locale: string 
       <Card className="overflow-hidden">
         {event.cover && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={event.cover} alt="" className="w-full h-56 object-cover" />
+          <img src={attachmentFileUrl(event.cover)} alt="" className="w-full h-56 object-cover" />
         )}
         <CardContent className="pt-4 space-y-3">
           <h1 className="text-2xl font-bold">{event.name}</h1>
@@ -99,6 +100,17 @@ export function PublicEventView({ event, locale }: { event: any; locale: string 
                   <MapPin className="h-4 w-4" /> {event.venueName || event.location.name}
                 </span>
               )
+            )}
+            {event.flier && (
+              <a
+                href={attachmentFileUrl(event.flier)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-primary hover:underline"
+              >
+                <ImageIcon className="h-4 w-4" />
+                {t('events.public.flier', { defaultValue: 'Flier' })}
+              </a>
             )}
           </div>
 

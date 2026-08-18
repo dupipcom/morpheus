@@ -51,14 +51,16 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: event.cover ? [event.cover] : [],
+      // The cover documentId is not a URL — render it through the
+      // authenticated media pipe (PUBLIC events stream to anonymous crawlers).
+      images: event.cover ? [`/api/v1/attachments/${event.cover}/file`] : [],
       type: 'website'
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: event.cover ? [event.cover] : []
+      images: event.cover ? [`/api/v1/attachments/${event.cover}/file`] : []
     },
     other: event.startsAt
       ? {

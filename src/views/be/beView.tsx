@@ -22,6 +22,7 @@ import { useI18n } from "@/lib/contexts/i18n"
 import { useEnhancedLoadingState } from "@/lib/utils/userUtils"
 import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
+import { EventsView } from "./eventsView"
 
 interface Friend {
   id: string
@@ -166,7 +167,11 @@ export function BeView({
   const handleTabChange = (value: string) => {
     const tab = value as 'activity' | 'friends' | 'events' | 'spaces' | 'organizations'
     setActiveTab(tab)
-    
+
+    // Events has a dedicated standalone page (/be/events); show the embedded
+    // view in-place instead of navigating away.
+    if (tab === 'events') return
+
     // Update URL to match the selected tab
     // Extract locale and base path
     const pathParts = pathname?.split('/') || []
@@ -666,9 +671,8 @@ export function BeView({
           >
             {t('socialView.friends')}
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="events"
-            disabled
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             {t('socialView.events')}
@@ -698,9 +702,7 @@ export function BeView({
         </TabsContent>
 
         <TabsContent value="events" className="mt-4">
-          <div className="text-center text-muted-foreground py-12">
-            <p>{t('socialView.events')} - Coming soon</p>
-          </div>
+          <EventsView />
         </TabsContent>
 
         <TabsContent value="spaces" className="mt-4">

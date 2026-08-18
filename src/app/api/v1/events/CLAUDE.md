@@ -22,6 +22,12 @@ Clerk auth for CRUD; public routes unauthenticated. Ownership via the ownership 
 - Timezone rule: `startsAt`/`endsAt` are UTC instants + IANA `timezone` for display (never wall-clock strings).
 - Ticketing/attendance relations arrive in Phases 9/10 — no inverse fields declared here.
 - Counts are computed with batched groupBy, never per-card.
+- `PUT /events/[eventId]` uses `!== undefined` semantics for `venueName`/`coverDocumentId`/
+  `flierDocumentId`/`capacity`: a string/number sets, `null` clears (the manage dialog sends
+  `null` to remove a cover/flier).
+- Event covers/fliers go through the attachments pipeline (`POST /api/v1/attachments` with
+  `entityType: 'event'`); the UI consumes them via `GET /api/v1/attachments/[documentId]/file`
+  and the manage dialog (`src/views/forms/manageEventForm.tsx`).
 
 ## Dependencies
 - `src/lib/services/events` (eventService)

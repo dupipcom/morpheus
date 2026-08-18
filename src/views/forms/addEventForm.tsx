@@ -10,6 +10,12 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useI18n } from '@/lib/contexts/i18n'
 import { jsonFetcher } from '@/lib/utils/utils'
+import {
+  AttachmentPicker,
+  commitAttachmentToEntity,
+  type PickedAttachment
+} from '@/components/attachmentPicker'
+import type { EventManage } from '@/views/be/eventTypes'
 
 /**
  * Create event dialog (Phase 8): name, summary, description, date/time +
@@ -23,7 +29,7 @@ export const AddEventForm = ({
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onCreated: () => Promise<void> | void
+  onCreated: (event: EventManage) => Promise<void> | void
 }) => {
   const { t } = useI18n()
 
@@ -39,6 +45,8 @@ export const AddEventForm = ({
   const [capacity, setCapacity] = useState('')
   const [visibility, setVisibility] = useState('PUBLIC')
   const [ownerOrgId, setOwnerOrgId] = useState('')
+  const [cover, setCover] = useState<PickedAttachment[]>([])
+  const [flier, setFlier] = useState<PickedAttachment[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -63,6 +71,8 @@ export const AddEventForm = ({
       setCapacity('')
       setVisibility('PUBLIC')
       setOwnerOrgId('')
+      setCover([])
+      setFlier([])
       setIsSubmitting(false)
       setError(null)
     }
@@ -100,8 +110,43 @@ export const AddEventForm = ({
         const data = await res.json().catch(() => null)
         throw new Error(data?.error || 'Failed to create event')
       }
+      const created = ((await res.json()) as { event: EventManage }).event
+
+      // Create-flow contract: images were uploaded with entityId=null, so
+      // commit them against the new event, then link the media ids onto the
+      // event. Failures only break the image, never the event itself.
+      const commitOne = async (
+        list: PickedAttachment[],
+        role: 'cover' | 'flier'
+      ): Promise<string | null> => {
+        const pending = list.filter((a) => !a.documentId)
+        const ids = await Promise.all(
+          pending.map((a) =>
+            commitAttachmentToEntity(a, 'event', created.id, role).catch((uploadError) => {
+              console.error('Error committing event attachment:', uploadError)
+              return null
+            })
+          )
+        )
+        return ids.find((id): id is string => Boolean(id)) ?? null
+      }
+      const coverDocumentId = await commitOne(cover, 'cover')
+      const flierDocumentId = await commitOne(flier, 'flier')
+
+      let finalEvent = created
+      if (coverDocumentId || flierDocumentId) {
+        const putRes = await fetch(`/api/v1/events/${created.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ coverDocumentId, flierDocumentId })
+        })
+        if (putRes.ok) {
+          finalEvent = ((await putRes.json()) as { event: EventManage }).event
+        }
+      }
+
       onOpenChange(false)
-      await onCreated()
+      await onCreated(finalEvent)
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Failed to create event')
     } finally {
@@ -195,6 +240,34 @@ export const AddEventForm = ({
               </Select>
             </div>
           )}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <Label>{t('events.form.cover', { defaultValue: 'Cover image' })}</Label>
+              <AttachmentPicker
+                entityType="event"
+                entityId={null}
+                role="cover"
+                kind="image"
+                max={1}
+                compact
+                value={cover}
+                onChange={setCover}
+              />
+            </div>
+            <div>
+              <Label>{t('events.form.flier', { defaultValue: 'Flier image' })}</Label>
+              <AttachmentPicker
+                entityType="event"
+                entityId={null}
+                role="flier"
+                kind="image"
+                max={1}
+                compact
+                value={flier}
+                onChange={setFlier}
+              />
+            </div>
+          </div>
           {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
         </div>
         <div className="flex gap-2 pt-2">

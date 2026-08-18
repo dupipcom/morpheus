@@ -77,10 +77,12 @@ export async function PUT(
     if (typeof body.isOnline === 'boolean') data.isOnline = body.isOnline
     if (typeof body.onlineUrl === 'string') data.onlineUrl = sanitizeURL(body.onlineUrl)
     if (body.location !== undefined) data.location = typeof body.location === 'object' ? body.location : null
-    if (typeof body.venueName === 'string') data.venueName = sanitizeText(body.venueName)
-    if (typeof body.coverDocumentId === 'string') data.coverDocumentId = body.coverDocumentId
-    if (typeof body.flierDocumentId === 'string') data.flierDocumentId = body.flierDocumentId
-    if (typeof body.capacity === 'number' && body.capacity > 0) data.capacity = body.capacity
+    // `!== undefined` semantics: a string sets the field, null/empty clears it
+    // (the manage dialog sends null to remove a cover/flier).
+    if (body.venueName !== undefined) data.venueName = typeof body.venueName === 'string' ? (body.venueName.trim() ? sanitizeText(body.venueName.trim()) : null) : null
+    if (body.coverDocumentId !== undefined) data.coverDocumentId = typeof body.coverDocumentId === 'string' ? body.coverDocumentId : null
+    if (body.flierDocumentId !== undefined) data.flierDocumentId = typeof body.flierDocumentId === 'string' ? body.flierDocumentId : null
+    if (body.capacity !== undefined) data.capacity = typeof body.capacity === 'number' && body.capacity > 0 ? body.capacity : null
     if (typeof body.visibility === 'string') data.visibility = body.visibility
 
     const event = await updateEvent(authResult.eventId, data)
