@@ -7,6 +7,9 @@
 - `GET /api/v1/tasks/[taskId]`
 - `PUT /api/v1/tasks/[taskId]`
 - `DELETE /api/v1/tasks/[taskId]`
+- `POST /api/v1/tasks/[taskId]/apply` (Phase 5 job posts — body `{ message?, documentIds? }`)
+- `GET /api/v1/tasks/[taskId]/applications` (owner/manager of the owning list)
+- `POST /api/v1/tasks/[taskId]/applications/[applicationId]` (accept/shortlist/decline/withdraw; body `{ status }`)
 - `GET /api/v1/tasks/migrate`
 - `POST /api/v1/tasks/migrate`
 

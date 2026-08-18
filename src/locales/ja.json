@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "コメントを投稿",
+    "signIn": "会話に参加するにはログインしてください。"
   },
   "invest": {
     "notice": "このアプリでは現在、実際の資金は管理されていません。Dupip Investはまだ計画段階にあります。これはデモンストレーション目的のテスト環境です。",
@@ -1217,5 +1219,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "カバー画像",
+      "flier": "フライヤー画像",
+      "publish": "公開する",
+      "draftSaved": "下書きを保存しました — 上のフィールドを修正してもう一度公開してください。"
+    },
+    "manage": {
+      "title": "イベントを管理",
+      "short": "管理",
+      "publish": "公開する",
+      "save": "保存",
+      "delete": "イベントを削除",
+      "confirmDelete": "このイベントを削除しますか？下書きは完全に削除され、公開済みイベントはキャンセルされます。",
+      "published": "イベントを公開しました",
+      "view": "イベントを見る",
+      "unpublish": "下書きに戻す"
+    },
+    "public": {
+      "flier": "フライヤー",
+      "nearby": "近くのイベント",
+      "comments": "コメント",
+      "mapAlt": "イベント会場の地図"
+    },
+    "portal": {
+      "back": "イベントに戻る",
+      "unavailable": "このイベントは一般公開されていません。"
+    }
+  },
+  "repost": {
+    "title": "再投稿",
+    "submit": "再投稿",
+    "placeholder": "コメントを追加（任意）...",
+    "success": "再投稿しました"
   }
 }

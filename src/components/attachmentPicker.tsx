@@ -41,6 +41,8 @@ export interface PickedAttachment {
 
 export type AttachmentRole = 'cover' | 'flier' | 'evidence' | 'inline' | 'cv'
 
+export type AttachmentEntityType = 'task' | 'list' | 'job' | 'note' | 'user' | 'event'
+
 /**
  * In-app URL for a committed Document. The storage bucket is private (iDrive e2
  * requires credentials), so rendering goes through the authenticated pipe at
@@ -51,8 +53,49 @@ export function attachmentFileUrl(documentId: string): string {
   return `/api/v1/attachments/${documentId}/file`
 }
 
+/**
+ * Commit an uploaded descriptor to an entity via POST /api/v1/attachments.
+ * Used internally when `entityId` is present at upload time, and by parents
+ * following the create-flow contract (upload first with `entityId=null`, then
+ * commit here once the entity exists). Returns the new Document id.
+ */
+export async function commitAttachmentToEntity(
+  descriptor: PickedAttachment,
+  entityType: AttachmentEntityType,
+  entityId: string,
+  role?: AttachmentRole,
+  posterUrl?: string
+): Promise<string> {
+  const res = await fetch('/api/v1/attachments', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      key: descriptor.key,
+      fileName: descriptor.fileName,
+      fileFormat: extensionOf(descriptor.fileName),
+      fileSize: descriptor.size,
+      mimeType: descriptor.mimeType,
+      kind: descriptor.kind,
+      width: descriptor.width,
+      height: descriptor.height,
+      duration: descriptor.duration,
+      location: descriptor.location ?? undefined,
+      entityType,
+      entityId,
+      role: role ?? undefined,
+      // Backend-integration note: Document.posterUrl is set from this field.
+      posterUrl: posterUrl ?? undefined,
+    }),
+  })
+  if (!res.ok) throw new Error('SAVE_FAILED')
+  const data = (await res.json()) as { document?: { id?: string } }
+  const documentId = data?.document?.id
+  if (!documentId) throw new Error('SAVE_FAILED')
+  return documentId
+}
+
 interface AttachmentPickerProps {
-  entityType: 'task' | 'list' | 'job' | 'note' | 'user'
+  entityType: AttachmentEntityType
   entityId?: string | null
   kind?: AttachmentKind | 'any'
   role?: AttachmentRole
@@ -370,32 +413,10 @@ export const AttachmentPicker = ({
     descriptor: PickedAttachment,
     posterPublicUrl: string | undefined
   ): Promise<string> => {
-    const res = await fetch('/api/v1/attachments', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        key: descriptor.key,
-        fileName: descriptor.fileName,
-        fileFormat: extensionOf(descriptor.fileName),
-        fileSize: descriptor.size,
-        mimeType: descriptor.mimeType,
-        kind: descriptor.kind,
-        width: descriptor.width,
-        height: descriptor.height,
-        duration: descriptor.duration,
-        location: descriptor.location ?? undefined,
-        entityType,
-        entityId,
-        role: role ?? undefined,
-        // Backend-integration note: Document.posterUrl is set from this field.
-        posterUrl: posterPublicUrl ?? undefined,
-      }),
-    })
-    if (!res.ok) throw new Error('SAVE_FAILED')
-    const data = (await res.json()) as { document?: { id?: string } }
-    const documentId = data?.document?.id
-    if (!documentId) throw new Error('SAVE_FAILED')
-    return documentId
+    // Only invoked when entityId is present (create-flow parents commit via
+    // the exported helper instead).
+    if (!entityId) throw new Error('SAVE_FAILED')
+    return commitAttachmentToEntity(descriptor, entityType, entityId, role, posterPublicUrl)
   }
 
   const removeItem = (id: string) => {

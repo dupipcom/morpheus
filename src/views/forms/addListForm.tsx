@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
 import { X } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { useFriendProfiles, FriendProfile } from '@/lib/hooks/useFriendProfiles'
@@ -48,6 +49,28 @@ export const AddListForm = ({
   const [collabQuery, setCollabQuery] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Public profile (Phase 5)
+  const [publicTagline, setPublicTagline] = useState('')
+  const [publicBio, setPublicBio] = useState('')
+  const [coverDocumentId, setCoverDocumentId] = useState('')
+  const [links, setLinks] = useState<Array<{ label: string; url: string }>>([])
+  const [publicVisible, setPublicVisible] = useState(false)
+  const [jobBoardEnabled, setJobBoardEnabled] = useState(false)
+  const [projectId, setProjectId] = useState<string>('')
+
+  // The viewer's projects (for the project selector)
+  const { data: projectsData } = useSWR<{ projects: Array<{ id: string; name: string; username: string }> }>(
+    open ? '/api/v1/projects' : null,
+    jsonFetcher,
+    { revalidateOnFocus: false }
+  )
+  const projects = projectsData?.projects || []
+
+  const addLink = () => setLinks((prev) => [...prev, { label: '', url: '' }])
+  const updateLink = (index: number, field: 'label' | 'url', value: string) =>
+    setLinks((prev) => prev.map((l, i) => (i === index ? { ...l, [field]: value } : l)))
+  const removeLink = (index: number) => setLinks((prev) => prev.filter((_, i) => i !== index))
+
   // The user's own budgets (for PERCENT budget sources)
   const { data: budgetsData, mutate: mutateBudgets } = useSWR<{ budgets: BudgetRecord[] }>(
     open ? '/api/v1/budgets' : null,
@@ -83,6 +106,13 @@ export const AddListForm = ({
             .filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
             .map((u: any) => ({ userId: u.userId, userName: u.userName || u.userId }))
         )
+        setPublicTagline(initialList.publicTagline || '')
+        setPublicBio(initialList.bio || '')
+        setCoverDocumentId(initialList.coverDocumentId || '')
+        setLinks(Array.isArray(initialList.links) ? initialList.links : [])
+        setPublicVisible(initialList.publicVisible === true)
+        setJobBoardEnabled(initialList.jobBoardEnabled === true)
+        setProjectId(initialList.projectId || '')
       } else {
         setName('')
         setVisibility('PRIVATE')
@@ -91,6 +121,13 @@ export const AddListForm = ({
         setBudgetPercent('')
         setBudgetSourceIds([])
         setCollaborators([])
+        setPublicTagline('')
+        setPublicBio('')
+        setCoverDocumentId('')
+        setLinks([])
+        setPublicVisible(false)
+        setJobBoardEnabled(false)
+        setProjectId('')
       }
       setCollabQuery('')
       setNewBudgetName('')
@@ -151,6 +188,13 @@ export const AddListForm = ({
         budgetType: parsedBudget != null || budgetSourceIds.length > 0 ? budgetType : null,
         budgetPercent: budgetType === 'PERCENT' ? parsedBudgetPercent : null,
         budgetSourceIds: budgetType === 'PERCENT' ? budgetSourceIds : [],
+        publicTagline: publicTagline.trim() || null,
+        bio: publicBio.trim() || null,
+        coverDocumentId: coverDocumentId.trim() || null,
+        links: links.filter((l) => l.label.trim() && l.url.trim()).map((l) => ({ label: l.label.trim(), url: l.url.trim() })),
+        publicVisible,
+        jobBoardEnabled,
+        projectId: projectId || null,
       }
 
       let newListId: string | undefined
@@ -266,6 +310,104 @@ export const AddListForm = ({
                   </button>
                 ))}
               </div>
+            )}
+          </div>
+
+          {/* Public profile (Phase 5) */}
+          <div className="space-y-2 rounded-md border p-3">
+            <div className="text-sm font-medium">
+              {t('forms.addListForm.publicProfileTitle', { defaultValue: 'Public profile (optional)' })}
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="list-public-visible" className="text-sm">
+                {t('forms.addListForm.publishLabel', { defaultValue: 'Publish list' })}
+              </Label>
+              <Switch
+                id="list-public-visible"
+                checked={publicVisible}
+                onCheckedChange={(checked) => setPublicVisible(checked === true)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="list-tagline">{t('forms.addListForm.taglineLabel', { defaultValue: 'Tagline' })}</Label>
+              <Input
+                id="list-tagline"
+                value={publicTagline}
+                onChange={(e) => setPublicTagline(e.target.value)}
+                placeholder={t('forms.addListForm.taglinePlaceholder', { defaultValue: 'One line about this list...' })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="list-bio">{t('forms.addListForm.bioLabel', { defaultValue: 'Bio' })}</Label>
+              <Input
+                id="list-bio"
+                value={publicBio}
+                onChange={(e) => setPublicBio(e.target.value)}
+                placeholder={t('forms.addListForm.bioPlaceholder', { defaultValue: 'About this list...' })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="list-cover">{t('forms.addListForm.coverLabel', { defaultValue: 'Cover document ID (Phase 4 upload)' })}</Label>
+              <Input
+                id="list-cover"
+                value={coverDocumentId}
+                onChange={(e) => setCoverDocumentId(e.target.value)}
+                placeholder="ObjectId"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t('forms.addListForm.linksLabel', { defaultValue: 'Links' })}</Label>
+              {links.map((link, index) => (
+                <div key={index} className="flex gap-1">
+                  <Input
+                    className="flex-1"
+                    value={link.label}
+                    onChange={(e) => updateLink(index, 'label', e.target.value)}
+                    placeholder={t('forms.addListForm.linkLabelPlaceholder', { defaultValue: 'Label' })}
+                  />
+                  <Input
+                    className="flex-1"
+                    value={link.url}
+                    onChange={(e) => updateLink(index, 'url', e.target.value)}
+                    placeholder="https://"
+                  />
+                  <Button type="button" size="sm" variant="outline" onClick={() => removeLink(index)} aria-label="Remove link">
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+              <Button type="button" size="sm" variant="outline" onClick={addLink}>
+                {t('forms.addListForm.addLink', { defaultValue: '+ Add link' })}
+              </Button>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="list-job-board" className="text-sm">
+                {t('forms.addListForm.jobBoardLabel', { defaultValue: 'Enable job board' })}
+              </Label>
+              <Switch
+                id="list-job-board"
+                checked={jobBoardEnabled}
+                onCheckedChange={(checked) => setJobBoardEnabled(checked === true)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="list-project">{t('forms.addListForm.projectLabel', { defaultValue: 'Project' })}</Label>
+              <Select value={projectId} onValueChange={setProjectId}>
+                <SelectTrigger id="list-project" className="w-full">
+                  <SelectValue placeholder={t('forms.addListForm.projectPlaceholder', { defaultValue: 'None' })} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">{t('forms.addListForm.noProject', { defaultValue: 'None' })}</SelectItem>
+                  {projects.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.name} (@{p.username})</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {isEditing && initialList?.publicUrl && (
+              <p className="text-xs text-muted-foreground">
+                {t('forms.addListForm.publicUrlLabel', { defaultValue: 'Public URL' })}: /list/{initialList.publicUrl}
+              </p>
             )}
           </div>
 

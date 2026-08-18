@@ -20,12 +20,15 @@ export const AddTaskForm = ({
   selectedTaskListId,
   onCreated,
   editTask,
+  jobBoardEnabled,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   selectedTaskListId?: string
   onCreated: () => Promise<void> | void
   editTask?: any
+  /** Whether the owning list has jobBoardEnabled (shows the Publish-as-job section) */
+  jobBoardEnabled?: boolean
 }) => {
   const { t } = useI18n()
   const isEditMode = !!editTask
@@ -36,6 +39,12 @@ export const AddTaskForm = ({
   const [premium, setPremium] = useState<string>(editTask?.premium != null ? String(editTask.premium) : '')
   const [premiumType, setPremiumType] = useState<string>(editTask?.premiumType || 'FIAT')
   const [redacted, setRedacted] = useState<boolean>(editTask?.redacted || false)
+  // Job-post fields (active when the list has jobBoardEnabled)
+  const [publishAsJob, setPublishAsJob] = useState<boolean>(editTask?.visibility === 'PUBLIC')
+  const [jobDescription, setJobDescription] = useState<string>(editTask?.jobDescription || '')
+  const [requirements, setRequirements] = useState<string>(editTask?.requirements || '')
+  const [openings, setOpenings] = useState<number>(editTask?.openings ?? 1)
+  const [applyBy, setApplyBy] = useState<string>(editTask?.applyBy || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Reset/sync form state whenever the dialog opens (create or edit)
@@ -48,6 +57,11 @@ export const AddTaskForm = ({
         setPremium(editTask.premium != null ? String(editTask.premium) : '')
         setPremiumType(editTask.premiumType || 'FIAT')
         setRedacted(editTask.redacted || false)
+        setPublishAsJob(editTask.visibility === 'PUBLIC')
+        setJobDescription(editTask.jobDescription || '')
+        setRequirements(editTask.requirements || '')
+        setOpenings(editTask.openings ?? 1)
+        setApplyBy(editTask.applyBy || '')
       } else {
         setName('')
         setRRule(null)
@@ -55,6 +69,11 @@ export const AddTaskForm = ({
         setPremium('')
         setPremiumType('FIAT')
         setRedacted(false)
+        setPublishAsJob(false)
+        setJobDescription('')
+        setRequirements('')
+        setOpenings(1)
+        setApplyBy('')
       }
       setIsSubmitting(false)
     }
@@ -66,6 +85,14 @@ export const AddTaskForm = ({
     setIsSubmitting(true)
     try {
       const parsedPremium = premium.trim() === '' ? null : parseFloat(premium)
+
+      const jobFields = {
+        visibility: publishAsJob ? 'PUBLIC' : undefined,
+        jobDescription: publishAsJob ? jobDescription : null,
+        requirements: publishAsJob ? requirements : null,
+        openings: publishAsJob ? Math.max(1, Number(openings) || 1) : null,
+        applyBy: publishAsJob && applyBy ? applyBy : null,
+      }
 
       if (isEditMode && editTask?.id) {
         // Update existing task via the tasks endpoint
@@ -79,6 +106,7 @@ export const AddTaskForm = ({
             premium: parsedPremium,
             premiumType: parsedPremium != null ? premiumType : null,
             redacted,
+            ...jobFields,
           }),
         })
       } else {
@@ -97,6 +125,7 @@ export const AddTaskForm = ({
             premium: parsedPremium,
             premiumType: parsedPremium != null ? premiumType : null,
             redacted,
+            ...jobFields,
           }),
         })
       }
@@ -172,6 +201,70 @@ export const AddTaskForm = ({
               <p className="text-xs text-muted-foreground">{t('forms.addTaskForm.premiumPercentHint', { defaultValue: 'Percent of the list budget' })}</p>
             )}
           </div>
+          {jobBoardEnabled && (
+            <div className="space-y-2 rounded-md border p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <Label htmlFor="task-publish-job" className="text-sm">
+                    {t('forms.addTaskForm.publishAsJob', { defaultValue: 'Publish as job' })}
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    {t('forms.addTaskForm.publishAsJobHint', { defaultValue: 'Makes the task a public job post on this list\'s job board' })}
+                  </p>
+                </div>
+                <Switch
+                  id="task-publish-job"
+                  checked={publishAsJob}
+                  onCheckedChange={(checked) => setPublishAsJob(checked === true)}
+                />
+              </div>
+              {publishAsJob && (
+                <>
+                  <div>
+                    <Label htmlFor="task-job-description">{t('forms.addTaskForm.jobDescriptionLabel', { defaultValue: 'Job description' })}</Label>
+                    <textarea
+                      id="task-job-description"
+                      className="w-full rounded-md border bg-background px-3 py-2 text-sm min-h-[80px]"
+                      value={jobDescription}
+                      onChange={(e) => setJobDescription(e.target.value)}
+                      placeholder={t('forms.addTaskForm.jobDescriptionPlaceholder', { defaultValue: 'Describe the role, expectations, and how to apply...' })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="task-requirements">{t('forms.addTaskForm.requirementsLabel', { defaultValue: 'Requirements' })}</Label>
+                    <Input
+                      id="task-requirements"
+                      value={requirements}
+                      onChange={(e) => setRequirements(e.target.value)}
+                      placeholder={t('forms.addTaskForm.requirementsPlaceholder', { defaultValue: 'Skills, tools, availability...' })}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Label htmlFor="task-openings">{t('forms.addTaskForm.openingsLabel', { defaultValue: 'Openings' })}</Label>
+                      <Input
+                        id="task-openings"
+                        type="number"
+                        min={1}
+                        value={openings}
+                        onChange={(e) => setOpenings(Math.max(1, Number(e.target.value) || 1))}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <Label htmlFor="task-apply-by">{t('forms.addTaskForm.applyByLabel', { defaultValue: 'Apply by (YYYY-MM-DD)' })}</Label>
+                      <Input
+                        id="task-apply-by"
+                        type="date"
+                        value={applyBy}
+                        onChange={(e) => setApplyBy(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-3 rounded-md border px-3 py-2">
             <div className="space-y-0.5">
               <Label htmlFor="task-redacted" className="text-sm">

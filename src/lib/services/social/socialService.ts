@@ -4,12 +4,15 @@ import { ApiError } from '@/lib/services/errors'
 
 // Single registry of likeable/commentable entities. 'event' and 'task' are
 // declared for Phase 8 / Phase 5 — no route enables them yet, and the routes
-// must not start accepting them until those phases land.
+// must not start accepting them until those phases land. 'project' is live as
+// of Phase 5 (likes only; comments on projects deferred).
 const SOCIAL_ENTITIES = {
   note:     { model: 'note',     visibilityField: 'visibility' },
   template: { model: 'template', visibilityField: 'visibility' },
   tasklist: { model: 'list',     visibilityField: 'visibility' },
   comment:  { model: 'comment',  visibilityField: null },
+  project:  { model: 'project',  visibilityField: null },           // Phase 5 — likes only (publicVisible gates reads, not visibility)
+  org:      { model: 'organization', visibilityField: null },       // Phase 7 — likes only (publicVisible gates reads, not visibility)
   event:    { model: 'event',    visibilityField: 'visibility' },   // enabled in Phase 8 — do NOT enable routes for it now
   task:     { model: 'task',     visibilityField: 'visibility' },   // enabled in Phase 5 — do NOT enable routes for it now
 } as const
@@ -33,6 +36,9 @@ const LIKEABLE_ENTITIES: Record<string, { model: string; relationField: string |
   template: { model: 'template', relationField: 'templateId' },
   tasklist: { model: 'list',     relationField: null },
   comment:  { model: 'comment',  relationField: 'commentId' },
+  project:  { model: 'project',  relationField: null },   // like tasklist: persists with entityType/entityId only
+  org:      { model: 'organization', relationField: null },
+  event:    { model: 'event',    relationField: null },  // enabled in Phase 8 (Like has no eventId — persists like tasklist)
 }
 
 // Entity types the comments route accepts today (canonical keys after
@@ -53,6 +59,8 @@ const MODEL_DELEGATES: Record<string, FindUniqueById> = {
   list: prisma.list,
   comment: prisma.comment,
   profile: prisma.profile,
+  project: prisma.project,
+  organization: prisma.organization,
   event: prisma.event,
   task: prisma.task,
 }

@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Reactie plaatsen",
+    "signIn": "Log in om deel te nemen aan het gesprek."
   },
   "invest": {
     "notice": "Er wordt momenteel geen echt geld beheerd in deze app. Dupip Invest bevindt zich nog in de planningsfase. Dit is slechts een testomgeving voor demonstratiedoeleinden.",
@@ -1217,5 +1219,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "Omslagafbeelding",
+      "flier": "Flyer-afbeelding",
+      "publish": "Publiceren",
+      "draftSaved": "Een concept is opgeslagen — corrigeer de velden hierboven en probeer opnieuw te publiceren."
+    },
+    "manage": {
+      "title": "Evenement beheren",
+      "short": "Beheren",
+      "publish": "Publiceren",
+      "save": "Opslaan",
+      "delete": "Evenement verwijderen",
+      "confirmDelete": "Dit evenement verwijderen? Concepten worden permanent verwijderd; gepubliceerde evenementen worden geannuleerd.",
+      "published": "Evenement gepubliceerd",
+      "view": "Evenement bekijken",
+      "unpublish": "Terug naar concept"
+    },
+    "public": {
+      "flier": "Flyer",
+      "nearby": "Evenementen in de buurt",
+      "comments": "Reacties",
+      "mapAlt": "Kaart van de evenementlocatie"
+    },
+    "portal": {
+      "back": "Terug naar evenementen",
+      "unavailable": "Dit evenement is niet openbaar beschikbaar."
+    }
+  },
+  "repost": {
+    "title": "Reposten",
+    "submit": "Reposten",
+    "placeholder": "Voeg een reactie toe (optioneel)...",
+    "success": "Succesvol gerepost"
   }
 }

@@ -128,14 +128,38 @@ async function middleware(request: Request, auth: any) {
     }
   }
 
-  // Handle @username routes - redirect to localized profile route
+  // Handle @username routes - resolve across the shared /@ namespace (users,
+  // orgs, projects — Phase 5/7) and redirect to the localized route. Prisma
+  // cannot run in edge middleware, so the lookup hops to the Node-runtime
+  // /api/v1/resolve-handle route (same pattern as ensureProfileBootstrap);
+  // an unknown handle falls back to the profile route, which 404s.
   if (pathname.startsWith('/@')) {
     const username = pathname.substring(2) // Remove /@
     const cookieHeader = request.headers.get('cookie') || ''
     const cookies = parseCookies(cookieHeader)
     const locale = getLocale(request.headers, cookies)
+
+    let targetPath = `/${locale}/profile/${username}`
+    const handle = username.split('/')[0]
+    if (handle) {
+      try {
+        const origin = new URL(request.url).origin
+        const lookup = await fetch(`${origin}/api/v1/resolve-handle?handle=${encodeURIComponent(handle)}`, {
+          signal: AbortSignal.timeout(3000)
+        })
+        if (lookup.ok) {
+          const data = (await lookup.json()) as { kind?: string }
+          if (data.kind === 'org') targetPath = `/${locale}/o/${handle}`
+          else if (data.kind === 'project') targetPath = `/${locale}/p/${handle}`
+        }
+      } catch (error) {
+        // Best-effort: fall back to the profile route (which 404s if unknown)
+        console.error('[middleware] /@ handle resolution failed:', error)
+      }
+    }
+
     const url = new URL(request.url)
-    url.pathname = `/${locale}/profile/${username}`
+    url.pathname = targetPath
     const res = NextResponse.redirect(url)
     return needsProfileBootstrap ? withProfileOkCookie(res) : res
   }

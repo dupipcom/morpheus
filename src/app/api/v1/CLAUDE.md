@@ -22,7 +22,7 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Days | `days/CLAUDE.md` | `GET/POST /days` |
 | Debug | `debug/CLAUDE.md` | `GET /debug/task-state` |
 | Delegated users | `delegated-users/CLAUDE.md` | `GET/POST/DELETE /delegated-users` |
-| Events | `events/CLAUDE.md` | `GET/POST /events`, `PUT/DELETE /events/{id}` |
+| Events | `events/CLAUDE.md` | `GET/POST /events`, `GET /events/feed`, `GET/PUT/DELETE /events/{eventId}`, `POST /events/{eventId}/publish`, `POST /events/{eventId}/unpublish`, `POST /events/{eventId}/rsvp`, `POST/DELETE /events/{eventId}/lists` + `/projects`, `GET/POST/DELETE /events/{eventId}/staff`, `GET /events/public`, `GET /events/public/{publicUrl}`, `GET/POST /life-events`, `PUT/DELETE /life-events/{id}` |
 | Friend request | `friend-request/CLAUDE.md` | `POST /friend-request`, `POST /friend-request/action` |
 | Friend requests | `friend-requests/CLAUDE.md` | `GET /friend-requests` |
 | Friends | `friends/CLAUDE.md` | `GET /friends`, `POST /friends/unfriend` |
@@ -35,14 +35,16 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Meet me | `meet-me/CLAUDE.md` | `POST /meet-me`, `GET /meet-me/availability` |
 | Notes | `notes/CLAUDE.md` | `GET/POST /notes`, `PUT/PATCH/DELETE /notes/{noteId}`, `GET/POST /notes/{noteId}/comments`, `GET /notes/public` |
 | Notifications | `notifications/CLAUDE.md` | `GET /notifications` (last 30 + unread), `POST /notifications` (mark read) |
+| Organizations | `orgs/CLAUDE.md` | `GET/POST /orgs`, `GET/PUT /orgs/{orgId}`, `GET/POST /orgs/{orgId}/members`, `GET /orgs/public/{username}` |
 | Persons | `persons/CLAUDE.md` | `GET/POST /persons`, `PUT/DELETE /persons/{id}` |
 | Places | `places/CLAUDE.md` | `GET /places/autocomplete`, `GET /places/details`, `GET /places/geocode`, `GET /places/staticmap` |
 | Profile | `profile/CLAUDE.md` | `GET/POST /profile`, `GET /profile/{userName}`, `GET /profile/{userName}/notes` |
 | Profiles | `profiles/CLAUDE.md` | `GET /profiles`, `GET /profiles/by-ids` |
+| Projects | `projects/CLAUDE.md` | `GET/POST /projects`, `GET/PUT /projects/{projectId}`, `GET /projects/public`, `GET /projects/public/{username}` |
 | Search | `search/CLAUDE.md` | `GET /search` |
 | SMS | `sms/CLAUDE.md` | `GET /sms/conversations`, `GET/POST /sms/conversations/{id}/messages`, `POST /sms/conversations/{id}/read` |
-| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `GET/PUT/DELETE /tasklists/{taskListId}`, `POST /tasklists/{taskListId}/clone` |
-| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}` (DELETE with scope), `GET/POST /tasks/migrate` (deprecated no-op) |
+| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `GET/PUT/DELETE /tasklists/{taskListId}`, `POST /tasklists/{taskListId}/clone`, `GET /tasklists/public`, `GET /tasklists/public/{publicUrl}` |
+| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}` (DELETE with scope), `POST /tasks/{taskId}/apply`, `GET /tasks/{taskId}/applications`, `POST /tasks/{taskId}/applications/{applicationId}`, `GET/POST /tasks/migrate` (deprecated no-op) |
 | Templates | `templates/CLAUDE.md` | `GET/POST /templates`, `POST /templates/{templateId}/clone`, `GET /templates/public` |
 | Telnyx webhook | `telnyx/CLAUDE.md` | `POST /telnyx/webhook` (Ed25519 + 5-min timestamp) |
 | Things | `things/CLAUDE.md` | `GET/POST /things` |

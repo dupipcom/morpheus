@@ -95,7 +95,7 @@ export function LifeEventCombobox({
     if (!newLifeEvent.name.trim()) return
 
     try {
-      const response = await fetch('/api/v1/events', {
+      const response = await fetch('/api/v1/life-events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

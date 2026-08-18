@@ -118,7 +118,8 @@ export async function PUT(
     const {
       name, role: newRole, visibility, categories, area, collaborators,
       budget, budgetType, budgetPercent, budgetSourceIds,
-      bio, profilePhoto, links
+      bio, profilePhoto, links,
+      publicTagline, publicVisible, coverDocumentId, location, jobBoardEnabled, projectId
     } = body as Record<string, unknown>
 
     if (name !== undefined && typeof name !== 'string') {
@@ -156,6 +157,22 @@ export async function PUT(
       parsedBudgetSourceIds = budgetSourceIds as string[]
     }
 
+    if (publicVisible !== undefined && typeof publicVisible !== 'boolean') {
+      return NextResponse.json({ error: 'publicVisible must be a boolean' }, { status: 400 })
+    }
+
+    if (jobBoardEnabled !== undefined && typeof jobBoardEnabled !== 'boolean') {
+      return NextResponse.json({ error: 'jobBoardEnabled must be a boolean' }, { status: 400 })
+    }
+
+    if (
+      projectId !== undefined &&
+      projectId !== null &&
+      (typeof projectId !== 'string' || !OBJECT_ID_PATTERN.test(projectId))
+    ) {
+      return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 })
+    }
+
     // Track current collaborators so newly added ones can be notified after the update
     const existingList = await prisma.list.findUnique({
       where: { id: taskListId },
@@ -169,6 +186,7 @@ export async function PUT(
 
     const taskList = await updateTaskList({
       taskListId,
+      viewerUserId: user.id,
       role: typeof newRole === 'string' ? newRole : undefined,
       name: name !== undefined ? sanitizeText(name) : undefined,
       visibility: typeof visibility === 'string' ? (visibility as Visibility) : undefined,
@@ -181,7 +199,13 @@ export async function PUT(
       budgetSourceIds: parsedBudgetSourceIds,
       bio: typeof bio === 'string' ? sanitizeText(bio) : undefined,
       profilePhoto: typeof profilePhoto === 'string' ? sanitizeText(profilePhoto) : undefined,
-      links: links !== undefined ? (typeof links === 'object' ? links : null) : undefined
+      links: links !== undefined ? (typeof links === 'object' ? links : null) : undefined,
+      publicTagline: typeof publicTagline === 'string' ? sanitizeText(publicTagline) : undefined,
+      publicVisible: typeof publicVisible === 'boolean' ? publicVisible : undefined,
+      coverDocumentId: typeof coverDocumentId === 'string' ? coverDocumentId : undefined,
+      location: location !== undefined ? (typeof location === 'object' ? location : null) : undefined,
+      jobBoardEnabled: typeof jobBoardEnabled === 'boolean' ? jobBoardEnabled : undefined,
+      projectId: projectId !== undefined ? (projectId as string | null) : undefined
     })
 
     // Notify newly added collaborators (list invite)

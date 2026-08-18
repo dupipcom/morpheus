@@ -11,8 +11,8 @@ Verifies `x-internal-fetch-secret` header against `INTERNAL_FETCH_SECRET` (if co
 
 ## Behavior
 Handles these `evt.type` values:
-- `user.created`: upserts `User`, then creates a public `Profile` (with Clerk username/image when present).
-- `session.created`: ensures a `Profile` exists.
+- `user.created`: upserts `User`, then creates a public `Profile` (with Clerk username/image when present) and the default `Wallet` (Phase 6, idempotent).
+- `session.created`: ensures a `Profile` and default `Wallet` exist.
 - `user.updated`: syncs Clerk username to the `Profile`.
 - `user.deleted`: deletes the `User` (cascade).
 
