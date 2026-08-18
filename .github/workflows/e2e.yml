@@ -5,13 +5,13 @@ name: E2E
 #   CLERK_SECRET_KEY                 — Clerk backend key (DEVELOPMENT instance)
 #   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY — the app's publishable key
 #
-# DB: a fresh MongoDB container per run — `prisma db push` alone reproduces
-# the current schema; the 0021–0028 data migrations are all no-ops on an empty
-# DB (their backfills/repairs only touch legacy rows, which never exist here),
-# so they are not run. The harness self-seeds the SYSTEM:treasury wallet.
-# The ledger runs its standalone-Mongo sequential fallback here (dual-mode,
-# Phase 6): overspend protection still holds via the compare-and-set debit;
-# the interactive-transaction path is exercised on the Atlas replica set.
+# DB: a fresh MongoDB replica-set container per run — `prisma db push` alone
+# reproduces the current schema; the 0021–0028 data migrations are all no-ops
+# on an empty DB (their backfills/repairs only touch legacy rows, which never
+# exist here), so they are not run. The harness self-seeds the SYSTEM:treasury
+# wallet. MongoDB runs as a single-node replica set (rs0) so that Prisma
+# transactions work (P2031). The ledger's interactive-transaction path is
+# exercised here too; the Atlas replica set path is covered in staging.
 
 on:
   # Every PR gets E2E — the stacked phase PRs target each other, not dev;
@@ -28,17 +28,8 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    services:
-      mongodb:
-        image: mongo:7
-        ports: ['27017:27017']
-        options: >-
-          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
     env:
-      DATABASE_URL: mongodb://localhost:27017/e2e
+      DATABASE_URL: mongodb://localhost:27017/e2e?replicaSet=rs0&directConnection=true
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
       CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
@@ -46,6 +37,19 @@ jobs:
       NEXT_PUBLIC_BASE_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
+
+      - name: Start MongoDB replica set
+        run: |
+          docker run -d --name mongo7 -p 27017:27017 mongo:7 --replSet rs0
+          until docker exec mongo7 mongosh --quiet --eval 'db.runCommand({ping:1})' 2>/dev/null; do
+            echo "Waiting for MongoDB…"; sleep 2
+          done
+          docker exec mongo7 mongosh --eval \
+            'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
+          until docker exec mongo7 mongosh --quiet --eval 'rs.isMaster().ismaster' 2>/dev/null \
+            | grep -q true; do
+            echo "Waiting for primary…"; sleep 2
+          done
 
       - uses: actions/setup-node@v4
         with:
