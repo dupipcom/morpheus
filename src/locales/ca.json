@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Imatge de portada",
-      "flier": "Imatge del fullet"
+      "flier": "Imatge del fullet",
+      "publish": "Publica",
+      "draftSaved": "S'ha desat un esborrany — corregeix els camps de dalt i torna a provar de publicar."
     },
     "manage": {
       "title": "Gestiona l'esdeveniment",
@@ -1233,16 +1235,24 @@
       "delete": "Elimina l'esdeveniment",
       "confirmDelete": "Vols eliminar aquest esdeveniment? Els esborranys s'eliminen permanentment; els esdeveniments publicats es cancel·len.",
       "published": "Esdeveniment publicat",
-      "view": "Mostra l'esdeveniment"
+      "view": "Mostra l'esdeveniment",
+      "unpublish": "Torna a esborrany"
     },
     "public": {
       "flier": "Fullet",
       "nearby": "Esdeveniments propers",
-      "comments": "Comentaris"
+      "comments": "Comentaris",
+      "mapAlt": "Mapa de la ubicació de l'esdeveniment"
     },
     "portal": {
       "back": "Torna als esdeveniments",
       "unavailable": "Aquest esdeveniment no està disponible públicament."
     }
+  },
+  "repost": {
+    "title": "Republica",
+    "submit": "Republica",
+    "placeholder": "Afegeix un comentari (opcional)...",
+    "success": "Republicat correctament"
   }
 }

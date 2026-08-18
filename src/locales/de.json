@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Titelbild",
-      "flier": "Flyer-Bild"
+      "flier": "Flyer-Bild",
+      "publish": "Veröffentlichen",
+      "draftSaved": "Ein Entwurf wurde gespeichert — korrigiere die Felder oben und versuche erneut zu veröffentlichen."
     },
     "manage": {
       "title": "Veranstaltung verwalten",
@@ -1233,16 +1235,24 @@
       "delete": "Veranstaltung löschen",
       "confirmDelete": "Diese Veranstaltung löschen? Entwürfe werden dauerhaft entfernt; veröffentlichte Veranstaltungen werden abgesagt.",
       "published": "Veranstaltung veröffentlicht",
-      "view": "Veranstaltung ansehen"
+      "view": "Veranstaltung ansehen",
+      "unpublish": "Zurück zum Entwurf"
     },
     "public": {
       "flier": "Flyer",
       "nearby": "Veranstaltungen in der Nähe",
-      "comments": "Kommentare"
+      "comments": "Kommentare",
+      "mapAlt": "Karte des Veranstaltungsorts"
     },
     "portal": {
       "back": "Zurück zu den Veranstaltungen",
       "unavailable": "Diese Veranstaltung ist nicht öffentlich verfügbar."
     }
+  },
+  "repost": {
+    "title": "Reposten",
+    "submit": "Reposten",
+    "placeholder": "Kommentar hinzufügen (optional)...",
+    "success": "Erfolgreich repostet"
   }
 }

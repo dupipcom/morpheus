@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Kaanepilt",
-      "flier": "Flaieri pilt"
+      "flier": "Flaieri pilt",
+      "publish": "Avalda",
+      "draftSaved": "Mustand salvestati — paranda ülaltoodud väljad ja proovi uuesti avaldada."
     },
     "manage": {
       "title": "Halda üritust",
@@ -1233,16 +1235,24 @@
       "delete": "Kustuta üritus",
       "confirmDelete": "Kas kustutada see üritus? Mustandid eemaldatakse jäädavalt; avaldatud üritused tühistatakse.",
       "published": "Üritus avaldatud",
-      "view": "Vaata üritust"
+      "view": "Vaata üritust",
+      "unpublish": "Tagasi mustandiks"
     },
     "public": {
       "flier": "Flaier",
       "nearby": "Üritused läheduses",
-      "comments": "Kommentaarid"
+      "comments": "Kommentaarid",
+      "mapAlt": "Sündmuse asukohakaart"
     },
     "portal": {
       "back": "Tagasi ürituste juurde",
       "unavailable": "See üritus pole avalikult saadaval."
     }
+  },
+  "repost": {
+    "title": "Jaga edasi",
+    "submit": "Jaga edasi",
+    "placeholder": "Lisa kommentaar (valikuline)...",
+    "success": "Edukalt edasi jagatud"
   }
 }

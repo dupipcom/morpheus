@@ -111,6 +111,7 @@ export function CommentsSection({ entityType, entityId }: { entityType: string; 
       <ul className="space-y-3">
         {comments.map((comment) => (
           <li key={comment.id} className="flex gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={comment.user.profile?.profilePicture || '/images/default-avatar.webp'}
               alt=""
@@ -122,7 +123,7 @@ export function CommentsSection({ entityType, entityId }: { entityType: string; 
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline gap-2">
                 <span className="text-sm font-medium">{displayName(comment)}</span>
-                <span className="text-xs text-muted-foreground">{formatDate(comment.createdAt)}</span>
+                <span className="text-xs text-muted-foreground">{formatDate(new Date(comment.createdAt))}</span>
               </div>
               <p className="text-sm whitespace-pre-line">{comment.content}</p>
               {(comment._count?.likes ?? 0) > 0 && (

@@ -1226,7 +1226,9 @@
   "events": {
     "form": {
       "cover": "Omslagsbild",
-      "flier": "Flyerbild"
+      "flier": "Flyerbild",
+      "publish": "Publicera",
+      "draftSaved": "Ett utkast sparades — rätta fälten ovan och försök publicera igen."
     },
     "manage": {
       "title": "Hantera evenemang",
@@ -1236,16 +1238,24 @@
       "delete": "Ta bort evenemang",
       "confirmDelete": "Ta bort det här evenemanget? Utkast tas bort permanent; publicerade evenemang avbryts.",
       "published": "Evenemang publicerat",
-      "view": "Visa evenemang"
+      "view": "Visa evenemang",
+      "unpublish": "Tillbaka till utkast"
     },
     "public": {
       "flier": "Flyer",
       "nearby": "Evenemang i närheten",
-      "comments": "Kommentarer"
+      "comments": "Kommentarer",
+      "mapAlt": "Karta över evenemangsplatsen"
     },
     "portal": {
       "back": "Tillbaka till evenemang",
       "unavailable": "Det här evenemanget är inte offentligt tillgängligt."
     }
+  },
+  "repost": {
+    "title": "Dela vidare",
+    "submit": "Dela vidare",
+    "placeholder": "Lägg till en kommentar (valfritt)...",
+    "success": "Vidaredelat"
   }
 }

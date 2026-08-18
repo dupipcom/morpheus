@@ -15,6 +15,8 @@ Public `Event` entity (Phase 8): pages, discovery at `/app/be/events`, RSVP, lis
 |---|---|
 | `createEvent` | DRAFT + `publicUrl` (always generated) + proceeds wallet (kind EVENT); ORG ownership honours `assertOrgManagerRole` |
 | `publishEvent` | DRAFT → PUBLISHED with validation (name, startsAt, location-or-online; cover optional) |
+| `unpublishEvent` | PUBLISHED/CANCELLED → DRAFT |
+| `listFeedEvents` | Activity-feed events (PUBLISHED; PUBLIC + FRIENDS + CLOSE_FRIENDS) with `priority` + batched counts |
 | `listEvents` | Management feed: `scope=mine|org:<id>|attending`, status filter, cursor |
 | `listPublicEvents` | Public discovery (PUBLISHED + PUBLIC only); `near=lat,lng,radiusKm`, `project`, `category`, `q` filters; batched RSVP counts |
 | `getPublicEvent` | Allowlist-projected payload + viewer RSVP/like block + host (user or org) + linked lists/projects |

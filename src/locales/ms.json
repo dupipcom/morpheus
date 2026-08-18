@@ -1227,7 +1227,9 @@
   "events": {
     "form": {
       "cover": "Imej muka depan",
-      "flier": "Imej risalah"
+      "flier": "Imej risalah",
+      "publish": "Terbitkan",
+      "draftSaved": "Draf telah disimpan — betulkan medan di atas dan cuba terbitkan semula."
     },
     "manage": {
       "title": "Urus acara",
@@ -1237,16 +1239,24 @@
       "delete": "Padam acara",
       "confirmDelete": "Padam acara ini? Draf dipadamkan secara kekal; acara yang diterbitkan dibatalkan.",
       "published": "Acara diterbitkan",
-      "view": "Lihat acara"
+      "view": "Lihat acara",
+      "unpublish": "Kembali ke draf"
     },
     "public": {
       "flier": "Risalah",
       "nearby": "Acara berdekatan",
-      "comments": "Komen"
+      "comments": "Komen",
+      "mapAlt": "Peta lokasi acara"
     },
     "portal": {
       "back": "Kembali ke acara",
       "unavailable": "Acara ini tidak tersedia secara awam."
     }
+  },
+  "repost": {
+    "title": "Kongsi semula",
+    "submit": "Kongsi semula",
+    "placeholder": "Tambah komen (pilihan)...",
+    "success": "Berjaya dikongsi semula"
   }
 }

@@ -23,6 +23,7 @@ import { useEnhancedLoadingState } from "@/lib/utils/userUtils"
 import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import { EventsView } from "./eventsView"
+import { RepostDialog, type RepostSource } from "@/components/repostDialog"
 
 interface Friend {
   id: string
@@ -115,11 +116,26 @@ interface PublicTemplate {
   } | null
 }
 
+interface FeedEvent {
+  id: string
+  name: string
+  publicUrl: string
+  summary?: string | null
+  startsAt?: string | null
+  timezone?: string | null
+  coverDocumentId?: string | null
+  goingCount?: number
+  interestedCount?: number
+  status?: string
+  priority?: number
+  createdAt: string
+}
+
 interface LocalActivityItem {
   id: string
-  type: 'note' | 'template'
+  type: 'note' | 'template' | 'event'
   createdAt: string
-  data: PublicNote | PublicTemplate
+  data: PublicNote | PublicTemplate | FeedEvent
 }
 
 interface BeViewProps {
@@ -194,6 +210,8 @@ export function BeView({
   const [isLoadingMoreTemplates, setIsLoadingMoreTemplates] = useState(false)
   const [isLoadingNotes, setIsLoadingNotes] = useState(false)
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
+  const [feedEvents, setFeedEvents] = useState<FeedEvent[]>([])
+  const [repostSource, setRepostSource] = useState<RepostSource | null>(null)
   const [noteSortBy, setNoteSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
 
   const { data, mutate, error, isLoading } = useSWR(
@@ -282,10 +300,24 @@ export function BeView({
     }
   }, [data])
 
+  // Fetch activity-feed events (published; CLOSE_FRIENDS/FRIENDS prioritized)
+  const fetchFeedEvents = async () => {
+    try {
+      const response = await fetch('/api/v1/events/feed?limit=20')
+      if (response.ok) {
+        const feedData = await response.json()
+        setFeedEvents(feedData.events || [])
+      }
+    } catch (error) {
+      console.error('Error fetching feed events:', error)
+    }
+  }
+
   // Refresh function for activity feed
   const refreshActivityFeed = useCallback(() => {
     fetchPublicNotes(1)
     fetchPublicTemplates(1)
+    fetchFeedEvents()
     setNotesPage(1)
     setTemplatesPage(1)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -302,6 +334,7 @@ export function BeView({
   useEffect(() => {
     fetchPublicNotes(1)
     fetchPublicTemplates(1)
+    fetchFeedEvents()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterNoteId, filterProfileId, filterListId, filterTemplateId, noteSortBy])
 
@@ -367,8 +400,9 @@ export function BeView({
     setIsLoadingMoreTemplates(false)
   }
 
-  // Combine notes and templates into activity feed, sorted by creation date
-  // Items matching filter parameters are prioritized (shown first)
+  // Combine notes, templates and feed events into the activity feed, sorted
+  // by creation date. Items matching filter parameters are prioritized
+  // (shown first), then close-friend/friend events float above the rest.
   const activityItems = useMemo(() => {
     const items: LocalActivityItem[] = [
       ...publicNotes.map(note => ({
@@ -382,10 +416,17 @@ export function BeView({
         type: 'template' as const,
         createdAt: template.createdAt,
         data: template
+      })),
+      ...feedEvents.map(event => ({
+        id: `event-${event.id}`,
+        type: 'event' as const,
+        createdAt: event.createdAt,
+        data: event
       }))
     ]
     
-    // Sort items: matching filters first, then by creation date (most recent first)
+    // Sort items: matching filters first, then feed priority, then relevance,
+    // then by creation date (most recent first)
     return items.sort((a, b) => {
       const aNote = a.type === 'note' ? (a.data as PublicNote) : null
       const aTemplate = a.type === 'template' ? (a.data as PublicTemplate) : null
@@ -409,6 +450,11 @@ export function BeView({
       // If one matches and the other doesn't, prioritize the matching one
       if (aMatchesFilter && !bMatchesFilter) return -1
       if (!aMatchesFilter && bMatchesFilter) return 1
+
+      // Feed events: CLOSE_FRIENDS (0) and FRIENDS (1) events above the rest (2)
+      const aPriority = a.type === 'event' ? ((a.data as FeedEvent).priority ?? 2) : 2
+      const bPriority = b.type === 'event' ? ((b.data as FeedEvent).priority ?? 2) : 2
+      if (aPriority !== bPriority) return aPriority - bPriority
       
       // If both match or neither matches, sort notes based on selected sorting mode
       if (a.type === 'note' && b.type === 'note' && noteSortBy === 'most_relevant') {
@@ -419,7 +465,28 @@ export function BeView({
       // Otherwise, sort by creation date (most recent first)
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
-  }, [publicNotes, publicTemplates, filterProfileId, filterNoteId, filterListId, filterTemplateId, noteSortBy])
+  }, [publicNotes, publicTemplates, feedEvents, filterProfileId, filterNoteId, filterListId, filterTemplateId, noteSortBy])
+
+  // Repost: turns an activity item into a Note carrying reference ids (never
+  // documents or other metadata).
+  const handleRepost = (item: ActivityItem) => {
+    if (item.type === 'event') {
+      setRepostSource({ type: 'event', id: item.id, name: item.name })
+      return
+    }
+    if (item.type === 'note') {
+      setRepostSource({
+        type: 'note',
+        id: item.id,
+        eventIds: item.eventIds,
+        listIds: item.listIds,
+        taskIds: item.taskIds,
+        profileIds: item.profileIds
+      })
+      return
+    }
+    setRepostSource({ type: item.type, id: item.id, name: item.name })
+  }
 
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
@@ -498,12 +565,22 @@ export function BeView({
           items={activityItems.map((item) => {
             const noteData = item.type === 'note' ? (item.data as PublicNote) : null
             const templateData = item.type === 'template' ? (item.data as PublicTemplate) : null
+            const eventData = item.type === 'event' ? (item.data as FeedEvent) : null
             const activityItem: ActivityItem = {
-              id: noteData?.id || templateData?.id || '',
+              id: noteData?.id || templateData?.id || eventData?.id || '',
               type: item.type,
               createdAt: item.createdAt,
               content: noteData?.content,
-              name: templateData?.name || undefined,
+              name: templateData?.name || eventData?.name || undefined,
+              publicUrl: eventData?.publicUrl,
+              startsAt: eventData?.startsAt,
+              timezone: eventData?.timezone,
+              summary: eventData?.summary,
+              coverDocumentId: eventData?.coverDocumentId,
+              goingCount: eventData?.goingCount,
+              interestedCount: eventData?.interestedCount,
+              status: eventData?.status,
+              priority: eventData?.priority,
               role: templateData?.role || undefined,
               visibility: noteData?.visibility || templateData?.visibility,
               date: noteData?.date || undefined,
@@ -536,6 +613,7 @@ export function BeView({
             fetchPublicTemplates(1, false)
           }}
           onEditNote={(item) => requestEditNote({ ...item, content: item.content || '' })}
+          onRepost={handleRepost}
         />
         {(hasMoreNotes || hasMoreTemplates) && (
           <div className="flex justify-center mt-6">
@@ -717,6 +795,15 @@ export function BeView({
           </div>
         </TabsContent>
       </Tabs>
+
+      <RepostDialog
+        open={repostSource !== null}
+        onOpenChange={(open) => {
+          if (!open) setRepostSource(null)
+        }}
+        source={repostSource}
+        onReposted={refreshActivityFeed}
+      />
     </div>
   )
-} 
+}

@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Immagine di copertina",
-      "flier": "Immagine del volantino"
+      "flier": "Immagine del volantino",
+      "publish": "Pubblica",
+      "draftSaved": "Una bozza è stata salvata — correggi i campi qui sopra e riprova a pubblicare."
     },
     "manage": {
       "title": "Gestisci evento",
@@ -1233,16 +1235,24 @@
       "delete": "Elimina evento",
       "confirmDelete": "Eliminare questo evento? Le bozze vengono rimosse definitivamente; gli eventi pubblicati vengono annullati.",
       "published": "Evento pubblicato",
-      "view": "Visualizza evento"
+      "view": "Visualizza evento",
+      "unpublish": "Torna a bozza"
     },
     "public": {
       "flier": "Volantino",
       "nearby": "Eventi nelle vicinanze",
-      "comments": "Commenti"
+      "comments": "Commenti",
+      "mapAlt": "Mappa della posizione dell'evento"
     },
     "portal": {
       "back": "Torna agli eventi",
       "unavailable": "Questo evento non è disponibile pubblicamente."
     }
+  },
+  "repost": {
+    "title": "Ricondividi",
+    "submit": "Ricondividi",
+    "placeholder": "Aggiungi un commento (facoltativo)...",
+    "success": "Ricondiviso con successo"
   }
 }

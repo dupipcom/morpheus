@@ -1339,7 +1339,9 @@
       "createButton": "Create draft",
       "cancel": "Cancel",
       "cover": "Cover image",
-      "flier": "Flier image"
+      "flier": "Flier image",
+      "publish": "Publish",
+      "draftSaved": "A draft was saved — fix the fields above and try publishing again."
     },
     "public": {
       "online": "Online event",
@@ -1353,7 +1355,8 @@
       "projects": "Projects",
       "flier": "Flier",
       "nearby": "Nearby events",
-      "comments": "Comments"
+      "comments": "Comments",
+      "mapAlt": "Event location map"
     },
     "manage": {
       "title": "Manage event",
@@ -1363,11 +1366,18 @@
       "delete": "Delete event",
       "confirmDelete": "Delete this event? Drafts are removed permanently; published events are cancelled.",
       "published": "Event published",
-      "view": "View event"
+      "view": "View event",
+      "unpublish": "Return to draft"
     },
     "portal": {
       "back": "Back to events",
       "unavailable": "This event is not publicly available."
     }
+  },
+  "repost": {
+    "title": "Repost",
+    "submit": "Repost",
+    "placeholder": "Add a comment (optional)...",
+    "success": "Reposted successfully"
   }
 }

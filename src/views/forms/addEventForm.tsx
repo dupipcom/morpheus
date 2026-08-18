@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -15,12 +15,15 @@ import {
   commitAttachmentToEntity,
   type PickedAttachment
 } from '@/components/attachmentPicker'
+import { PlacePicker, type PlaceLocation } from '@/components/placePicker'
 import type { EventManage } from '@/views/be/eventTypes'
 
 /**
  * Create event dialog (Phase 8): name, summary, description, date/time +
- * timezone, online toggle/URL, venue, capacity, visibility, owner selector
- * (Me / orgs). Publishes as DRAFT (publish happens from the manage page).
+ * timezone, online toggle/URL, venue (Google Places search with geopos),
+ * capacity, visibility, owner selector (Me / orgs), cover/flier images.
+ * Creates a DRAFT and/or publishes directly — a failed publish keeps the
+ * dialog open with the draft saved so the fields can be fixed and retried.
  */
 export const AddEventForm = ({
   open,
@@ -41,14 +44,28 @@ export const AddEventForm = ({
   const [timezone, setTimezone] = useState('UTC')
   const [isOnline, setIsOnline] = useState(false)
   const [onlineUrl, setOnlineUrl] = useState('')
-  const [venueName, setVenueName] = useState('')
+  const [venue, setVenue] = useState<PlaceLocation | null>(null)
   const [capacity, setCapacity] = useState('')
   const [visibility, setVisibility] = useState('PUBLIC')
   const [ownerOrgId, setOwnerOrgId] = useState('')
   const [cover, setCover] = useState<PickedAttachment[]>([])
   const [flier, setFlier] = useState<PickedAttachment[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPublishing, setIsPublishing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Draft created by a failed publish attempt — retries reuse it instead of
+  // creating duplicates.
+  const createdRef = useRef<{ id: string; event: EventManage } | null>(null)
+  // Media commit bookkeeping: maps an upload key to its committed document id
+  // so retries never commit the same object twice.
+  const mediaRef = useRef<{
+    cover: { key: string | null; id: string | null }
+    flier: { key: string | null; id: string | null }
+  }>({
+    cover: { key: null, id: null },
+    flier: { key: null, id: null }
+  })
 
   const { data: orgsData } = useSWR<{ orgs: Array<{ id: string; username: string; viewerRole: string }> }>(
     open ? '/api/v1/orgs' : null,
@@ -67,86 +84,129 @@ export const AddEventForm = ({
       setTimezone('UTC')
       setIsOnline(false)
       setOnlineUrl('')
-      setVenueName('')
+      setVenue(null)
       setCapacity('')
       setVisibility('PUBLIC')
       setOwnerOrgId('')
       setCover([])
       setFlier([])
       setIsSubmitting(false)
+      setIsPublishing(false)
       setError(null)
+      createdRef.current = null
+      mediaRef.current = {
+        cover: { key: null, id: null },
+        flier: { key: null, id: null }
+      }
     }
   }, [open])
 
-  const handleSubmit = async () => {
-    if (!name.trim() || !startsAt || isSubmitting) return
-    setIsSubmitting(true)
-    setError(null)
-    try {
+  const buildFields = (): Record<string, unknown> => ({
+    name: name.trim(),
+    summary: summary.trim() || null,
+    description: description.trim() || null,
+    startsAt: new Date(startsAt).toISOString(),
+    endsAt: endsAt ? new Date(endsAt).toISOString() : null,
+    timezone,
+    isOnline,
+    onlineUrl: isOnline ? onlineUrl.trim() || null : null,
+    location: isOnline
+      ? null
+      : venue
+        ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng }
+        : null,
+    venueName: isOnline ? null : venue?.name ?? null,
+    capacity: capacity ? parseInt(capacity, 10) || null : null,
+    visibility,
+    ...(ownerOrgId ? { ownerType: 'ORG', orgId: ownerOrgId } : {})
+  })
+
+  const commitOne = async (
+    list: PickedAttachment[],
+    role: 'cover' | 'flier',
+    eventId: string
+  ): Promise<string | null> => {
+    const pending = list.filter((a) => !a.documentId)
+    const ids = await Promise.all(
+      pending.map((a) =>
+        commitAttachmentToEntity(a, 'event', eventId, role).catch((uploadError) => {
+          console.error('Error committing event attachment:', uploadError)
+          return null
+        })
+      )
+    )
+    return ids.find((id): id is string => Boolean(id)) ?? null
+  }
+
+  const resolveMediaIds = async (
+    eventId: string
+  ): Promise<{ coverDocumentId: string | null; flierDocumentId: string | null }> => {
+    const resolveOne = async (list: PickedAttachment[], slot: 'cover' | 'flier'): Promise<string | null> => {
+      const ref = mediaRef.current[slot]
+      if (list.length === 0) {
+        ref.key = null
+        ref.id = null
+        return null
+      }
+      const item = list[0]
+      if (item.documentId) {
+        ref.key = item.key
+        ref.id = item.documentId
+        return item.documentId
+      }
+      // Same upload committed on a previous attempt — reuse its document id.
+      if (ref.id && ref.key === item.key) return ref.id
+      const id = await commitOne(list, slot, eventId)
+      ref.key = item.key
+      ref.id = id
+      return id
+    }
+    return {
+      coverDocumentId: await resolveOne(cover, 'cover'),
+      flierDocumentId: await resolveOne(flier, 'flier')
+    }
+  }
+
+  /** Creates the draft on first call; later calls update the same draft. */
+  const ensureCreated = async (): Promise<EventManage> => {
+    let id: string
+    let base: EventManage
+    if (createdRef.current) {
+      id = createdRef.current.id
+      base = createdRef.current.event
+    } else {
       const res = await fetch('/api/v1/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: name.trim(),
-          summary: summary.trim() || null,
-          description: description.trim() || null,
-          startsAt: new Date(startsAt).toISOString(),
-          endsAt: endsAt ? new Date(endsAt).toISOString() : null,
-          timezone,
-          isOnline,
-          onlineUrl: isOnline ? onlineUrl.trim() || null : null,
-          venueName: isOnline ? null : venueName.trim() || null,
-          location: isOnline
-            ? null
-            : venueName.trim()
-              ? { name: venueName.trim() }
-              : null,
-          capacity: capacity ? parseInt(capacity, 10) || null : null,
-          visibility,
-          ...(ownerOrgId ? { ownerType: 'ORG', orgId: ownerOrgId } : {})
-        })
+        body: JSON.stringify(buildFields())
       })
       if (!res.ok) {
         const data = await res.json().catch(() => null)
         throw new Error(data?.error || 'Failed to create event')
       }
-      const created = ((await res.json()) as { event: EventManage }).event
+      base = ((await res.json()) as { event: EventManage }).event
+      id = base.id
+    }
 
-      // Create-flow contract: images were uploaded with entityId=null, so
-      // commit them against the new event, then link the media ids onto the
-      // event. Failures only break the image, never the event itself.
-      const commitOne = async (
-        list: PickedAttachment[],
-        role: 'cover' | 'flier'
-      ): Promise<string | null> => {
-        const pending = list.filter((a) => !a.documentId)
-        const ids = await Promise.all(
-          pending.map((a) =>
-            commitAttachmentToEntity(a, 'event', created.id, role).catch((uploadError) => {
-              console.error('Error committing event attachment:', uploadError)
-              return null
-            })
-          )
-        )
-        return ids.find((id): id is string => Boolean(id)) ?? null
-      }
-      const coverDocumentId = await commitOne(cover, 'cover')
-      const flierDocumentId = await commitOne(flier, 'flier')
+    const media = await resolveMediaIds(id)
+    const putRes = await fetch(`/api/v1/events/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...buildFields(), ...media })
+    })
+    const final = putRes.ok ? ((await putRes.json()) as { event: EventManage }).event : base
+    createdRef.current = { id, event: final }
+    return final
+  }
 
-      let finalEvent = created
-      if (coverDocumentId || flierDocumentId) {
-        const putRes = await fetch(`/api/v1/events/${created.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ coverDocumentId, flierDocumentId })
-        })
-        if (putRes.ok) {
-          finalEvent = ((await putRes.json()) as { event: EventManage }).event
-        }
-      }
-
+  const handleCreateDraft = async () => {
+    if (!name.trim() || !startsAt || isSubmitting || isPublishing) return
+    setIsSubmitting(true)
+    setError(null)
+    try {
+      const final = await ensureCreated()
       onOpenChange(false)
-      await onCreated(finalEvent)
+      await onCreated(final)
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Failed to create event')
     } finally {
@@ -154,9 +214,34 @@ export const AddEventForm = ({
     }
   }
 
+  const handleCreateAndPublish = async () => {
+    if (!name.trim() || !startsAt || isSubmitting || isPublishing) return
+    setIsPublishing(true)
+    setError(null)
+    try {
+      const draft = await ensureCreated()
+      const res = await fetch(`/api/v1/events/${draft.id}/publish`, { method: 'POST' })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        throw new Error(
+          `${data?.error || 'Failed to publish event'} ${t('events.form.draftSaved', {
+            defaultValue: 'A draft was saved — fix the fields above and try publishing again.'
+          })}`
+        )
+      }
+      const published = (data as { event: EventManage }).event
+      onOpenChange(false)
+      await onCreated(published)
+    } catch (publishError) {
+      setError(publishError instanceof Error ? publishError.message : 'Failed to publish event')
+    } finally {
+      setIsPublishing(false)
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[520px] max-w-[90vw] max-h-[80vh] z-[9980] flex flex-col">
+      <DialogContent className="w-[520px] max-w-[90vw] max-h-[85vh] z-[9980] flex flex-col">
         <DialogHeader>
           <DialogTitle>{t('events.create', { defaultValue: 'New event' })}</DialogTitle>
         </DialogHeader>
@@ -203,8 +288,8 @@ export const AddEventForm = ({
             </div>
           ) : (
             <div>
-              <Label htmlFor="event-venue">{t('events.form.venue', { defaultValue: 'Venue name' })}</Label>
-              <Input id="event-venue" value={venueName} onChange={(e) => setVenueName(e.target.value)} />
+              <Label>{t('events.form.venue', { defaultValue: 'Venue name' })}</Label>
+              <PlacePicker value={venue} onChange={setVenue} inlineResults />
             </div>
           )}
           <div>
@@ -271,10 +356,13 @@ export const AddEventForm = ({
           {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
         </div>
         <div className="flex gap-2 pt-2">
-          <Button onClick={handleSubmit} disabled={!name.trim() || !startsAt || isSubmitting} size="sm">
+          <Button onClick={handleCreateAndPublish} disabled={!name.trim() || !startsAt || isSubmitting || isPublishing} size="sm">
+            {t('events.form.publish', { defaultValue: 'Publish' })}
+          </Button>
+          <Button onClick={handleCreateDraft} disabled={!name.trim() || !startsAt || isSubmitting || isPublishing} size="sm" variant="outline">
             {t('events.form.createButton', { defaultValue: 'Create draft' })}
           </Button>
-          <Button variant="outline" onClick={() => onOpenChange(false)} size="sm">
+          <Button variant="ghost" onClick={() => onOpenChange(false)} size="sm" className="ml-auto">
             {t('events.form.cancel', { defaultValue: 'Cancel' })}
           </Button>
         </div>

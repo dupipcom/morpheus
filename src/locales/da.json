@@ -1227,7 +1227,9 @@
   "events": {
     "form": {
       "cover": "Forsidebillede",
-      "flier": "Flyer-billede"
+      "flier": "Flyer-billede",
+      "publish": "Udgiv",
+      "draftSaved": "Et udkast blev gemt — ret felterne ovenfor, og prøv at udgive igen."
     },
     "manage": {
       "title": "Administrer begivenhed",
@@ -1237,16 +1239,24 @@
       "delete": "Slet begivenhed",
       "confirmDelete": "Slet denne begivenhed? Udkast fjernes permanent; udgivne begivenheder annulleres.",
       "published": "Begivenhed udgivet",
-      "view": "Se begivenhed"
+      "view": "Se begivenhed",
+      "unpublish": "Tilbage til kladde"
     },
     "public": {
       "flier": "Flyer",
       "nearby": "Begivenheder i nærheden",
-      "comments": "Kommentarer"
+      "comments": "Kommentarer",
+      "mapAlt": "Kort over begivenhedens placering"
     },
     "portal": {
       "back": "Tilbage til begivenheder",
       "unavailable": "Denne begivenhed er ikke offentligt tilgængelig."
     }
+  },
+  "repost": {
+    "title": "Repost",
+    "submit": "Repost",
+    "placeholder": "Tilføj en kommentar (valgfrit)...",
+    "success": "Repostet"
   }
 }

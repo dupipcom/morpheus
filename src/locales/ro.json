@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Imagine de copertă",
-      "flier": "Imagine flyer"
+      "flier": "Imagine flyer",
+      "publish": "Publică",
+      "draftSaved": "A fost salvată o ciornă — corectează câmpurile de mai sus și încearcă să publici din nou."
     },
     "manage": {
       "title": "Gestionează evenimentul",
@@ -1233,16 +1235,24 @@
       "delete": "Șterge evenimentul",
       "confirmDelete": "Ștergi acest eveniment? Ciornele sunt șterse definitiv; evenimentele publicate sunt anulate.",
       "published": "Eveniment publicat",
-      "view": "Vezi evenimentul"
+      "view": "Vezi evenimentul",
+      "unpublish": "Înapoi la ciornă"
     },
     "public": {
       "flier": "Flyer",
       "nearby": "Evenimente în apropiere",
-      "comments": "Comentarii"
+      "comments": "Comentarii",
+      "mapAlt": "Harta locației evenimentului"
     },
     "portal": {
       "back": "Înapoi la evenimente",
       "unavailable": "Acest eveniment nu este disponibil public."
     }
+  },
+  "repost": {
+    "title": "Redistribuie",
+    "submit": "Redistribuie",
+    "placeholder": "Adaugă un comentariu (opțional)...",
+    "success": "Redistribuit cu succes"
   }
 }

@@ -1227,7 +1227,9 @@
   "events": {
     "form": {
       "cover": "Kapak görseli",
-      "flier": "El ilanı görseli"
+      "flier": "El ilanı görseli",
+      "publish": "Yayınla",
+      "draftSaved": "Bir taslak kaydedildi — yukarıdaki alanları düzeltip yeniden yayınlamayı dene."
     },
     "manage": {
       "title": "Etkinliği yönet",
@@ -1237,16 +1239,24 @@
       "delete": "Etkinliği sil",
       "confirmDelete": "Bu etkinlik silinsin mi? Taslaklar kalıcı olarak kaldırılır; yayınlanmış etkinlikler iptal edilir.",
       "published": "Etkinlik yayınlandı",
-      "view": "Etkinliği görüntüle"
+      "view": "Etkinliği görüntüle",
+      "unpublish": "Taslağa döndür"
     },
     "public": {
       "flier": "El ilanı",
       "nearby": "Yakındaki etkinlikler",
-      "comments": "Yorumlar"
+      "comments": "Yorumlar",
+      "mapAlt": "Etkinlik konumu haritası"
     },
     "portal": {
       "back": "Etkinliklere geri dön",
       "unavailable": "Bu etkinlik herkese açık değil."
     }
+  },
+  "repost": {
+    "title": "Yeniden paylaş",
+    "submit": "Yeniden paylaş",
+    "placeholder": "Yorum ekle (isteğe bağlı)...",
+    "success": "Başarıyla yeniden paylaşıldı"
   }
 }

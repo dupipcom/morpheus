@@ -1226,7 +1226,9 @@
   "events": {
     "form": {
       "cover": "Imaxe de portada",
-      "flier": "Imaxe do folleto"
+      "flier": "Imaxe do folleto",
+      "publish": "Publicar",
+      "draftSaved": "Gardouse un borrador — corrixe os campos de arriba e téntao publicar de novo."
     },
     "manage": {
       "title": "Xestionar evento",
@@ -1236,16 +1238,24 @@
       "delete": "Eliminar evento",
       "confirmDelete": "Eliminar este evento? Os borradores elimínanse permanentemente; os eventos publicados cancélanse.",
       "published": "Evento publicado",
-      "view": "Ver evento"
+      "view": "Ver evento",
+      "unpublish": "Volver a borrador"
     },
     "public": {
       "flier": "Folleto",
       "nearby": "Eventos próximos",
-      "comments": "Comentarios"
+      "comments": "Comentarios",
+      "mapAlt": "Mapa da localización do evento"
     },
     "portal": {
       "back": "Volver aos eventos",
       "unavailable": "Este evento non está dispoñible publicamente."
     }
+  },
+  "repost": {
+    "title": "Republicar",
+    "submit": "Republicar",
+    "placeholder": "Engade un comentario (opcional)...",
+    "success": "Republicado correctamente"
   }
 }

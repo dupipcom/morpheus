@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Omslagafbeelding",
-      "flier": "Flyer-afbeelding"
+      "flier": "Flyer-afbeelding",
+      "publish": "Publiceren",
+      "draftSaved": "Een concept is opgeslagen — corrigeer de velden hierboven en probeer opnieuw te publiceren."
     },
     "manage": {
       "title": "Evenement beheren",
@@ -1233,16 +1235,24 @@
       "delete": "Evenement verwijderen",
       "confirmDelete": "Dit evenement verwijderen? Concepten worden permanent verwijderd; gepubliceerde evenementen worden geannuleerd.",
       "published": "Evenement gepubliceerd",
-      "view": "Evenement bekijken"
+      "view": "Evenement bekijken",
+      "unpublish": "Terug naar concept"
     },
     "public": {
       "flier": "Flyer",
       "nearby": "Evenementen in de buurt",
-      "comments": "Reacties"
+      "comments": "Reacties",
+      "mapAlt": "Kaart van de evenementlocatie"
     },
     "portal": {
       "back": "Terug naar evenementen",
       "unavailable": "Dit evenement is niet openbaar beschikbaar."
     }
+  },
+  "repost": {
+    "title": "Reposten",
+    "submit": "Reposten",
+    "placeholder": "Voeg een reactie toe (optioneel)...",
+    "success": "Succesvol gerepost"
   }
 }

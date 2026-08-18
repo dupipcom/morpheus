@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Imagen de portada",
-      "flier": "Imagen del volante"
+      "flier": "Imagen del volante",
+      "publish": "Publicar",
+      "draftSaved": "Se guardó un borrador: corrige los campos de arriba e intenta publicar de nuevo."
     },
     "manage": {
       "title": "Gestionar evento",
@@ -1233,16 +1235,24 @@
       "delete": "Eliminar evento",
       "confirmDelete": "¿Eliminar este evento? Los borradores se eliminan permanentemente; los eventos publicados se cancelan.",
       "published": "Evento publicado",
-      "view": "Ver evento"
+      "view": "Ver evento",
+      "unpublish": "Volver a borrador"
     },
     "public": {
       "flier": "Volante",
       "nearby": "Eventos cercanos",
-      "comments": "Comentarios"
+      "comments": "Comentarios",
+      "mapAlt": "Mapa de la ubicación del evento"
     },
     "portal": {
       "back": "Volver a los eventos",
       "unavailable": "Este evento no está disponible públicamente."
     }
+  },
+  "repost": {
+    "title": "Republicar",
+    "submit": "Republicar",
+    "placeholder": "Añade un comentario (opcional)...",
+    "success": "Republicado correctamente"
   }
 }

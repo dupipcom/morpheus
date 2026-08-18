@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "封面图片",
-      "flier": "传单图片"
+      "flier": "传单图片",
+      "publish": "发布",
+      "draftSaved": "已保存草稿——请修正上方字段后再次尝试发布。"
     },
     "manage": {
       "title": "管理活动",
@@ -1233,16 +1235,24 @@
       "delete": "删除活动",
       "confirmDelete": "删除此活动？草稿将被永久删除；已发布的活动将被取消。",
       "published": "活动已发布",
-      "view": "查看活动"
+      "view": "查看活动",
+      "unpublish": "恢复为草稿"
     },
     "public": {
       "flier": "传单",
       "nearby": "附近的活动",
-      "comments": "评论"
+      "comments": "评论",
+      "mapAlt": "活动地点地图"
     },
     "portal": {
       "back": "返回活动",
       "unavailable": "此活动未公开发布。"
     }
+  },
+  "repost": {
+    "title": "转发",
+    "submit": "转发",
+    "placeholder": "添加评论（可选）...",
+    "success": "转发成功"
   }
 }

@@ -14,7 +14,7 @@
 import prisma from '@/lib/prisma'
 import { ApiError } from '@/lib/services/errors'
 import { slugify, ensureUniqueSlug } from '@/lib/public/slug'
-import { getLikeState, getCounts } from '@/lib/services/social'
+import { getLikeState } from '@/lib/services/social'
 import { getCurrentUser, batchEnrichUserProfiles } from '@/lib/services/visibility'
 import { assertOrgManagerRole } from '@/lib/services/org'
 
@@ -162,6 +162,24 @@ export async function publishEvent(eventId: string) {
 }
 
 /**
+ * PUBLISHED/CANCELLED → DRAFT (soft, reversible step back in the lifecycle).
+ */
+export async function unpublishEvent(eventId: string) {
+  const event = await prisma.event.findUnique({ where: { id: eventId } })
+  if (!event) {
+    throw new ApiError(404, 'NOT_FOUND', 'Event not found')
+  }
+  if (event.status !== 'PUBLISHED' && event.status !== 'CANCELLED') {
+    throw new ApiError(400, 'VALIDATION', 'Only published or cancelled events can be returned to draft')
+  }
+
+  return prisma.event.update({
+    where: { id: eventId },
+    data: { status: 'DRAFT' }
+  })
+}
+
+/**
  * Management/feed listing: scope=mine | org:<id> | attending; filters.
  */
 export async function listEvents(params: {
@@ -196,6 +214,54 @@ export async function listEvents(params: {
   const items = hasMore ? events.slice(0, take) : events
 
   return { events: items, nextCursor: hasMore ? items[items.length - 1].id : null }
+}
+
+/**
+ * Activity-feed events: PUBLISHED and visible to the viewer (PUBLIC, or
+ * FRIENDS/CLOSE_FRIENDS from the viewer's friend lists), with a server-side
+ * priority rank — 0 CLOSE_FRIENDS, 1 FRIENDS, 2 PUBLIC — so the feed can
+ * float close-friend events to the top. Counts are batched, never per-card.
+ */
+export async function listFeedEvents(viewerUserId: string, limit = 20) {
+  const user = await prisma.user.findUnique({
+    where: { id: viewerUserId },
+    select: { friends: true, closeFriends: true }
+  })
+  const friends = user?.friends ?? []
+  const closeFriends = user?.closeFriends ?? []
+  const take = Math.min(limit, 50)
+
+  const events = await prisma.event.findMany({
+    where: {
+      status: 'PUBLISHED',
+      OR: [
+        { visibility: 'PUBLIC' },
+        { visibility: 'FRIENDS', userId: { in: friends } },
+        { visibility: 'CLOSE_FRIENDS', userId: { in: closeFriends } }
+      ]
+    },
+    orderBy: { createdAt: 'desc' },
+    take
+  })
+
+  const counts = await batchRsvpCounts(events.map((e) => e.id))
+  const priority = (event: { visibility: string }): number =>
+    event.visibility === 'CLOSE_FRIENDS' ? 0 : event.visibility === 'FRIENDS' ? 1 : 2
+
+  return {
+    events: events
+      .map((event) => ({
+        ...event,
+        priority: priority(event),
+        goingCount: counts[event.id]?.GOING ?? 0,
+        interestedCount: counts[event.id]?.INTERESTED ?? 0
+      }))
+      .sort(
+        (a, b) =>
+          (a as { priority: number }).priority - (b as { priority: number }).priority ||
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+  }
 }
 
 async function viewerOrgIds(viewerUserId: string): Promise<string[]> {

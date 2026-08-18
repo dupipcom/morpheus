@@ -1220,7 +1220,9 @@
   "events": {
     "form": {
       "cover": "Hoton murfi",
-      "flier": "Hoton fola"
+      "flier": "Hoton fola",
+      "publish": "Buga",
+      "draftSaved": "An ajiye rubutun da ba a buga ba — gyara filayen da ke sama sannan a sake gwada bugawa."
     },
     "manage": {
       "title": "Sarrafa taron",
@@ -1230,16 +1232,24 @@
       "delete": "Share taron",
       "confirmDelete": "Share wannan taron? Rubutun da ba a buga ba ana share su har abada; tarukan da aka buga ana soke su.",
       "published": "An buga taron",
-      "view": "Duba taron"
+      "view": "Duba taron",
+      "unpublish": "Koma zuwa rubutun da ba a buga ba"
     },
     "public": {
       "flier": "Fola",
       "nearby": "Tarukan da ke kusa",
-      "comments": "Sharhi"
+      "comments": "Sharhi",
+      "mapAlt": "Taswirar wurin taron"
     },
     "portal": {
       "back": "Koma ga tarukan",
       "unavailable": "Wannan taron ba ya samuwa ga jama'a."
     }
+  },
+  "repost": {
+    "title": "Sake bugawa",
+    "submit": "Sake bugawa",
+    "placeholder": "Ƙara sharhi (na zaɓi)...",
+    "success": "An sake bugawa cikin nasara"
   }
 }

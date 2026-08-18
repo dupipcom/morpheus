@@ -19,7 +19,7 @@ Lists notes where the current user is owner or recipient. Supports `visibility` 
 When `userId` targets another user, requires a `Delegation` from that user to the caller (403 otherwise) and returns the target's notes filtered to the visibilities the delegation unlocks (scope allow-list plus `DOC_ENABLED`, which any delegation unlocks).
 
 ## POST `/notes`
-Creates a note. Body: `{ content, visibility?, date?, recipientId? }`. Sanitizes `content`. `visibility` is validated against `WRITABLE_NOTE_VISIBILITIES` and defaults to the user's `defaultNoteVisibility`, then `PRIVATE`. If `recipientId` is supplied, validates a delegation exists from the recipient to the sender.
+Creates a note. Body: `{ content, visibility?, date?, recipientId? }` plus optional reference arrays (`documentIds`, `location`, `profileIds`, `listIds`, `taskIds`, `eventIds` — validated for shape/ownership/visibility). Sanitizes `content`. `visibility` is validated against `WRITABLE_NOTE_VISIBILITIES` and defaults to the user's `defaultNoteVisibility`, then `PRIVATE`. If `recipientId` is supplied, validates a delegation exists from the recipient to the sender. **Reposts**: `content` may be empty when at least one reference array is present (a pure reference share — used by the BeView Repost flow; no attachments or sensitive metadata travel).
 
 ## PUT `[noteId]`
 Updates own note content/visibility/date. Enforces ownership.

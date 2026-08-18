@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Image de couverture",
-      "flier": "Image du flyer"
+      "flier": "Image du flyer",
+      "publish": "Publier",
+      "draftSaved": "Un brouillon a été enregistré — corrigez les champs ci-dessus et réessayez de publier."
     },
     "manage": {
       "title": "Gérer l'événement",
@@ -1233,16 +1235,24 @@
       "delete": "Supprimer l'événement",
       "confirmDelete": "Supprimer cet événement ? Les brouillons sont supprimés définitivement ; les événements publiés sont annulés.",
       "published": "Événement publié",
-      "view": "Voir l'événement"
+      "view": "Voir l'événement",
+      "unpublish": "Revenir au brouillon"
     },
     "public": {
       "flier": "Flyer",
       "nearby": "Événements à proximité",
-      "comments": "Commentaires"
+      "comments": "Commentaires",
+      "mapAlt": "Carte de l'emplacement de l'événement"
     },
     "portal": {
       "back": "Retour aux événements",
       "unavailable": "Cet événement n'est pas disponible publiquement."
     }
+  },
+  "repost": {
+    "title": "Repartager",
+    "submit": "Repartager",
+    "placeholder": "Ajouter un commentaire (facultatif)...",
+    "success": "Repartagé avec succès"
   }
 }

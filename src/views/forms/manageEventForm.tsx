@@ -17,6 +17,7 @@ import {
   attachmentFileUrl,
   type PickedAttachment
 } from '@/components/attachmentPicker'
+import { PlacePicker, type PlaceLocation } from '@/components/placePicker'
 import type { EventManage } from '@/views/be/eventTypes'
 
 /** ISO instant → `datetime-local` value (browser-local; inverse of the create form). */
@@ -75,7 +76,7 @@ export const ManageEventForm = ({
   const [timezone, setTimezone] = useState('UTC')
   const [isOnline, setIsOnline] = useState(false)
   const [onlineUrl, setOnlineUrl] = useState('')
-  const [venueName, setVenueName] = useState('')
+  const [venue, setVenue] = useState<PlaceLocation | null>(null)
   const [capacity, setCapacity] = useState('')
   const [visibility, setVisibility] = useState('PUBLIC')
   const [cover, setCover] = useState<PickedAttachment[]>([])
@@ -95,7 +96,16 @@ export const ManageEventForm = ({
     setTimezone(event.timezone || 'UTC')
     setIsOnline(event.isOnline === true)
     setOnlineUrl(event.onlineUrl ?? '')
-    setVenueName(event.venueName ?? '')
+    setVenue(
+      event.location?.lat != null && event.location?.lng != null
+        ? {
+            lat: event.location.lat,
+            lng: event.location.lng,
+            name: event.location.name,
+            address: event.location.address
+          }
+        : null
+    )
     setCapacity(event.capacity != null ? String(event.capacity) : '')
     setVisibility(event.visibility ?? 'PUBLIC')
     setCover(seedMedia(event.coverDocumentId, 'cover'))
@@ -114,8 +124,12 @@ export const ManageEventForm = ({
     timezone,
     isOnline,
     onlineUrl: isOnline ? onlineUrl.trim() || null : null,
-    location: isOnline ? null : venueName.trim() ? { name: venueName.trim() } : null,
-    venueName: isOnline ? null : venueName.trim() || null,
+    location: isOnline
+      ? null
+      : venue
+        ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng }
+        : null,
+    venueName: isOnline ? null : venue?.name ?? null,
     capacity: capacity ? parseInt(capacity, 10) || null : null,
     visibility,
     coverDocumentId: cover[0]?.documentId ?? null,
@@ -173,6 +187,28 @@ export const ManageEventForm = ({
       setError(publishError instanceof Error ? publishError.message : 'Failed to publish event')
     } finally {
       setIsPublishing(false)
+    }
+  }
+
+  const handleUnpublish = async () => {
+    if (!current || busy) return
+    setIsSaving(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/v1/events/${current.id}/unpublish`, {
+        method: 'POST'
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        throw new Error(data?.error || 'Failed to return event to draft')
+      }
+      const draft = (data as { event: EventManage }).event
+      setCurrent(draft)
+      await onChanged(draft)
+    } catch (unpublishError) {
+      setError(unpublishError instanceof Error ? unpublishError.message : 'Failed to return event to draft')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -258,8 +294,8 @@ export const ManageEventForm = ({
               </div>
             ) : (
               <div>
-                <Label htmlFor="manage-event-venue">{t('events.form.venue', { defaultValue: 'Venue name' })}</Label>
-                <Input id="manage-event-venue" value={venueName} onChange={(e) => setVenueName(e.target.value)} />
+                <Label>{t('events.form.venue', { defaultValue: 'Venue name' })}</Label>
+                <PlacePicker value={venue} onChange={setVenue} inlineResults />
               </div>
             )}
             <div>
@@ -313,6 +349,11 @@ export const ManageEventForm = ({
             {current.status !== 'PUBLISHED' && current.status !== 'CANCELLED' && (
               <Button onClick={handlePublish} disabled={!name.trim() || !startsAt || busy} size="sm">
                 {t('events.manage.publish', { defaultValue: 'Publish' })}
+              </Button>
+            )}
+            {(current.status === 'PUBLISHED' || current.status === 'CANCELLED') && (
+              <Button onClick={handleUnpublish} disabled={busy} size="sm" variant="outline">
+                {t('events.manage.unpublish', { defaultValue: 'Return to draft' })}
               </Button>
             )}
             <Button onClick={handleSave} disabled={!name.trim() || !startsAt || busy} size="sm" variant="outline">

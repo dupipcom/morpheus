@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Borítókép",
-      "flier": "Szórólap képe"
+      "flier": "Szórólap képe",
+      "publish": "Közzététel",
+      "draftSaved": "Mentettünk egy piszkozatot — javítsd a fenti mezőket, és próbáld újra közzétenni."
     },
     "manage": {
       "title": "Esemény kezelése",
@@ -1233,16 +1235,24 @@
       "delete": "Esemény törlése",
       "confirmDelete": "Törli ezt az eseményt? A piszkozatok véglegesen törlődnek; a közzétett események lemondásra kerülnek.",
       "published": "Esemény közzétéve",
-      "view": "Esemény megtekintése"
+      "view": "Esemény megtekintése",
+      "unpublish": "Vissza piszkozatra"
     },
     "public": {
       "flier": "Szórólap",
       "nearby": "Közeli események",
-      "comments": "Hozzászólások"
+      "comments": "Hozzászólások",
+      "mapAlt": "Az esemény helyszínének térképe"
     },
     "portal": {
       "back": "Vissza az eseményekhez",
       "unavailable": "Ez az esemény nem nyilvános."
     }
+  },
+  "repost": {
+    "title": "Újraposztolás",
+    "submit": "Újraposztolás",
+    "placeholder": "Szólj hozzá (opcionális)...",
+    "success": "Sikeresen újraposztolva"
   }
 }

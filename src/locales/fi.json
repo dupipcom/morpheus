@@ -1227,7 +1227,9 @@
   "events": {
     "form": {
       "cover": "Kansikuva",
-      "flier": "Flyerin kuva"
+      "flier": "Flyerin kuva",
+      "publish": "Julkaise",
+      "draftSaved": "Luonnos tallennettiin — korjaa yllä olevat kentät ja yritä julkaista uudelleen."
     },
     "manage": {
       "title": "Hallitse tapahtumaa",
@@ -1237,16 +1239,24 @@
       "delete": "Poista tapahtuma",
       "confirmDelete": "Poistetaanko tämä tapahtuma? Luonnokset poistetaan pysyvästi; julkaistut tapahtumat perutaan.",
       "published": "Tapahtuma julkaistu",
-      "view": "Näytä tapahtuma"
+      "view": "Näytä tapahtuma",
+      "unpublish": "Takaisin luonnokseksi"
     },
     "public": {
       "flier": "Flyer",
       "nearby": "Lähellä olevat tapahtumat",
-      "comments": "Kommentit"
+      "comments": "Kommentit",
+      "mapAlt": "Tapahtumapaikan kartta"
     },
     "portal": {
       "back": "Takaisin tapahtumiin",
       "unavailable": "Tämä tapahtuma ei ole julkisesti saatavilla."
     }
+  },
+  "repost": {
+    "title": "Jaa uudelleen",
+    "submit": "Jaa uudelleen",
+    "placeholder": "Lisää kommentti (valinnainen)...",
+    "success": "Jaettu uudelleen onnistuneesti"
   }
 }

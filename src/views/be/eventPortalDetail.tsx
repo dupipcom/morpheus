@@ -25,7 +25,7 @@ export function EventPortalDetail({
 }) {
   const { t } = useI18n()
 
-  const { data, isLoading, error } = useSWR<{ event: EventDetailPayload }>(
+  const { data, mutate, isLoading, error } = useSWR<{ event: EventDetailPayload }>(
     `/api/v1/events/public/${publicUrl}`,
     jsonFetcher,
     { revalidateOnFocus: false }
@@ -48,7 +48,15 @@ export function EventPortalDetail({
         </p>
       )}
 
-      {data?.event && <EventDetailView event={data.event} locale={locale} />}
+      {data?.event && (
+        <EventDetailView
+          event={data.event}
+          locale={locale}
+          onChanged={async () => {
+            await mutate()
+          }}
+        />
+      )}
     </div>
   )
 }

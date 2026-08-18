@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "커버 이미지",
-      "flier": "전단지 이미지"
+      "flier": "전단지 이미지",
+      "publish": "게시",
+      "draftSaved": "초안이 저장되었습니다 — 위 필드를 수정하고 다시 게시해 보세요."
     },
     "manage": {
       "title": "이벤트 관리",
@@ -1233,16 +1235,24 @@
       "delete": "이벤트 삭제",
       "confirmDelete": "이 이벤트를 삭제할까요? 초안은 영구적으로 삭제되고 게시된 이벤트는 취소됩니다.",
       "published": "이벤트가 게시되었습니다",
-      "view": "이벤트 보기"
+      "view": "이벤트 보기",
+      "unpublish": "초안으로 되돌리기"
     },
     "public": {
       "flier": "전단지",
       "nearby": "주변 이벤트",
-      "comments": "댓글"
+      "comments": "댓글",
+      "mapAlt": "이벤트 위치 지도"
     },
     "portal": {
       "back": "이벤트로 돌아가기",
       "unavailable": "이 이벤트는 공개적으로 제공되지 않습니다."
     }
+  },
+  "repost": {
+    "title": "재게시",
+    "submit": "재게시",
+    "placeholder": "댓글 추가 (선택)...",
+    "success": "재게시했습니다"
   }
 }

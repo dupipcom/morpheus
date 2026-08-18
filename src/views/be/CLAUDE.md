@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The BeView is the social hub of the application. It displays a combined activity feed of public notes and templates, a friends list with unfriend capability, an events browse/create tab, and placeholder tabs for future social features (spaces, organizations). It serves as the primary interface for discovering and engaging with community content.
+The BeView is the social hub of the application. It displays a combined activity feed of public notes, templates and published events (CLOSE_FRIENDS/FRIENDS events prioritized), a friends list with unfriend capability, an events browse/create/manage tab, and placeholder tabs for future social features (spaces, organizations). It serves as the primary interface for discovering and engaging with community content. Activity items (notes/templates/events) support Repost — creating a Note with references, never carrying attachments or sensitive metadata.
 
 ## Files
 
@@ -102,8 +102,13 @@ BeView
 | `/api/v1/attachments` | POST | Commit cover/flier uploads (`entityType: 'event'`) |
 | `/api/v1/events/public/[publicUrl]` | GET | Enriched public payload for the in-tab portal detail |
 | `/api/v1/events/public?near=lat,lng,radiusKm` | GET | Proximity suggestions on the event detail |
+| `/api/v1/events/feed` | GET | Activity-feed events (PUBLISHED; priority 0 CLOSE_FRIENDS, 1 FRIENDS, 2 PUBLIC) |
+| `/api/v1/events/{eventId}` | GET | Ownership probe on the event detail (200 → manage button) |
+| `/api/v1/events/{eventId}/unpublish` | POST | Return to draft (manage dialog) |
 | `/api/v1/comments?entityType=event&entityId=` | GET | Event comments (public) |
 | `/api/v1/comments` | POST | Post an event comment (auth) |
+| `/api/v1/notes` | POST | Repost: creates a Note with reference ids (content optional when references present) |
+| `/api/v1/places/autocomplete` / `/places/staticmap` | GET | Venue search (create/manage forms) and location map (event detail) |
 
 ## Loading States
 

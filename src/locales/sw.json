@@ -1221,7 +1221,9 @@
   "events": {
     "form": {
       "cover": "Picha ya jalada",
-      "flier": "Picha ya kipeperushi"
+      "flier": "Picha ya kipeperushi",
+      "publish": "Chapisha",
+      "draftSaved": "Rasimu imehifadhiwa — rekebisha sehemu zilizo juu na ujaribu kuchapisha tena."
     },
     "manage": {
       "title": "Dhibiti tukio",
@@ -1231,16 +1233,24 @@
       "delete": "Futa tukio",
       "confirmDelete": "Kufuta tukio hili? Rasimu huondolewa kabisa; matukio yaliyochapishwa hughairiwa.",
       "published": "Tukio limechapishwa",
-      "view": "Tazama tukio"
+      "view": "Tazama tukio",
+      "unpublish": "Rudi kwenye rasimu"
     },
     "public": {
       "flier": "Kipeperushi",
       "nearby": "Matukio ya karibu",
-      "comments": "Maoni"
+      "comments": "Maoni",
+      "mapAlt": "Ramani ya eneo la tukio"
     },
     "portal": {
       "back": "Rudi kwenye matukio",
       "unavailable": "Tukio hili halipatikani kwa umma."
     }
+  },
+  "repost": {
+    "title": "Chapisha tena",
+    "submit": "Chapisha tena",
+    "placeholder": "Ongeza maoni (si lazima)...",
+    "success": "Imechapishwa tena kwa mafanikio"
   }
 }

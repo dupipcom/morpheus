@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2, Link as LinkIcon, Lock, Users, UserCheck, Globe, Sparkles } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2, Link as LinkIcon, Lock, Users, UserCheck, Globe, Sparkles, Repeat2 } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
@@ -12,6 +12,7 @@ import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { NoteContent } from "@/components/noteContent"
 import type { NoteDocumentRef } from "@/components/noteAttachments"
+import { EventCard } from "@/components/eventCard"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdownMenu"
 
 export interface Comment {
@@ -73,6 +74,17 @@ export interface ActivityItem {
     comments: number
     likes?: number
   }
+  // Event items (activity-feed events, Phase 8)
+  publicUrl?: string
+  startsAt?: string | null
+  timezone?: string | null
+  summary?: string | null
+  coverDocumentId?: string | null
+  goingCount?: number
+  interestedCount?: number
+  status?: string
+  /** Feed priority: 0 CLOSE_FRIENDS, 1 FRIENDS, 2 PUBLIC (server-computed). */
+  priority?: number
   sender?: {
     id: string
     userName?: string
@@ -98,6 +110,8 @@ interface ActivityCardProps {
   isHighlighted?: boolean // Whether this card should be highlighted/selected
   /** When provided, Edit hands the note to the Write composer instead of the inline popover */
   onEditNote?: (item: ActivityItem) => void
+  /** Repost: turns the item into a Note with references */
+  onRepost?: (item: ActivityItem) => void
 }
 
 const getVisibilityIcon = (visibility: string) => {
@@ -121,7 +135,7 @@ const visibilityOptions = [
   { value: 'DOC_ENABLED', label: 'Doc Enabled', icon: <FileText className="h-4 w-4" /> },
 ]
 
-function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false, onEditNote }: ActivityCardProps) {
+function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false, onEditNote, onRepost }: ActivityCardProps) {
   const { t, locale } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const [comments, setComments] = useState<Comment[]>(item.comments || [])
@@ -754,7 +768,16 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
   // Build options menu items
   const optionsMenuItems: OptionsMenuItem[] = []
-  
+
+  // Repost: turns the activity into a Note with references (no attachments).
+  if (isLoggedIn) {
+    optionsMenuItems.push({
+      label: t('repost.submit') || 'Repost',
+      onClick: () => onRepost?.(item),
+      icon: <Repeat2 className="h-4 w-4" />,
+    })
+  }
+
   // Add copy link option for all items
   optionsMenuItems.push({
     label: t('common.copyLink') || 'Copy Link',
@@ -797,6 +820,44 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
   // Debug: Log when options should be available
   // Removed console.log statements - use logger tool if needed
+
+  // Activity-feed events render as compact event cards (the note-centric UI
+  // below does not apply); repost overlays the card.
+  if (item.type === 'event') {
+    return (
+      <div className="relative h-full">
+        <EventCard
+          event={{
+            id: item.id,
+            publicUrl: item.publicUrl || '',
+            name: item.name || '',
+            startsAt: item.startsAt,
+            timezone: item.timezone,
+            summary: item.summary,
+            coverDocumentId: item.coverDocumentId,
+            goingCount: item.goingCount,
+            interestedCount: item.interestedCount
+          }}
+          locale={locale}
+        />
+        {onRepost && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="absolute top-2 right-2 z-10"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onRepost(item)
+            }}
+          >
+            <Repeat2 className="h-3.5 w-3.5 mr-1" />
+            {t('repost.submit') || 'Repost'}
+          </Button>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className={`border rounded-lg p-4 relative h-full flex flex-col transition-colors ${

@@ -1226,7 +1226,9 @@
   "events": {
     "form": {
       "cover": "Azaleko irudia",
-      "flier": "Esku-orriaren irudia"
+      "flier": "Esku-orriaren irudia",
+      "publish": "Argitaratu",
+      "draftSaved": "Zirriborroa gorde da — zuzendu goiko eremuak eta saiatu berriro argitaratzen."
     },
     "manage": {
       "title": "Kudeatu ekitaldia",
@@ -1236,16 +1238,24 @@
       "delete": "Ezabatu ekitaldia",
       "confirmDelete": "Ekitaldi hau ezabatu? Zirriborroak betiko kentzen dira; argitaratutako ekitaldiak bertan behera uzten dira.",
       "published": "Ekitaldia argitaratuta",
-      "view": "Ikusi ekitaldia"
+      "view": "Ikusi ekitaldia",
+      "unpublish": "Itzuli zirriborrora"
     },
     "public": {
       "flier": "Esku-orria",
       "nearby": "Gertuko ekitaldiak",
-      "comments": "Iruzkinak"
+      "comments": "Iruzkinak",
+      "mapAlt": "Ekitaldiaren kokapen-mapa"
     },
     "portal": {
       "back": "Itzuli ekitaldietara",
       "unavailable": "Ekitaldi hau ez dago publikoki eskuragarri."
     }
+  },
+  "repost": {
+    "title": "Berriro partekatu",
+    "submit": "Berriro partekatu",
+    "placeholder": "Gehitu iruzkin bat (aukerakoa)...",
+    "success": "Behar bezala partekatu da berriro"
   }
 }

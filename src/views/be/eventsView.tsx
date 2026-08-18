@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import useSWR, { mutate as globalMutate } from 'swr'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -38,11 +38,17 @@ export function EventsView() {
     jsonFetcher,
     { revalidateOnFocus: false }
   )
-  const { data: mineData, mutate: mutateMine } = useSWR<{ events: EventSummary[] }>(tab === 'mine' ? mineKey : null, jsonFetcher, {
+  // Always fetched (not just on the mine tab): the ownership set powers the
+  // Manage affordance on Discover/Going cards for events the viewer owns.
+  const { data: mineData, mutate: mutateMine } = useSWR<{ events: EventSummary[] }>(mineKey, jsonFetcher, {
     revalidateOnFocus: false
   })
 
   const events = tab === 'discover' ? (discoverData?.events || []) : tab === 'attending' ? (attendingData?.events || []) : (mineData?.events || [])
+
+  // Events the viewer can manage (owned or org-managed) — used to surface the
+  // Manage button on any tab, not just Mine/Org.
+  const manageableIds = useMemo(() => new Set((mineData?.events || []).map((e) => e.id)), [mineData])
 
   // Revalidate every list after a manage action. The bound mutateMine works
   // (the user is on the mine tab while managing); the other two keys are
@@ -89,7 +95,7 @@ export function EventsView() {
                 locale={locale}
                 status={event.status}
                 onOpen={() => setPortalEvent({ publicUrl: event.publicUrl })}
-                onManage={tab === 'mine' ? () => setManageEvent(event as EventManage) : undefined}
+                onManage={manageableIds.has(event.id) ? () => setManageEvent(event as EventManage) : undefined}
               />
             ))}
             {events.length === 0 && (
@@ -106,10 +112,10 @@ export function EventsView() {
         open={showCreate}
         onOpenChange={setShowCreate}
         onCreated={async (event) => {
-          // Deep-link the flow: land on Mine/Org and open the manage step on
-          // the new draft so it can be completed and published.
+          // Deep-link the flow: land on Mine/Org; a draft opens the manage
+          // step immediately, a directly-published event just shows in the list.
           setTab('mine')
-          setManageEvent(event)
+          if (event.status !== 'PUBLISHED') setManageEvent(event)
         }}
       />
 

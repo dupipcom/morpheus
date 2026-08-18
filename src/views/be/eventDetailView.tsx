@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
+import { useAuth } from '@clerk/nextjs'
 import { useI18n } from '@/lib/contexts/i18n'
 import { jsonFetcher } from '@/lib/utils/utils'
 import { Button } from '@/components/ui/button'
@@ -11,7 +12,8 @@ import { EventCard } from '@/components/eventCard'
 import { CommentsSection } from '@/components/commentsSection'
 import { Heart, CalendarDays, MapPin, Globe, Image as ImageIcon } from 'lucide-react'
 import { attachmentFileUrl } from '@/components/attachmentPicker'
-import type { EventDetailPayload, EventSummary } from './eventTypes'
+import { ManageEventForm } from '@/views/forms/manageEventForm'
+import type { EventDetailPayload, EventManage, EventSummary } from './eventTypes'
 
 /**
  * Event detail body (Phase 8): cover, meta, RSVP/like action islands, host,
@@ -19,10 +21,30 @@ import type { EventDetailPayload, EventSummary } from './eventTypes'
  * public page (PublicEventView) and the in-tab portal detail in EventsView.
  * Ticketing arrives in Phase 9 (Buy/Reserve placeholder).
  */
-export function EventDetailView({ event, locale }: { event: EventDetailPayload; locale: string }) {
+export function EventDetailView({
+  event,
+  locale,
+  onChanged
+}: {
+  event: EventDetailPayload
+  locale: string
+  /** Called after a manage action (save/publish/delete) — the hosts revalidate. */
+  onChanged?: () => Promise<void> | void
+}) {
   const { t } = useI18n()
+  const { isSignedIn } = useAuth()
 
   const [rsvp, setRsvp] = useState<string | null>(event.viewer?.rsvp ?? null)
+  const [showManage, setShowManage] = useState(false)
+
+  // Ownership probe: GET /api/v1/events/[eventId] is owner/manager-only —
+  // a 200 means the viewer can manage the event and carries the full record.
+  const { data: manageData, mutate: mutateManage } = useSWR<{ event: EventManage }>(
+    isSignedIn ? `/api/v1/events/${event.id}` : null,
+    jsonFetcher,
+    { revalidateOnFocus: false }
+  )
+  const canManage = manageData?.event != null
   const [going, setGoing] = useState<number>(event.counts?.going ?? 0)
   const [interested, setInterested] = useState<number>(event.counts?.interested ?? 0)
   const [liked, setLiked] = useState<boolean>(event.viewer?.isLiked ?? false)
@@ -30,9 +52,11 @@ export function EventDetailView({ event, locale }: { event: EventDetailPayload; 
   const [busy, setBusy] = useState(false)
 
   // Proximity suggestions: bounding-box search server-side around the venue.
+  const lat = event.location?.lat
+  const lng = event.location?.lng
   const { data: nearbyData } = useSWR<{ events: EventSummary[] }>(
-    event.location?.lat != null && event.location?.lng != null
-      ? `/api/v1/events/public?near=${event.location.lat},${event.location.lng},50&limit=6`
+    lat != null && lng != null
+      ? `/api/v1/events/public?near=${lat},${lng},50&limit=6`
       : null,
     jsonFetcher,
     { revalidateOnFocus: false }
@@ -114,7 +138,7 @@ export function EventDetailView({ event, locale }: { event: EventDetailPayload; 
             ) : (
               (event.venueName || event.location?.name) && (
                 <span className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" /> {event.venueName || event.location.name}
+                  <MapPin className="h-4 w-4" /> {event.venueName || event.location?.name}
                 </span>
               )
             )}
@@ -163,7 +187,22 @@ export function EventDetailView({ event, locale }: { event: EventDetailPayload; 
             <Button variant="secondary" size="sm" disabled>
               {t('events.public.buyPlaceholder', { defaultValue: 'Buy / Reserve (soon)' })}
             </Button>
+            {canManage && manageData?.event && (
+              <Button variant="outline" size="sm" onClick={() => setShowManage(true)}>
+                {t('events.manage.short', { defaultValue: 'Manage' })}
+              </Button>
+            )}
           </div>
+
+          {/* Location map (staticmap route requires a signed-in session) */}
+          {isSignedIn && lat != null && lng != null && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={`/api/v1/places/staticmap?lat=${lat}&lng=${lng}`}
+              alt={t('events.public.mapAlt', { defaultValue: 'Event location map' })}
+              className="w-full rounded-md"
+            />
+          )}
 
           {/* Host */}
           {event.host?.type === 'ORG' && event.host.org && (
@@ -249,6 +288,22 @@ export function EventDetailView({ event, locale }: { event: EventDetailPayload; 
         </h2>
         <CommentsSection entityType="event" entityId={event.id} />
       </section>
+
+      {manageData?.event && (
+        <ManageEventForm
+          open={showManage}
+          onOpenChange={setShowManage}
+          event={manageData.event}
+          onChanged={async () => {
+            await mutateManage()
+            await onChanged?.()
+          }}
+          onDeleted={async () => {
+            await mutateManage()
+            await onChanged?.()
+          }}
+        />
+      )}
     </div>
   )
 }

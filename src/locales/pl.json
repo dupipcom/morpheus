@@ -1227,7 +1227,9 @@
   "events": {
     "form": {
       "cover": "Obraz okładki",
-      "flier": "Obraz ulotki"
+      "flier": "Obraz ulotki",
+      "publish": "Opublikuj",
+      "draftSaved": "Zapisano wersję roboczą — popraw pola powyżej i spróbuj opublikować ponownie."
     },
     "manage": {
       "title": "Zarządzaj wydarzeniem",
@@ -1237,16 +1239,24 @@
       "delete": "Usuń wydarzenie",
       "confirmDelete": "Usunąć to wydarzenie? Wersje robocze są usuwane trwale; opublikowane wydarzenia są anulowane.",
       "published": "Wydarzenie opublikowane",
-      "view": "Zobacz wydarzenie"
+      "view": "Zobacz wydarzenie",
+      "unpublish": "Wróć do wersji roboczej"
     },
     "public": {
       "flier": "Ulotka",
       "nearby": "Wydarzenia w pobliżu",
-      "comments": "Komentarze"
+      "comments": "Komentarze",
+      "mapAlt": "Mapa lokalizacji wydarzenia"
     },
     "portal": {
       "back": "Wróć do wydarzeń",
       "unavailable": "To wydarzenie nie jest publicznie dostępne."
     }
+  },
+  "repost": {
+    "title": "Udostępnij ponownie",
+    "submit": "Udostępnij ponownie",
+    "placeholder": "Dodaj komentarz (opcjonalnie)...",
+    "success": "Udostępniono ponownie"
   }
 }

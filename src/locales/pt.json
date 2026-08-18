@@ -1223,7 +1223,9 @@
   "events": {
     "form": {
       "cover": "Imagem de capa",
-      "flier": "Imagem do folheto"
+      "flier": "Imagem do folheto",
+      "publish": "Publicar",
+      "draftSaved": "Um rascunho foi salvo — corrija os campos acima e tente publicar novamente."
     },
     "manage": {
       "title": "Gerenciar evento",
@@ -1233,16 +1235,24 @@
       "delete": "Excluir evento",
       "confirmDelete": "Excluir este evento? Rascunhos são removidos permanentemente; eventos publicados são cancelados.",
       "published": "Evento publicado",
-      "view": "Ver evento"
+      "view": "Ver evento",
+      "unpublish": "Voltar para rascunho"
     },
     "public": {
       "flier": "Folheto",
       "nearby": "Eventos próximos",
-      "comments": "Comentários"
+      "comments": "Comentários",
+      "mapAlt": "Mapa da localização do evento"
     },
     "portal": {
       "back": "Voltar aos eventos",
       "unavailable": "Este evento não está disponível publicamente."
     }
+  },
+  "repost": {
+    "title": "Republicar",
+    "submit": "Republicar",
+    "placeholder": "Adicione um comentário (opcional)...",
+    "success": "Republicado com sucesso"
   }
 }

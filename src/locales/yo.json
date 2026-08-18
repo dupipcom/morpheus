@@ -1221,7 +1221,9 @@
   "events": {
     "form": {
       "cover": "Àwòrán ideri",
-      "flier": "Àwòrán ìwé kéde"
+      "flier": "Àwòrán ìwé kéde",
+      "publish": "Ṣàtẹ̀jáde",
+      "draftSaved": "A ti fipamọ́ ìkọ̀wé kan — ṣe àtúnṣe àwọn pápá lókè kí o tó tún gbìyànjú láti ṣàtẹ̀jáde."
     },
     "manage": {
       "title": "Ṣàkóso ìṣẹ̀lẹ̀",
@@ -1231,16 +1233,24 @@
       "delete": "Pa ìṣẹ̀lẹ̀ rẹ́",
       "confirmDelete": "Pa ìṣẹ̀lẹ̀ yìí rẹ́? Àwọn ìkọ̀wé ti a kò tẹ̀ jáde ni a ń pa rẹ́ pátápátá; àwọn ìṣẹ̀lẹ̀ tí a ti tẹ̀ jáde ni a ń fagi lé.",
       "published": "A ti ṣàtẹ̀jáde ìṣẹ̀lẹ̀",
-      "view": "Wo ìṣẹ̀lẹ̀"
+      "view": "Wo ìṣẹ̀lẹ̀",
+      "unpublish": "Padà sí ìkọ̀wé tí a kò tẹ̀ jáde"
     },
     "public": {
       "flier": "Ìwé kéde",
       "nearby": "Àwọn ìṣẹ̀lẹ̀ tó wà nítòsí",
-      "comments": "Àwọn àsọyé"
+      "comments": "Àwọn àsọyé",
+      "mapAlt": "Máàpù ibi ìṣẹ̀lẹ̀"
     },
     "portal": {
       "back": "Padà sí àwọn ìṣẹ̀lẹ̀",
       "unavailable": "Ìṣẹ̀lẹ̀ yìí kò sí fún gbogbo ènìyàn."
     }
+  },
+  "repost": {
+    "title": "Tún pín",
+    "submit": "Tún pín",
+    "placeholder": "Fi àsọyé kún (àṣàyàn)...",
+    "success": "A ti tún pín ní àṣeyọrí"
   }
 }
