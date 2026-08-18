@@ -23,7 +23,7 @@ import {
 } from '@/lib/storage/s3'
 import type { Prisma } from '@/generated/prisma/client'
 
-const ENTITY_TYPES = ['task', 'list', 'job', 'note', 'user'] as const
+const ENTITY_TYPES = ['task', 'list', 'job', 'note', 'user', 'event'] as const
 
 /**
  * Poster frames are client-uploaded JPEG objects; they must live under the
@@ -73,6 +73,8 @@ async function entityExists(entityType: string, entityId: string): Promise<boole
       return Boolean(await prisma.job.findUnique({ where: { id: entityId }, select: { id: true } }))
     case 'note':
       return Boolean(await prisma.note.findUnique({ where: { id: entityId }, select: { id: true } }))
+    case 'event':
+      return Boolean(await prisma.event.findUnique({ where: { id: entityId }, select: { id: true } }))
     default:
       return false
   }
@@ -127,7 +129,7 @@ export async function POST(request: NextRequest) {
       typeof entityType !== 'string' ||
       !ENTITY_TYPES.includes(entityType as (typeof ENTITY_TYPES)[number])
     ) {
-      throw new ApiError(400, 'INVALID_ENTITY_TYPE', 'entityType must be one of: task, list, job, note, user')
+      throw new ApiError(400, 'INVALID_ENTITY_TYPE', 'entityType must be one of: task, list, job, note, user, event')
     }
     if (typeof entityId !== 'string' || !entityId.trim()) {
       throw new ApiError(400, 'INVALID_ENTITY_ID', 'entityId is required')
@@ -212,12 +214,13 @@ export async function POST(request: NextRequest) {
         // under the storage base URL so the file route can derive its key.
         posterUrl: parsePosterUrl(posterUrl),
         userId: user.id,
-        // Keep both sides of the Task/Job/List/Note <-> Document reference
-        // arrays in sync.
+        // Keep both sides of the Task/Job/List/Note/Event <-> Document
+        // reference arrays in sync.
         ...(entityType === 'task' ? { taskIds: [entityId] } : {}),
         ...(entityType === 'job' ? { jobIds: [entityId] } : {}),
         ...(entityType === 'list' ? { listIds: [entityId] } : {}),
-        ...(entityType === 'note' ? { noteIds: [entityId] } : {})
+        ...(entityType === 'note' ? { noteIds: [entityId] } : {}),
+        ...(entityType === 'event' ? { eventIds: [entityId] } : {})
       }
     })
 
@@ -239,6 +242,11 @@ export async function POST(request: NextRequest) {
       })
     } else if (entityType === 'note') {
       await prisma.note.update({
+        where: { id: entityId },
+        data: { documentIds: { push: document.id } }
+      })
+    } else if (entityType === 'event') {
+      await prisma.event.update({
         where: { id: entityId },
         data: { documentIds: { push: document.id } }
       })

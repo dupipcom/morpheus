@@ -6,7 +6,7 @@ Feature-level view components under `src/views/`. Each view has its own `CLAUDE.
 
 | View | File | Purpose | Key API Dependencies |
 |---|---|---|---|
-| `BeView` | `be/beView.tsx` | Social activity feed, friends list, unfriend | `/api/v1/friends`, `/api/v1/notes/public`, `/api/v1/templates/public`, `/api/v1/friends/unfriend` |
+| `BeView` | `be/beView.tsx` | Social activity feed, friends list, events browse/create/manage/publish | `/api/v1/friends`, `/api/v1/notes/public`, `/api/v1/templates/public`, `/api/v1/friends/unfriend`, `/api/v1/events`, `/api/v1/events/public`, `/api/v1/events/{id}`, `/api/v1/events/{id}/publish`, `/api/v1/orgs`, `/api/v1/attachments` |
 | `ChatView` | `chat/chatView.tsx` | Real-time messaging (orgs, channels, DMs, threads) | `/api/v1/chat/*` (sidebar, messages, orgs, invites, read-state, token, dm-candidates, dms) |
 | `DashboardView` | `dashboard/dashboardView.tsx` | Analytics charts (mood/productivity/money) | `/api/v1/user-dashboard-data`, `/api/v1/delegated-users`, `/api/v1/hint` |
 | `DoView` | `do/doView.tsx` | Task management hub (forms + task grid + job workflow) | `/api/v1/tasks`, `/api/v1/jobs`, `/api/v1/tasklists`, `/api/v1/budgets`, `/api/v1/profiles/by-ids` |

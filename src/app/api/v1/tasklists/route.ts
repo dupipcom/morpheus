@@ -20,6 +20,7 @@ import {
   loadTranslationsForLocale,
   type NewTaskInput
 } from '@/lib/services/list'
+import { assertOrgManagerRole } from '@/lib/services/org'
 
 const ALLOWED_VISIBILITIES: Visibility[] = ['PUBLIC', 'PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'HIDDEN']
 
@@ -136,6 +137,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       budget, budgetType, budgetPercent, budgetSourceIds,
       bio, profilePhoto, links,
       publicTagline, publicVisible, coverDocumentId, location, jobBoardEnabled, projectId,
+      ownerType, orgId,
       tasks
     } = body as Record<string, unknown>
 
@@ -239,8 +241,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 })
     }
 
+    // Phase 7: org-owned lists require MANAGER+ in the org
+    const isOrgOwned = ownerType === 'ORG'
+    if (isOrgOwned) {
+      if (typeof orgId !== 'string' || !OBJECT_ID_PATTERN.test(orgId)) {
+        return NextResponse.json({ error: 'orgId is required for org-owned lists' }, { status: 400 })
+      }
+      await assertOrgManagerRole(user.id, orgId)
+    }
+
     const taskList = await createTaskList({
       userInternalId: user.id,
+      ownerType: isOrgOwned ? 'ORG' : undefined,
+      orgId: isOrgOwned ? orgId : undefined,
       role: typeof role === 'string' ? role : null,
       name: sanitizedName,
       visibility: parsedVisibility || undefined,

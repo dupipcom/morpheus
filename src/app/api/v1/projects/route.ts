@@ -13,6 +13,7 @@ import prisma from '@/lib/prisma'
 import { sanitizeText, sanitizeHTML, sanitizeURL } from '@/lib/utils/sanitize'
 import { ApiError, toResponse } from '@/lib/services/errors'
 import { createProject, listProjectsForUser } from '@/lib/services/projects'
+import { assertOrgManagerRole } from '@/lib/services/org'
 
 const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i
 
@@ -70,7 +71,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const {
-      name, bio, photoDocumentId, coverDocumentId, links, supportUrl, collaborators
+      name, bio, photoDocumentId, coverDocumentId, links, supportUrl, collaborators,
+      ownerType, orgId
     } = body as Record<string, unknown>
 
     if (typeof name !== 'string' || !name.trim()) {
@@ -123,6 +125,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Collaborators must be an array of user IDs' }, { status: 400 })
     }
 
+    // Phase 7: org-owned projects require MANAGER+ in the org
+    const isOrgOwned = ownerType === 'ORG'
+    if (isOrgOwned) {
+      if (typeof orgId !== 'string' || !OBJECT_ID_PATTERN.test(orgId)) {
+        return NextResponse.json({ error: 'orgId is required for org-owned projects' }, { status: 400 })
+      }
+      await assertOrgManagerRole(user.id, orgId)
+    }
+
     const project = await createProject({
       userInternalId: user.id,
       name: sanitizeText(name.trim()),
@@ -131,7 +142,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       coverDocumentId: typeof coverDocumentId === 'string' ? coverDocumentId : null,
       links: parsedLinks ?? null,
       supportUrl: typeof supportUrl === 'string' ? sanitizeURL(supportUrl) : null,
-      collaborators: Array.isArray(collaborators) ? (collaborators as string[]) : undefined
+      collaborators: Array.isArray(collaborators) ? (collaborators as string[]) : undefined,
+      ownerType: isOrgOwned ? 'ORG' : undefined,
+      orgId: isOrgOwned ? orgId : undefined
     })
 
     return NextResponse.json({ project })

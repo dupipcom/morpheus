@@ -169,7 +169,7 @@ export function EntityTagPicker({ kind, value, onChange, currentNoteListIds }: E
 
   // ---- events: the user's own life events, fetched once and filtered locally ----
   const { data: eventsData, isLoading: eventsLoading } = useSWR<{ lifeEvents?: EventResult[] }>(
-    kind === 'event' ? '/api/v1/events' : null,
+    kind === 'event' ? '/api/v1/life-events' : null,
     jsonFetcher,
     {
       revalidateOnFocus: false,

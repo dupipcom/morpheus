@@ -78,11 +78,14 @@ export async function resolveRecipient(target: string): Promise<{
 }> {
   const trimmed = target.trim()
 
-  // Direct wallet id
-  const byId = await prisma.wallet.findUnique({
-    where: { id: trimmed },
-    select: { id: true, userId: true }
-  })
+  // Direct wallet id (guarded: Prisma throws on malformed ObjectIds, e.g. @handles)
+  const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i
+  const byId = OBJECT_ID_PATTERN.test(trimmed)
+    ? await prisma.wallet.findUnique({
+        where: { id: trimmed },
+        select: { id: true, userId: true }
+      })
+    : null
   if (byId) {
     const owner = await prisma.user.findUnique({
       where: { id: byId.userId },
@@ -101,7 +104,8 @@ export async function resolveRecipient(target: string): Promise<{
     return { walletId: byAddress.id, displayName: trimmed }
   }
 
-  // Username handle (shared /@ namespace; orgs in Phase 7, projects later)
+  // Username handle (shared /@ namespace; projects resolve with the donate
+  // follow-up after Phase 6)
   const handle = trimmed.startsWith('@') ? trimmed.slice(1) : trimmed
   const profile = await prisma.profile.findUnique({
     where: { username: handle },
@@ -110,6 +114,21 @@ export async function resolveRecipient(target: string): Promise<{
   if (profile) {
     const defaultWallet = await getOrCreateDefaultWallet(profile.userId)
     return { walletId: defaultWallet.id, displayName: `@${handle}` }
+  }
+
+  // Phase 7: org handles resolve to the org's default wallet (kind ORG)
+  const organization = await prisma.organization.findUnique({
+    where: { username: handle },
+    select: { id: true, name: true }
+  })
+  if (organization) {
+    const orgWallet = await prisma.wallet.findFirst({
+      where: { kind: 'ORG', ownerType: 'ORG', orgId: organization.id },
+      select: { id: true }
+    })
+    if (orgWallet) {
+      return { walletId: orgWallet.id, displayName: `@${handle} (${organization.name})` }
+    }
   }
 
   throw new ApiError(404, 'NOT_FOUND', 'Recipient not found')

@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Publikovat komentář",
+    "signIn": "Přihlaste se a zapojte se do konverzace."
   },
   "invest": {
     "notice": "V této aplikaci se momentálně nespravují žádné skutečné peníze. Dupip Invest je stále ve fázi plánování. Toto je pouze testovací prostředí pro demonstrační účely.",
@@ -1217,5 +1219,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "Titulní obrázek",
+      "flier": "Obrázek letáku",
+      "publish": "Publikovat",
+      "draftSaved": "Koncept byl uložen — opravte pole výše a zkuste publikovat znovu."
+    },
+    "manage": {
+      "title": "Spravovat událost",
+      "short": "Spravovat",
+      "publish": "Publikovat",
+      "save": "Uložit",
+      "delete": "Smazat událost",
+      "confirmDelete": "Smazat tuto událost? Koncepty jsou odstraněny trvale; publikované události jsou zrušeny.",
+      "published": "Událost publikována",
+      "view": "Zobrazit událost",
+      "unpublish": "Vrátit na koncept"
+    },
+    "public": {
+      "flier": "Leták",
+      "nearby": "Události poblíž",
+      "comments": "Komentáře",
+      "mapAlt": "Mapa místa konání"
+    },
+    "portal": {
+      "back": "Zpět na události",
+      "unavailable": "Tato událost není veřejně dostupná."
+    }
+  },
+  "repost": {
+    "title": "Repostnout",
+    "submit": "Repostnout",
+    "placeholder": "Přidejte komentář (volitelné)...",
+    "success": "Úspěšně repostnuto"
   }
 }

@@ -860,7 +860,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Opublikuj komentarz",
+    "signIn": "Zaloguj się, aby dołączyć do rozmowy."
   },
   "invest": {
     "notice": "W tej aplikacji nie zarządza się obecnie prawdziwymi pieniędzmi. Dupip Invest jest nadal w fazie planowania. To jest tylko środowisko testowe do celów demonstracyjnych.",
@@ -1221,5 +1223,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "Obraz okładki",
+      "flier": "Obraz ulotki",
+      "publish": "Opublikuj",
+      "draftSaved": "Zapisano wersję roboczą — popraw pola powyżej i spróbuj opublikować ponownie."
+    },
+    "manage": {
+      "title": "Zarządzaj wydarzeniem",
+      "short": "Zarządzaj",
+      "publish": "Opublikuj",
+      "save": "Zapisz",
+      "delete": "Usuń wydarzenie",
+      "confirmDelete": "Usunąć to wydarzenie? Wersje robocze są usuwane trwale; opublikowane wydarzenia są anulowane.",
+      "published": "Wydarzenie opublikowane",
+      "view": "Zobacz wydarzenie",
+      "unpublish": "Wróć do wersji roboczej"
+    },
+    "public": {
+      "flier": "Ulotka",
+      "nearby": "Wydarzenia w pobliżu",
+      "comments": "Komentarze",
+      "mapAlt": "Mapa lokalizacji wydarzenia"
+    },
+    "portal": {
+      "back": "Wróć do wydarzeń",
+      "unavailable": "To wydarzenie nie jest publicznie dostępne."
+    }
+  },
+  "repost": {
+    "title": "Udostępnij ponownie",
+    "submit": "Udostępnij ponownie",
+    "placeholder": "Dodaj komentarz (opcjonalnie)...",
+    "success": "Udostępniono ponownie"
   }
 }

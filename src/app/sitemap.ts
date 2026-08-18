@@ -169,5 +169,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error fetching published projects for sitemap:', error)
   }
 
+  // Published events (Phase 8): /{locale}/event/{publicUrl}
+  try {
+    const publishedEvents = await prisma.event.findMany({
+      where: { status: 'PUBLISHED', visibility: 'PUBLIC' },
+      select: { publicUrl: true, updatedAt: true }
+    })
+    for (const event of publishedEvents) {
+      sitemapEntries.push({
+        url: `${siteUrl}/${defaultLocale}/event/${event.publicUrl}`,
+        lastModified: event.updatedAt
+      })
+    }
+  } catch (error) {
+    console.error('Error fetching published events for sitemap:', error)
+  }
+
   return sitemapEntries
 }

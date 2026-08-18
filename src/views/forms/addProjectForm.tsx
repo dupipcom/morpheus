@@ -1,12 +1,15 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import useSWR from 'swr'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { X } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
+import { jsonFetcher } from '@/lib/utils/utils'
 
 /**
  * Create project dialog (Phase 5). Creator becomes OWNER; the project starts
@@ -31,6 +34,16 @@ export const AddProjectForm = ({
   const [coverDocumentId, setCoverDocumentId] = useState('')
   const [links, setLinks] = useState<Array<{ label: string; url: string }>>([])
   const [supportUrl, setSupportUrl] = useState('')
+  // Phase 7: org ownership (Me / orgs where the viewer is MANAGER+)
+  const [ownerOrgId, setOwnerOrgId] = useState('')
+  const { data: orgsData } = useSWR<{ orgs: Array<{ id: string; name: string; username: string }> }>(
+    open ? '/api/v1/orgs' : null,
+    jsonFetcher,
+    { revalidateOnFocus: false }
+  )
+  const orgs = (orgsData?.orgs || []).filter((o: any) =>
+    ['OWNER', 'ADMIN', 'MANAGER'].includes(o.viewerRole)
+  )
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -42,6 +55,7 @@ export const AddProjectForm = ({
       setCoverDocumentId('')
       setLinks([])
       setSupportUrl('')
+      setOwnerOrgId('')
       setIsSubmitting(false)
       setError(null)
     }
@@ -66,7 +80,8 @@ export const AddProjectForm = ({
           photoDocumentId: photoDocumentId.trim() || null,
           coverDocumentId: coverDocumentId.trim() || null,
           links: links.filter((l) => l.label.trim() && l.url.trim()),
-          supportUrl: supportUrl.trim() || null
+          supportUrl: supportUrl.trim() || null,
+          ...(ownerOrgId ? { ownerType: 'ORG', orgId: ownerOrgId } : {})
         })
       })
       if (!res.ok) {
@@ -89,6 +104,22 @@ export const AddProjectForm = ({
           <DialogTitle>{t('project.create', { defaultValue: 'New project' })}</DialogTitle>
         </DialogHeader>
         <div className="space-y-3 overflow-y-auto flex-1 pr-1">
+          {orgs.length > 0 && (
+            <div>
+              <Label htmlFor="project-owner">{t('project.ownerLabel', { defaultValue: 'Owner' })}</Label>
+              <Select value={ownerOrgId} onValueChange={setOwnerOrgId}>
+                <SelectTrigger id="project-owner" className="w-full">
+                  <SelectValue placeholder={t('project.ownerMe', { defaultValue: 'Me' })} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">{t('project.ownerMe', { defaultValue: 'Me' })}</SelectItem>
+                  {orgs.map((o) => (
+                    <SelectItem key={o.id} value={o.id}>@{o.username}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div>
             <Label htmlFor="project-name">{t('project.nameLabel', { defaultValue: 'Name' })}</Label>
             <Input

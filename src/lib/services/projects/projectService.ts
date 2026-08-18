@@ -49,7 +49,7 @@ export async function generateProjectUsername(name: string): Promise<string> {
 export async function createProject(input: CreateProjectInput) {
   const {
     userInternalId, name, bio, photoDocumentId, coverDocumentId,
-    links, supportUrl, collaborators
+    links, supportUrl, collaborators, ownerType, orgId
   } = input
 
   const username = await generateProjectUsername(name)
@@ -65,6 +65,8 @@ export async function createProject(input: CreateProjectInput) {
       supportUrl: supportUrl ?? null,
       publicVisible: false,
       spotlight: false,
+      ownerType: ownerType === 'ORG' ? 'ORG' : 'USER',
+      orgId: ownerType === 'ORG' ? orgId ?? null : null,
       createdByUserId: userInternalId,
       users: [
         { userId: userInternalId, role: 'OWNER' as const },

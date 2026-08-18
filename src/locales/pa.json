@@ -860,7 +860,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "ਟਿੱਪਣੀ ਪੋਸਟ ਕਰੋ",
+    "signIn": "ਗੱਲਬਾਤ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।"
   },
   "invest": {
     "notice": "ਇਸ ਐਪ ਵਿੱਚ ਇਸ ਸਮੇਂ ਕੋਈ ਅਸਲ ਪੈਸਾ ਪ੍ਰਬੰਧਿਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ। Dupip Invest ਅਜੇ ਵੀ ਯੋਜਨਾ ਦੇ ਪੜਾਅ ਵਿੱਚ ਹੈ। ਇਹ ਸਿਰਫ ਪ੍ਰਦਰਸ਼ਨ ਉਦੇਸ਼ਾਂ ਲਈ ਇੱਕ ਟੈਸਟ ਵਾਤਾਵਰਣ ਹੈ।",
@@ -1221,5 +1223,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "ਕਵਰ ਚਿੱਤਰ",
+      "flier": "ਫਲਾਇਰ ਚਿੱਤਰ",
+      "publish": "ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ",
+      "draftSaved": "ਇੱਕ ਡਰਾਫਟ ਸੁਰੱਖਿਅਤ ਹੋ ਗਿਆ — ਉੱਪਰਲੇ ਖੇਤਰ ਠੀਕ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    },
+    "manage": {
+      "title": "ਇਵੈਂਟ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ",
+      "short": "ਪ੍ਰਬੰਧ ਕਰੋ",
+      "publish": "ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ",
+      "save": "ਸੰਭਾਲੋ",
+      "delete": "ਇਵੈਂਟ ਮਿਟਾਓ",
+      "confirmDelete": "ਇਹ ਇਵੈਂਟ ਮਿਟਾਉਣਾ ਹੈ? ਡਰਾਫਟ ਪੱਕੇ ਤੌਰ 'ਤੇ ਹਟਾਏ ਜਾਂਦੇ ਹਨ; ਪ੍ਰਕਾਸ਼ਿਤ ਇਵੈਂਟ ਰੱਦ ਕੀਤੇ ਜਾਂਦੇ ਹਨ।",
+      "published": "ਇਵੈਂਟ ਪ੍ਰਕਾਸ਼ਿਤ ਹੋਇਆ",
+      "view": "ਇਵੈਂਟ ਦੇਖੋ",
+      "unpublish": "ਡਰਾਫਟ 'ਤੇ ਵਾਪਸ ਜਾਓ"
+    },
+    "public": {
+      "flier": "ਫਲਾਇਰ",
+      "nearby": "ਨੇੜਲੇ ਇਵੈਂਟ",
+      "comments": "ਟਿੱਪਣੀਆਂ",
+      "mapAlt": "ਇਵੈਂਟ ਸਥਾਨ ਦਾ ਨਕਸ਼ਾ"
+    },
+    "portal": {
+      "back": "ਇਵੈਂਟਾਂ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+      "unavailable": "ਇਹ ਇਵੈਂਟ ਜਨਤਕ ਤੌਰ 'ਤੇ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।"
+    }
+  },
+  "repost": {
+    "title": "ਦੁਬਾਰਾ ਪੋਸਟ ਕਰੋ",
+    "submit": "ਦੁਬਾਰਾ ਪੋਸਟ ਕਰੋ",
+    "placeholder": "ਇੱਕ ਟਿੱਪਣੀ ਜੋੜੋ (ਵਿਕਲਪਿਕ)...",
+    "success": "ਸਫਲਤਾਪੂਰਵਕ ਦੁਬਾਰਾ ਪੋਸਟ ਕੀਤਾ"
   }
 }

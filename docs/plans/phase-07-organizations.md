@@ -114,8 +114,12 @@ Phase 3's `ownershipService` is extended in one place:
 ```
 getViewerRole(viewer, kind, entity):
   entity.ownerType === 'ORG'
-    ? mapOrgRole(await orgMembership(viewer, entity.orgId))   // OWNER/ADMIN → OWNER, MANAGER → MANAGER, MEMBER → COLLABORATOR, STAFF → STAFF
+    ? (steward(userRefs) ? OWNER : mapOrgRole(await orgMembership(viewer, entity.orgId)))
     : existing user/UserReference logic
+
+mapOrgRole: OWNER/ADMIN → OWNER, MANAGER → MANAGER, MEMBER → MEMBER (view-only; the
+acceptance criteria below supersede the earlier MEMBER→COLLABORATOR note), STAFF → STAFF.
+The embedded `users` OWNER stays the steward and keeps OWNER access even after leaving the org.
 ```
 
 Every route that already calls `assertCan` inherits org support with no edits — that is the payoff

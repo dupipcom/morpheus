@@ -122,15 +122,16 @@ export async function DELETE(
       }
     }
 
-    // Task/Job/List/Note hold documentIds as plain scalar arrays without an
-    // onDelete cascade, and the generated client exposes only set/push on
+    // Task/Job/List/Note/Event hold documentIds as plain scalar arrays without
+    // an onDelete cascade, and the generated client exposes only set/push on
     // those arrays, so pull the id out by read-modify-write before deleting
     // the row.
-    const [taskRows, jobRows, listRows, noteRows] = await Promise.all([
+    const [taskRows, jobRows, listRows, noteRows, eventRows] = await Promise.all([
       prisma.task.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } }),
       prisma.job.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } }),
       prisma.list.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } }),
-      prisma.note.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } })
+      prisma.note.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } }),
+      prisma.event.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } })
     ])
 
     const withoutDocumentId = (ids: string[]) => ids.filter((id) => id !== documentId)
@@ -156,6 +157,12 @@ export async function DELETE(
       ),
       ...noteRows.map((row) =>
         prisma.note.update({
+          where: { id: row.id },
+          data: { documentIds: { set: withoutDocumentId(row.documentIds) } }
+        })
+      ),
+      ...eventRows.map((row) =>
+        prisma.event.update({
           where: { id: row.id },
           data: { documentIds: { set: withoutDocumentId(row.documentIds) } }
         })
