@@ -15,33 +15,56 @@
  *
  * Idempotent: keyed on "a LifeEvent with this _id already exists".
  *
+ * NOTE: legacy Event documents predate the `publicUrl` field, which the
+ * current Prisma client declares non-nullable — typed reads would throw
+ * P2032. Step 1 therefore reads raw documents via $runCommandRaw; the rows
+ * are deleted at the end of this migration, so no backfill is needed.
+ *
  * Run with: node src/migrations/0027-split-life-events.js
  */
 
 const { PrismaClient } = require('../../generated/prisma')
 const prisma = new PrismaClient()
 
+/** Raw BSON ObjectId (or string / { $oid }) → hex string. */
+function toObjectIdString(value) {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value?.$oid === 'string') return value.$oid
+  const str = String(value)
+  return str
+}
+
+/** Raw BSON date (Date instance, string, number or { $date }) → JS Date. */
+function toDate(value) {
+  if (value instanceof Date) return value
+  if (typeof value === 'string' || typeof value === 'number') return new Date(value)
+  if (value?.$date) return new Date(value.$date)
+  return new Date()
+}
+
 async function main() {
-  const events = await prisma.event.findMany({ select: { id: true } })
+  const rawResult = await prisma.$runCommandRaw({ find: 'Event', filter: {}, limit: 1000 })
+  const events = rawResult?.cursor?.firstBatch ?? []
   console.log(`Found ${events.length} legacy life events`)
 
   // 1. Copy into LifeEvent preserving _id
   let copied = 0
-  for (const event of events) {
-    const existing = await prisma.lifeEvent.findUnique({ where: { id: event.id }, select: { id: true } })
+  for (const doc of events) {
+    const id = toObjectIdString(doc._id)
+    const existing = await prisma.lifeEvent.findUnique({ where: { id }, select: { id: true } })
     if (existing) continue
-    const source = await prisma.event.findUnique({ where: { id: event.id } })
     await prisma.lifeEvent.create({
       data: {
-        id: source.id,
-        name: source.name,
-        quality: source.quality,
-        visibility: source.visibility,
-        userId: source.userId,
-        noteIds: source.noteIds || [],
-        documentIds: source.documentIds || [],
-        createdAt: source.createdAt,
-        updatedAt: source.updatedAt
+        id,
+        name: doc.name ?? '',
+        quality: typeof doc.quality === 'number' ? doc.quality : null,
+        visibility: doc.visibility ?? 'PRIVATE',
+        userId: toObjectIdString(doc.userId),
+        noteIds: Array.isArray(doc.noteIds) ? doc.noteIds.map(toObjectIdString) : [],
+        documentIds: Array.isArray(doc.documentIds) ? doc.documentIds.map(toObjectIdString) : [],
+        createdAt: toDate(doc.createdAt),
+        updatedAt: toDate(doc.updatedAt)
       }
     })
     copied++
