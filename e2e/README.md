@@ -13,6 +13,28 @@ Two specs, run serially against one app server + one database:
   users + sessions; the tests place a Backend-API session token in the
   `__session` cookie). Production instances reject sessions for unverified
   test users.
+- **A MongoDB replica set.** Prisma opens a transaction for any nested write,
+  so a standalone `mongod` fails with `P2031` and no `User` row is ever
+  created — every request then 404s with `User not found`. A single node is
+  enough. If your local Docker Mongo is standalone, restart it as a one-node
+  replica set:
+
+  ```bash
+  docker run -d --name mongo -p 27017:27017 mongo:7 --replSet rs0 --bind_ip_all
+  docker exec mongo mongosh --quiet --eval \
+    'rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "localhost:27017" }] })'
+  ```
+
+  and point `DATABASE_URL` at it **with the `replicaSet` parameter** — without
+  it the driver still sees a standalone topology:
+
+  ```
+  DATABASE_URL=mongodb://localhost:27017/dpip?replicaSet=rs0
+  ```
+
+  This is also what CI does, so the ledger takes the same single interactive
+  `prisma.$transaction` path as production rather than the standalone
+  sequential fallback.
 - A database with the Phase 5–8 schema pushed. CI starts from a fresh Mongo
   container, so `npx prisma db push` alone is enough there — the 0021–0028
   data migrations are no-ops on an empty DB. Local runs reuse your dev DB;

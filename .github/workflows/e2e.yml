@@ -5,13 +5,23 @@ name: E2E
 #   CLERK_SECRET_KEY                 — Clerk backend key (DEVELOPMENT instance)
 #   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY — the app's publishable key
 #
-# DB: a fresh MongoDB container per run — `prisma db push` alone reproduces
-# the current schema; the 0021–0028 data migrations are all no-ops on an empty
-# DB (their backfills/repairs only touch legacy rows, which never exist here),
-# so they are not run. The harness self-seeds the SYSTEM:treasury wallet.
-# The ledger runs its standalone-Mongo sequential fallback here (dual-mode,
-# Phase 6): overspend protection still holds via the compare-and-set debit;
-# the interactive-transaction path is exercised on the Atlas replica set.
+# DB: a fresh MongoDB container per run, started as a SINGLE-NODE REPLICA SET.
+# A standalone mongod is not enough: Prisma wraps nested writes in a
+# transaction, so even `prisma.user.create({ include: { profiles: true } })` in
+# `ensureUserAndProfile` fails with P2031 ("requires your MongoDB server to be
+# run as a replica set") — no User row is ever created and every downstream
+# request 404s with "User not found". `services:` cannot pass `--replSet` to
+# the container's command, so Mongo is started with `docker run` instead.
+#
+# Running a replica set also means CI exercises the SAME ledger path as
+# production (single interactive `prisma.$transaction`) rather than the
+# standalone sequential fallback, so the dual-mode deviation is covered where
+# it actually ships.
+#
+# `prisma db push` alone reproduces the current schema; the 0021–0028 data
+# migrations are all no-ops on an empty DB (their backfills/repairs only touch
+# legacy rows, which never exist here), so they are not run. The harness
+# self-seeds the SYSTEM:treasury wallet.
 
 on:
   # Every PR gets E2E — the stacked phase PRs target each other, not dev;
@@ -24,28 +34,84 @@ concurrency:
   group: e2e-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  MONGO_IMAGE: mongo:7
+  MONGO_REPLICA_SET: rs0
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    services:
-      mongodb:
-        image: mongo:7
-        ports: ['27017:27017']
-        options: >-
-          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
+    # Clerk secrets are not exposed to pull requests from forks, so the suite
+    # cannot run there. Skip instead of failing red on every fork PR.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
     env:
-      DATABASE_URL: mongodb://localhost:27017/e2e
+      # `replicaSet=rs0` makes the driver do topology discovery and mark the
+      # deployment transaction-capable; without it Prisma still sees a
+      # standalone topology and refuses to open a transaction.
+      DATABASE_URL: mongodb://localhost:27017/e2e?replicaSet=rs0
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
       CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
       INTERNAL_FETCH_SECRET: e2e-internal-secret
       NEXT_PUBLIC_BASE_URL: http://localhost:3000
+      # The replica set is real here, so the ledger must take the transactional
+      # path — never silently degrade to the dev fallback in CI.
+      LEDGER_REQUIRE_TRANSACTIONS: 'true'
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check required secrets
+        run: |
+          missing=()
+          [ -n "${CLERK_SECRET_KEY}" ] || missing+=(CLERK_SECRET_KEY)
+          [ -n "${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}" ] || missing+=(NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Missing repo secrets: ${missing[*]}. The E2E harness creates real users on a Clerk DEVELOPMENT instance and cannot run without them."
+            exit 1
+          fi
+
+      - name: Start MongoDB (single-node replica set)
+        run: |
+          set -euo pipefail
+          docker run -d --name mongo -p 27017:27017 "$MONGO_IMAGE" \
+            --replSet "$MONGO_REPLICA_SET" --bind_ip_all
+
+          echo "Waiting for mongod to accept connections..."
+          for i in $(seq 1 60); do
+            if docker exec mongo mongosh --quiet --eval 'db.adminCommand({ ping: 1 })' >/dev/null 2>&1; then
+              break
+            fi
+            if [ "$i" -eq 60 ]; then
+              echo "::error::mongod did not become reachable"; docker logs mongo; exit 1
+            fi
+            sleep 2
+          done
+
+          # `host: localhost:27017` is what the driver on the runner is told to
+          # connect to during topology discovery, and the container publishes
+          # that port on the host — so the advertised member address is
+          # reachable from both inside and outside the container.
+          docker exec mongo mongosh --quiet --eval "
+            try {
+              rs.status()
+            } catch (e) {
+              rs.initiate({ _id: '$MONGO_REPLICA_SET', members: [{ _id: 0, host: 'localhost:27017' }] })
+            }"
+
+          echo "Waiting for PRIMARY..."
+          for i in $(seq 1 60); do
+            if docker exec mongo mongosh --quiet --eval 'db.hello().isWritablePrimary' 2>/dev/null | grep -q true; then
+              echo "Replica set $MONGO_REPLICA_SET is PRIMARY"
+              break
+            fi
+            if [ "$i" -eq 60 ]; then
+              echo "::error::replica set never reached PRIMARY"; docker logs mongo; exit 1
+            fi
+            sleep 2
+          done
 
       - uses: actions/setup-node@v4
         with:
@@ -61,11 +127,45 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      # Fails in 2 seconds with a clear message instead of burying the run in
+      # hundreds of P2031 stack traces. Mirrors `supportsTransactions()`.
+      - name: Verify the database supports transactions
+        run: |
+          node -e "
+            const { PrismaClient } = require('./generated/prisma/client')
+            const prisma = new PrismaClient()
+            prisma.\$runCommandRaw({ hello: 1 })
+              .then(async (hello) => {
+                await prisma.\$disconnect()
+                if (!hello.setName) {
+                  console.error('DATABASE_URL does not point at a replica set (hello.setName is empty).')
+                  console.error('Prisma needs transactions for nested writes (P2031); the suite cannot pass.')
+                  process.exit(1)
+                }
+                console.log('Replica set OK:', hello.setName, '| primary:', hello.isWritablePrimary)
+              })
+              .catch((error) => { console.error(error); process.exit(1) })
+          "
+
       - name: Push schema (indexes/collections)
         run: npx prisma db push --skip-generate
 
+      - name: Cache Next build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-next-${{ hashFiles('package-lock.json') }}-
+
       - name: Build
         run: npm run build
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -73,10 +173,16 @@ jobs:
       - name: Run E2E tests
         run: npx playwright test
 
+      - name: Dump MongoDB logs on failure
+        if: failure()
+        run: docker logs mongo || true
+
       - name: Upload report on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: |
+            playwright-report/
+            test-results/
           retention-days: 7

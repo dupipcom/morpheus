@@ -30,24 +30,26 @@ export async function ensureUserAndProfile(
     })
 
     if (!user) {
+      // NB: no `include` on the create. Prisma runs a create-with-nested-read
+      // inside a transaction, which standalone MongoDB rejects (P2031) — that
+      // would break local dev and CI on a non-replica-set deployment. Create
+      // plainly, then re-read with the relation.
       try {
-        user = await prisma.user.create({
+        await prisma.user.create({
           data: {
             userId: clerkUserId,
             settings: { currency: null, speed: null } as any,
           },
-          include: { profiles: true },
         })
       } catch (error: any) {
-        if (error?.code === 'P2002') {
-          user = await prisma.user.findUnique({
-            where: { userId: clerkUserId },
-            include: { profiles: true },
-          })
-        } else {
-          throw error
-        }
+        // P2002: created by a concurrent request — the re-read below picks it up.
+        if (error?.code !== 'P2002') throw error
       }
+
+      user = await prisma.user.findUnique({
+        where: { userId: clerkUserId },
+        include: { profiles: true },
+      })
     }
 
     if (!user) return
