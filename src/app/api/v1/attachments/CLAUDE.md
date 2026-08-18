@@ -21,9 +21,10 @@ are forwarded so video seeking works (206 responses).
 Authorization:
 - `Document.visibility === PUBLIC` → anyone (including anonymous).
 - Otherwise the viewer must be the owner, or be linked to the document via a job (worker or
-  list member), task (list member), list (member), or note (author or public note). Linked
-  checks query the forward `documentIds` arrays, so rows created before the Document
-  back-references were populated still authorize correctly.
+  list member), task (list member), list (member), note (author or public note), or event
+  (owner or PUBLIC-visibility event). Linked checks query the forward `documentIds` arrays,
+  so rows created before the Document back-references were populated still authorize
+  correctly.
 
 Headers: `X-Content-Type-Options: nosniff`, `Accept-Ranges: bytes`, private caching for
 private documents; `Content-Disposition: attachment` for anything that is not
@@ -50,9 +51,9 @@ location?, entityType, entityId, role? }`.
   (image/*, video/*, application/pdf) and the sniffed extension must be in the kind's
   allowlist. Mismatch or unrecognized → object deleted, 400
   `{ error: 'File content does not match its type' }`. This also rejects disguised HTML/SVG.
-- **Ownership**: `task`/`list`/`job`/`note` → entity must exist (404) and the caller needs
-  `edit` via `ownership/assertCan` (403 otherwise). `user` → only when `entityId` is the
-  caller's own internal id (self-owned CVs).
+- **Ownership**: `task`/`list`/`job`/`note`/`event` → entity must exist (404) and the caller
+  needs `edit` via `ownership/assertCan` (403 otherwise; for events the OWNER role satisfies
+  `edit`). `user` → only when `entityId` is the caller's own internal id (self-owned CVs).
 - **Document row**: `fileUrl` = public URL of the key, `fileName` sanitized with
   `sanitizeText`, `fileSize` from HEAD, `fileFormat` = key extension, `mimeType` = sniffed,
   `kind` from body, `width`/`height`/`fileDuration`/`location` when provided (non-negative
@@ -60,7 +61,9 @@ location?, entityType, entityId, role? }`.
 - **Linking** (relation names verified against the schema): `task` → push into
   `Task.documentIds` (Document side kept in sync via `Document.taskIds`); `job` → push into
   `Job.documentIds` (Document side via `Document.jobIds`); `list` → `List.documentIds`;
-  `note` → `Note.documentIds`; `user` → no linking. Returns `{ document }`.
+  `note` → `Note.documentIds`; `event` → `Event.documentIds` (Document side via
+  `Document.eventIds` — Phase 8 event covers/fliers); `user` → no linking. Returns
+  `{ document }`.
 - **`role`** (`cover`/`flier`/`evidence`/`inline`/`cv`) is validated but not persisted: the
   `Document` model has no role column. CVs are distinguished by `kind='cv'`; other roles are
   resolved contextually by the entity that references the document (Phase 8 event covers).
@@ -73,8 +76,8 @@ newest first, `limit` ≤ 50. Returns `{ documents }`.
 ## DELETE `/attachments/[documentId]`
 Owner-only (`Document.userId` === caller, else 403). Storage object is deleted first
 (deriving the key from `fileUrl` by stripping `STORAGE_PUBLIC_BASE_URL`; best-effort — a
-storage failure logs and does not block). `Task`/`Job`/`List`/`Note` `documentIds` arrays
-have no onDelete cascade (plain MongoDB scalar arrays) and the generated client only
+storage failure logs and does not block). `Task`/`Job`/`List`/`Note`/`Event` `documentIds`
+arrays have no onDelete cascade (plain MongoDB scalar arrays) and the generated client only
 exposes `set`/`push` on them, so the id is removed from each affected row by
 read-modify-write (`set` of the filtered array) inside a transaction that ends with the
 row delete. Returns `{ message: 'Attachment deleted' }`.
@@ -85,7 +88,7 @@ row delete. Returns `{ message: 'Attachment deleted' }`.
 - `src/lib/services/errors` (`ApiError`/`toResponse`), `src/lib/services/ownership`
   (`assertCan`), `src/lib/utils/sanitize` (`sanitizeText`)
 - `@aws-sdk/client-s3`, `@aws-sdk/s3-request-presigner`, `file-type`
-- Prisma models: `Document`, `Task`, `Job`, `List`, `Note`, `User`
+- Prisma models: `Document`, `Task`, `Job`, `List`, `Note`, `Event`, `User`
 
 ## Note
 Serving safety lives in the storage layer (media-only origin, sniffed content types,

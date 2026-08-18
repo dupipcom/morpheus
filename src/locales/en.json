@@ -892,7 +892,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Post comment",
+    "signIn": "Sign in to join the conversation."
   },
   "invest": {
     "notice": "There is no actual money currently managed in this app. Dupip Invest is still in planning phase. This is just a playground for demonstration purposes.",
@@ -1310,5 +1312,72 @@
     "statsMembers": "members",
     "statsLists": "published lists",
     "statsProjects": "projects"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Discover events and create your own",
+    "create": "New event",
+    "discover": "Discover",
+    "attending": "Going / Interested",
+    "mine": "Mine / Org",
+    "empty": "No events yet.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Event name...",
+      "summary": "Summary (one-liner)",
+      "description": "Description",
+      "startsAt": "Starts at",
+      "endsAt": "Ends at (optional)",
+      "timezone": "Timezone (IANA)",
+      "online": "Online event",
+      "onlineUrl": "Online URL",
+      "venue": "Venue name",
+      "capacity": "Capacity (optional)",
+      "visibility": "Visibility",
+      "owner": "Owner",
+      "ownerMe": "Me",
+      "createButton": "Create draft",
+      "cancel": "Cancel",
+      "cover": "Cover image",
+      "flier": "Flier image",
+      "publish": "Publish",
+      "draftSaved": "A draft was saved — fix the fields above and try publishing again."
+    },
+    "public": {
+      "online": "Online event",
+      "going": "Going",
+      "interested": "Interested",
+      "like": "Like",
+      "buyPlaceholder": "Buy / Reserve (soon)",
+      "hostedBy": "Hosted by",
+      "about": "About",
+      "getInvolved": "Get involved",
+      "projects": "Projects",
+      "flier": "Flier",
+      "nearby": "Nearby events",
+      "comments": "Comments",
+      "mapAlt": "Event location map"
+    },
+    "manage": {
+      "title": "Manage event",
+      "short": "Manage",
+      "publish": "Publish",
+      "save": "Save",
+      "delete": "Delete event",
+      "confirmDelete": "Delete this event? Drafts are removed permanently; published events are cancelled.",
+      "published": "Event published",
+      "view": "View event",
+      "unpublish": "Return to draft"
+    },
+    "portal": {
+      "back": "Back to events",
+      "unavailable": "This event is not publicly available."
+    }
+  },
+  "repost": {
+    "title": "Repost",
+    "submit": "Repost",
+    "placeholder": "Add a comment (optional)...",
+    "success": "Reposted successfully"
   }
 }

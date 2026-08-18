@@ -297,11 +297,19 @@ export async function POST(request: NextRequest) {
       repostedListId
     } = body as Record<string, unknown>
 
-    if (typeof content !== 'string' || !content.trim()) {
+    // Reposts: content may be empty when the note carries references
+    // (eventIds/listIds/taskIds/profileIds) — a pure reference share.
+    const hasReferences =
+      (Array.isArray(profileIds) && profileIds.length > 0) ||
+      (Array.isArray(listIds) && listIds.length > 0) ||
+      (Array.isArray(taskIds) && taskIds.length > 0) ||
+      (Array.isArray(eventIds) && eventIds.length > 0)
+
+    if ((typeof content !== 'string' || !content.trim()) && !hasReferences) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
     }
 
-    const sanitizedContent = sanitizeText(content)
+    const sanitizedContent = typeof content === 'string' ? sanitizeText(content) : ''
 
     const user = await prisma.user.findUnique({
       where: { userId }

@@ -78,11 +78,14 @@ export async function resolveRecipient(target: string): Promise<{
 }> {
   const trimmed = target.trim()
 
-  // Direct wallet id
-  const byId = await prisma.wallet.findUnique({
-    where: { id: trimmed },
-    select: { id: true, userId: true }
-  })
+  // Direct wallet id (guarded: Prisma throws on malformed ObjectIds, e.g. @handles)
+  const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i
+  const byId = OBJECT_ID_PATTERN.test(trimmed)
+    ? await prisma.wallet.findUnique({
+        where: { id: trimmed },
+        select: { id: true, userId: true }
+      })
+    : null
   if (byId) {
     const owner = await prisma.user.findUnique({
       where: { id: byId.userId },

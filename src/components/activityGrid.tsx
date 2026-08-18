@@ -24,6 +24,8 @@ interface ActivityGridProps {
   renderExtras?: (item: ActivityItem) => ReactNode
   /** Edit hand-off to the Write composer (replaces the inline edit popover) */
   onEditNote?: (item: ActivityItem) => void
+  /** Repost hand-off (opens the RepostDialog in the parent view) */
+  onRepost?: (item: ActivityItem) => void
   className?: string
 }
 
@@ -45,6 +47,7 @@ export function ActivityGrid({
   isHighlighted,
   renderExtras,
   onEditNote,
+  onRepost,
   className,
 }: ActivityGridProps) {
   const { t } = useI18n()
@@ -79,6 +82,7 @@ export function ActivityGrid({
             onNoteUpdated={onNoteUpdated}
             isHighlighted={isHighlighted?.(item) ?? false}
             onEditNote={onEditNote}
+            onRepost={onRepost}
           />
           {renderExtras?.(item)}
         </div>

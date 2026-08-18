@@ -859,7 +859,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Argitaratu iruzkina",
+    "signIn": "Hasi saioa elkarrizketan parte hartzeko."
   },
   "invest": {
     "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da.",
@@ -1220,5 +1222,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "Azaleko irudia",
+      "flier": "Esku-orriaren irudia",
+      "publish": "Argitaratu",
+      "draftSaved": "Zirriborroa gorde da — zuzendu goiko eremuak eta saiatu berriro argitaratzen."
+    },
+    "manage": {
+      "title": "Kudeatu ekitaldia",
+      "short": "Kudeatu",
+      "publish": "Argitaratu",
+      "save": "Gorde",
+      "delete": "Ezabatu ekitaldia",
+      "confirmDelete": "Ekitaldi hau ezabatu? Zirriborroak betiko kentzen dira; argitaratutako ekitaldiak bertan behera uzten dira.",
+      "published": "Ekitaldia argitaratuta",
+      "view": "Ikusi ekitaldia",
+      "unpublish": "Itzuli zirriborrora"
+    },
+    "public": {
+      "flier": "Esku-orria",
+      "nearby": "Gertuko ekitaldiak",
+      "comments": "Iruzkinak",
+      "mapAlt": "Ekitaldiaren kokapen-mapa"
+    },
+    "portal": {
+      "back": "Itzuli ekitaldietara",
+      "unavailable": "Ekitaldi hau ez dago publikoki eskuragarri."
+    }
+  },
+  "repost": {
+    "title": "Berriro partekatu",
+    "submit": "Berriro partekatu",
+    "placeholder": "Gehitu iruzkin bat (aukerakoa)...",
+    "success": "Behar bezala partekatu da berriro"
   }
 }

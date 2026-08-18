@@ -25,7 +25,7 @@ const singleDaySelect = {
   mood: true,
   personIds: true,
   thingIds: true,
-  eventIds: true,
+  lifeEventIds: true,
   analysis: true,
   ticker: true
 }
@@ -161,7 +161,7 @@ export async function POST(req: NextRequest) {
 
       if (personIds !== undefined) updateData.personIds = personIds
       if (thingIds !== undefined) updateData.thingIds = thingIds
-      if (eventIds !== undefined) updateData.eventIds = eventIds
+      if (eventIds !== undefined) updateData.lifeEventIds = eventIds
 
       if (Object.keys(analysisData).length > 0) {
         const existingAnalysis = (existingDay.analysis || {}) as Record<string, unknown>
@@ -189,7 +189,7 @@ export async function POST(req: NextRequest) {
           mood: initialMood,
           personIds: personIds || [],
           thingIds: thingIds || [],
-          eventIds: eventIds || [],
+          lifeEventIds: eventIds || [],
           analysis: analysisData,
           average: calculateMoodAverage(initialMood),
           balance: userBalance,
