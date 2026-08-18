@@ -839,6 +839,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             interestedCount: item.interestedCount
           }}
           locale={locale}
+          openInNewTab
         />
         {onRepost && (
           <Button

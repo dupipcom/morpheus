@@ -19,13 +19,16 @@ export const EventCard = ({
   locale,
   status,
   onOpen,
-  onManage
+  onManage,
+  openInNewTab = false
 }: {
   event: EventSummary
   locale: string
   status?: string
   onOpen?: () => void
   onManage?: () => void
+  /** Open the public event page in a new tab (used by the activity feed). */
+  openInNewTab?: boolean
 }) => {
   const { t } = useI18n()
   const startsAt = event.startsAt ? new Date(event.startsAt) : null
@@ -123,7 +126,11 @@ export const EventCard = ({
 
   return (
     <div className="relative h-full">
-      <Link href={`/${locale}/event/${event.publicUrl}`} className="block h-full">
+      <Link
+        href={`/${locale}/event/${event.publicUrl}`}
+        className="block h-full"
+        {...(openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      >
         {cardInner}
       </Link>
       {manageOverlay}
