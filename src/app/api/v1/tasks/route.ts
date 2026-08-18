@@ -131,7 +131,8 @@ export async function POST(request: NextRequest) {
 
     const {
       name, listId, rrule, dtstart, times, premium, premiumType, location,
-      categories, area, status, visibility, quality, redacted, candidateIds, localeKey
+      categories, area, status, visibility, quality, redacted, candidateIds, localeKey,
+      jobDescription, requirements, openings, applyBy
     } = body as Record<string, unknown>
 
     // Validate required fields
@@ -156,6 +157,18 @@ export async function POST(request: NextRequest) {
     }
     if (rrule !== undefined && rrule !== null && typeof rrule !== 'string') {
       return NextResponse.json({ error: 'rrule must be a string' }, { status: 400 })
+    }
+    if (jobDescription !== undefined && jobDescription !== null && typeof jobDescription !== 'string') {
+      return NextResponse.json({ error: 'jobDescription must be a string' }, { status: 400 })
+    }
+    if (requirements !== undefined && requirements !== null && typeof requirements !== 'string') {
+      return NextResponse.json({ error: 'requirements must be a string' }, { status: 400 })
+    }
+    if (openings !== undefined && openings !== null && (typeof openings !== 'number' || openings < 1)) {
+      return NextResponse.json({ error: 'openings must be a positive number' }, { status: 400 })
+    }
+    if (applyBy !== undefined && applyBy !== null && typeof applyBy !== 'string') {
+      return NextResponse.json({ error: 'applyBy must be a YYYY-MM-DD string' }, { status: 400 })
     }
 
     let parsedCandidateIds: string[] = []
@@ -194,7 +207,12 @@ export async function POST(request: NextRequest) {
         visibility: visibility as never,
         quality: typeof quality === 'number' ? quality : null,
         redacted: typeof redacted === 'boolean' ? redacted : false,
-        candidateIds: parsedCandidateIds
+        candidateIds: parsedCandidateIds,
+        // Job-post fields (Phase 5)
+        jobDescription: typeof jobDescription === 'string' ? sanitizeText(jobDescription) : null,
+        requirements: typeof requirements === 'string' ? sanitizeText(requirements) : null,
+        openings: typeof openings === 'number' && openings >= 1 ? openings : null,
+        applyBy: typeof applyBy === 'string' ? applyBy : null
       },
       include: {
         list: {

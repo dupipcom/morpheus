@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { locales, defaultLocale } from './constants'
 import { fetchAllPages, fetchAllArticles } from '@/lib/payload'
+import prisma from '@/lib/prisma'
 
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
@@ -134,6 +135,55 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch (error) {
     console.error('Error fetching posts:', error)
   }
-  
+
+  // Published lists (Phase 5): /{locale}/list/{publicUrl}
+  try {
+    const publishedLists = await prisma.list.findMany({
+      where: { publicVisible: true, visibility: 'PUBLIC' },
+      select: { publicUrl: true, updatedAt: true }
+    })
+    for (const list of publishedLists) {
+      if (!list.publicUrl) continue
+      sitemapEntries.push({
+        url: `${siteUrl}/${defaultLocale}/list/${list.publicUrl}`,
+        lastModified: list.updatedAt
+      })
+    }
+  } catch (error) {
+    console.error('Error fetching published lists for sitemap:', error)
+  }
+
+  // Published projects (Phase 5): /{locale}/p/{username}
+  try {
+    const publishedProjects = await prisma.project.findMany({
+      where: { publicVisible: true },
+      select: { username: true, updatedAt: true }
+    })
+    for (const project of publishedProjects) {
+      sitemapEntries.push({
+        url: `${siteUrl}/${defaultLocale}/p/${project.username}`,
+        lastModified: project.updatedAt
+      })
+    }
+  } catch (error) {
+    console.error('Error fetching published projects for sitemap:', error)
+  }
+
+  // Published events (Phase 8): /{locale}/event/{publicUrl}
+  try {
+    const publishedEvents = await prisma.event.findMany({
+      where: { status: 'PUBLISHED', visibility: 'PUBLIC' },
+      select: { publicUrl: true, updatedAt: true }
+    })
+    for (const event of publishedEvents) {
+      sitemapEntries.push({
+        url: `${siteUrl}/${defaultLocale}/event/${event.publicUrl}`,
+        lastModified: event.updatedAt
+      })
+    }
+  } catch (error) {
+    console.error('Error fetching published events for sitemap:', error)
+  }
+
   return sitemapEntries
 }

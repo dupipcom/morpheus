@@ -60,9 +60,11 @@ const getDefaultListId = (allTaskLists: Array<{ id: string; role?: string | null
 interface DoPageProps {
   locale: string
   listId?: string
+  /** Deep-linked task id (/app/do/list/{id}/{taskId}): shown first + highlighted */
+  taskId?: string
 }
 
-export default function DoPage({ locale, listId }: DoPageProps) {
+export default function DoPage({ locale, listId, taskId }: DoPageProps) {
   const { isLoaded, isSignedIn } = useAuth()
   const { taskLists, isLoading: listsLoading, refreshTaskLists } = useTaskLists()
   const router = useRouter()
@@ -218,6 +220,37 @@ export default function DoPage({ locale, listId }: DoPageProps) {
     }
   }, [pathname, locale, router, selectedTaskListId])
 
+  // Deep link: resolve the deeplinked task's occurrence date before the grid
+  // renders, so the date-scoped task query includes it. Falls back silently
+  // when the list/task is unknown (TaskGrid shows the plain list view).
+  useEffect(() => {
+    if (!taskId || !listId || listsLoading || taskLists.length === 0) return
+    if (!taskLists.some((l) => l.id === listId)) return
+    let cancelled = false
+    fetch(`/api/v1/tasklists/${listId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { taskList?: { tasks?: Array<{ id: string; dtstart?: string | null }> } } | null) => {
+        if (cancelled || !data?.taskList?.tasks) return
+        const task = data.taskList.tasks.find((t) => t.id === taskId)
+        if (task?.dtstart) {
+          const parsed = new Date(task.dtstart + 'T00:00:00')
+          if (!isNaN(parsed.getTime())) {
+            const normalized = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate())
+            setSelectedDate(normalized)
+            const dateString = `${normalized.getFullYear()}-${String(normalized.getMonth() + 1).padStart(2, '0')}-${String(normalized.getDate()).padStart(2, '0')}`
+            const basePath = pathname?.split('?')[0]
+            if (basePath) {
+              router.replace(`${basePath}?date=${dateString}`, { scroll: false })
+            }
+          }
+        }
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [taskId, listId, listsLoading, taskLists, pathname, router])
+
   // Form state management
   const [showAddTask, setShowAddTask] = useState(false)
   const [showAddList, setShowAddList] = useState(false)
@@ -262,6 +295,7 @@ export default function DoPage({ locale, listId }: DoPageProps) {
         <DoView
           selectedTaskListId={selectedTaskListId}
           selectedDate={selectedDate}
+          initialTaskId={taskId}
           onDateChange={handleDateChange}
           showAddTask={showAddTask}
           showAddList={showAddList}

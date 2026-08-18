@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Hozzászólás közzététele",
+    "signIn": "Jelentkezz be a beszélgetéshez való csatlakozáshoz."
   },
   "invest": {
     "notice": "Jelenleg nincs valódi pénz kezelve ebben az alkalmazásban. A Dupip Invest még a tervezési fázisban van. Ez csak egy tesztkörnyezet bemutatási célokra.",
@@ -1217,5 +1219,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "Borítókép",
+      "flier": "Szórólap képe",
+      "publish": "Közzététel",
+      "draftSaved": "Mentettünk egy piszkozatot — javítsd a fenti mezőket, és próbáld újra közzétenni."
+    },
+    "manage": {
+      "title": "Esemény kezelése",
+      "short": "Kezelés",
+      "publish": "Közzététel",
+      "save": "Mentés",
+      "delete": "Esemény törlése",
+      "confirmDelete": "Törli ezt az eseményt? A piszkozatok véglegesen törlődnek; a közzétett események lemondásra kerülnek.",
+      "published": "Esemény közzétéve",
+      "view": "Esemény megtekintése",
+      "unpublish": "Vissza piszkozatra"
+    },
+    "public": {
+      "flier": "Szórólap",
+      "nearby": "Közeli események",
+      "comments": "Hozzászólások",
+      "mapAlt": "Az esemény helyszínének térképe"
+    },
+    "portal": {
+      "back": "Vissza az eseményekhez",
+      "unavailable": "Ez az esemény nem nyilvános."
+    }
+  },
+  "repost": {
+    "title": "Újraposztolás",
+    "submit": "Újraposztolás",
+    "placeholder": "Szólj hozzá (opcionális)...",
+    "success": "Sikeresen újraposztolva"
   }
 }

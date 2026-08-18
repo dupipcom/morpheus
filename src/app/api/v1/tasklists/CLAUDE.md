@@ -7,6 +7,8 @@
 - `PUT /api/v1/tasklists/[taskListId]`
 - `DELETE /api/v1/tasklists/[taskListId]`
 - `POST /api/v1/tasklists/[taskListId]/clone`
+- `GET /api/v1/tasklists/public` (job-board discovery feed; see `public/CLAUDE.md`)
+- `GET /api/v1/tasklists/public/[publicUrl]` (public list payload; see `public/CLAUDE.md`)
 
 ## Auth
 Clerk auth; derives internal `User`.

@@ -10,6 +10,7 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { Visibility } from '@/generated/prisma'
+import { ApiError, toResponse } from '@/lib/services/errors'
 import {
   getTaskListsForUser,
   ensureDefaultTaskLists,
@@ -19,6 +20,7 @@ import {
   loadTranslationsForLocale,
   type NewTaskInput
 } from '@/lib/services/list'
+import { assertOrgManagerRole } from '@/lib/services/org'
 
 const ALLOWED_VISIBILITIES: Visibility[] = ['PUBLIC', 'PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'HIDDEN']
 
@@ -133,7 +135,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const {
       name, role, visibility, categories, area, collaborators,
       budget, budgetType, budgetPercent, budgetSourceIds,
-      bio, profilePhoto, links, tasks
+      bio, profilePhoto, links,
+      publicTagline, publicVisible, coverDocumentId, location, jobBoardEnabled, projectId,
+      ownerType, orgId,
+      tasks
     } = body as Record<string, unknown>
 
     // Validate name
@@ -220,8 +225,35 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       categoriesParsed = categories as string[]
     }
 
+    if (publicVisible !== undefined && typeof publicVisible !== 'boolean') {
+      return NextResponse.json({ error: 'publicVisible must be a boolean' }, { status: 400 })
+    }
+
+    if (jobBoardEnabled !== undefined && typeof jobBoardEnabled !== 'boolean') {
+      return NextResponse.json({ error: 'jobBoardEnabled must be a boolean' }, { status: 400 })
+    }
+
+    if (
+      projectId !== undefined &&
+      projectId !== null &&
+      (typeof projectId !== 'string' || !OBJECT_ID_PATTERN.test(projectId))
+    ) {
+      return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 })
+    }
+
+    // Phase 7: org-owned lists require MANAGER+ in the org
+    const isOrgOwned = ownerType === 'ORG'
+    if (isOrgOwned) {
+      if (typeof orgId !== 'string' || !OBJECT_ID_PATTERN.test(orgId)) {
+        return NextResponse.json({ error: 'orgId is required for org-owned lists' }, { status: 400 })
+      }
+      await assertOrgManagerRole(user.id, orgId)
+    }
+
     const taskList = await createTaskList({
       userInternalId: user.id,
+      ownerType: isOrgOwned ? 'ORG' : undefined,
+      orgId: isOrgOwned ? orgId : undefined,
       role: typeof role === 'string' ? role : null,
       name: sanitizedName,
       visibility: parsedVisibility || undefined,
@@ -235,11 +267,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       bio: typeof bio === 'string' ? sanitizeText(bio) : null,
       profilePhoto: typeof profilePhoto === 'string' ? sanitizeText(profilePhoto) : null,
       links: links && typeof links === 'object' ? links : null,
+      publicTagline: typeof publicTagline === 'string' ? sanitizeText(publicTagline) : null,
+      publicVisible: typeof publicVisible === 'boolean' ? publicVisible : undefined,
+      coverDocumentId: typeof coverDocumentId === 'string' ? coverDocumentId : null,
+      location: location && typeof location === 'object' ? location : null,
+      jobBoardEnabled: typeof jobBoardEnabled === 'boolean' ? jobBoardEnabled : undefined,
+      projectId: projectId && typeof projectId === 'string' ? projectId : null,
       tasks: parsedTasks
     })
 
     return NextResponse.json({ taskList })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     if (error instanceof Error && error.message === 'INVALID_TASK') {
       return NextResponse.json({ error: 'Each task must include a non-empty name' }, { status: 400 })
     }

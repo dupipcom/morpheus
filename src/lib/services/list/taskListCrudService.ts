@@ -10,6 +10,8 @@ import { DAILY_ACTIONS, WEEKLY_ACTIONS } from '@/app/constants'
 import { recalculateUserBudget } from '@/lib/utils/budgetUtils'
 import { buildRRuleFromLegacy, rruleFromListRole } from '@/lib/utils/rruleUtils'
 import { buildPublicSlug } from '@/lib/public/slug'
+import { ApiError } from '@/lib/services/errors'
+import { assertProjectCollaborator } from '@/lib/services/projects'
 import {
   ensureUniqueTaskIds,
   translateTemplateTasks,
@@ -219,13 +221,33 @@ export async function createTaskList(params: {
   bio?: string | null
   profilePhoto?: string | null
   links?: unknown
+  publicTagline?: string | null
+  publicVisible?: boolean
+  coverDocumentId?: string | null
+  location?: unknown
+  jobBoardEnabled?: boolean
+  projectId?: string | null
+  // Phase 7: org-owned lists
+  ownerType?: string
+  orgId?: string | null
   tasks?: NewTaskInput[]
 }): Promise<List> {
   const {
     userInternalId, role, name, visibility, categories, area, collaborators,
     budget, budgetType, budgetPercent, budgetSourceIds,
-    bio, profilePhoto, links, tasks
+    bio, profilePhoto, links,
+    publicTagline, publicVisible, coverDocumentId, location, jobBoardEnabled, projectId,
+    ownerType, orgId,
+    tasks
   } = params
+
+  // Attaching a list to a project requires the caller to be a project collaborator
+  if (projectId) {
+    await assertProjectCollaborator(userInternalId, projectId)
+  }
+  // Org-owned lists require MANAGER+ in the org (validated by the route via
+  // assertOrgManagerRole; the service just persists the owner context)
+  const isOrgOwned = ownerType === 'ORG' && !!orgId
 
   // If creating a new default list, demote the existing default to custom
   if (role && role.endsWith('.default')) {
@@ -262,6 +284,14 @@ export async function createTaskList(params: {
       bio: bio || null,
       profilePhoto: profilePhoto || null,
       links: links ?? null,
+      publicTagline: publicTagline || null,
+      publicVisible: publicVisible || false,
+      coverDocumentId: coverDocumentId || null,
+      location: location ?? null,
+      jobBoardEnabled: jobBoardEnabled || false,
+      projectId: projectId || null,
+      ownerType: isOrgOwned ? 'ORG' : 'USER',
+      orgId: isOrgOwned ? orgId : null,
       // Placeholder avoids the null-collision on the unique publicUrl index;
       // the real slug is generated right after the row exists.
       publicUrl: temporaryPublicUrl()
@@ -314,6 +344,7 @@ export async function createTaskList(params: {
  */
 export async function updateTaskList(params: {
   taskListId: string
+  viewerUserId?: string
   role?: string | null
   name?: string | null
   visibility?: string
@@ -327,11 +358,18 @@ export async function updateTaskList(params: {
   bio?: string | null
   profilePhoto?: string | null
   links?: unknown
+  publicTagline?: string | null
+  publicVisible?: boolean
+  coverDocumentId?: string | null
+  location?: unknown
+  jobBoardEnabled?: boolean
+  projectId?: string | null
 }): Promise<List> {
   const {
-    taskListId, role, name, visibility, categories, area, collaborators,
+    taskListId, viewerUserId, role, name, visibility, categories, area, collaborators,
     budget, budgetType, budgetPercent, budgetSourceIds,
-    bio, profilePhoto, links
+    bio, profilePhoto, links,
+    publicTagline, publicVisible, coverDocumentId, location, jobBoardEnabled, projectId
   } = params
 
   const existing = await prisma.list.findUnique({
@@ -339,6 +377,14 @@ export async function updateTaskList(params: {
   })
   if (!existing) {
     throw new Error('TaskList not found')
+  }
+
+  // Attaching a list to a project requires the caller to be a project collaborator
+  if (projectId && projectId !== existing.projectId) {
+    if (!viewerUserId) {
+      throw new ApiError(403, 'FORBIDDEN', 'Forbidden')
+    }
+    await assertProjectCollaborator(viewerUserId, projectId)
   }
 
   const updated = await prisma.list.update({
@@ -361,7 +407,13 @@ export async function updateTaskList(params: {
       budgetSourceIds: budgetSourceIds !== undefined ? budgetSourceIds : existing.budgetSourceIds,
       bio: bio !== undefined ? bio : existing.bio,
       profilePhoto: profilePhoto !== undefined ? profilePhoto : existing.profilePhoto,
-      links: links !== undefined ? links : existing.links
+      links: links !== undefined ? links : existing.links,
+      publicTagline: publicTagline !== undefined ? publicTagline : existing.publicTagline,
+      publicVisible: publicVisible !== undefined ? publicVisible : existing.publicVisible,
+      coverDocumentId: coverDocumentId !== undefined ? coverDocumentId : existing.coverDocumentId,
+      location: location !== undefined ? location : existing.location,
+      jobBoardEnabled: jobBoardEnabled !== undefined ? jobBoardEnabled : existing.jobBoardEnabled,
+      projectId: projectId !== undefined ? projectId : existing.projectId
     },
     include: { tasks: true }
   })

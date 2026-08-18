@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "Postita kommentaar",
+    "signIn": "Logi sisse, et vestlusega liituda."
   },
   "invest": {
     "notice": "Selles rakenduses ei hallata praegu tegelikke rahasid. Dupip Invest on veel planeerimisfaasis. See on ainult testimiskeskkond demonstratsioonieesmärgil.",
@@ -1217,5 +1219,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "Kaanepilt",
+      "flier": "Flaieri pilt",
+      "publish": "Avalda",
+      "draftSaved": "Mustand salvestati — paranda ülaltoodud väljad ja proovi uuesti avaldada."
+    },
+    "manage": {
+      "title": "Halda üritust",
+      "short": "Halda",
+      "publish": "Avalda",
+      "save": "Salvesta",
+      "delete": "Kustuta üritus",
+      "confirmDelete": "Kas kustutada see üritus? Mustandid eemaldatakse jäädavalt; avaldatud üritused tühistatakse.",
+      "published": "Üritus avaldatud",
+      "view": "Vaata üritust",
+      "unpublish": "Tagasi mustandiks"
+    },
+    "public": {
+      "flier": "Flaier",
+      "nearby": "Üritused läheduses",
+      "comments": "Kommentaarid",
+      "mapAlt": "Sündmuse asukohakaart"
+    },
+    "portal": {
+      "back": "Tagasi ürituste juurde",
+      "unavailable": "See üritus pole avalikult saadaval."
+    }
+  },
+  "repost": {
+    "title": "Jaga edasi",
+    "submit": "Jaga edasi",
+    "placeholder": "Lisa kommentaar (valikuline)...",
+    "success": "Edukalt edasi jagatud"
   }
 }

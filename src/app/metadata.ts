@@ -54,26 +54,13 @@ export async function buildMetadata({
   type?: 'website' | 'profile' | 'article' | 'list' | 'event'
   locale?: string
 } = {}): Promise<Metadata> {
-  // If middleware flagged this request as a bot without a preferred locale, force English metadata
-  let effectiveLocale = locale
-  if (typeof window === 'undefined') {
-    try {
-      // On server, try to read the cookie via headers if available in Next
-      // In App Router generateMetadata, we can't access request directly, but cookies() works.
-      // We use a dynamic import to avoid hard dependency for environments without cookies().
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { cookies: getCookies } = require('next/headers')
-      const cookieStore = await getCookies()
-      const botEn = cookieStore.get('dpip_bot_en')?.value
-      if (botEn === '1') {
-        effectiveLocale = 'en'
-      }
-    } catch (e) {
-      // no-op if headers are not available
-    }
-  }
-
-  const lang = (effectiveLocale || defaultLocale) as any
+  // NOTE: reading the middleware-set `dpip_bot_en` cookie here used to force
+  // English metadata for ambiguous bots. Removed: cookies() is a dynamic API,
+  // and on statically-optimized routes (e.g. the [[...page]] catch-all) any
+  // non-prerendered URL renders at runtime in static mode, where Next throws
+  // "Page changed from static to dynamic at runtime". Metadata now follows
+  // the URL locale.
+  const lang = (locale || defaultLocale) as any
   const translations = loadTranslationsSync(lang)
   const localizedSiteName: string = translations?.seo?.siteName || siteName
   const localizedSiteDescription: string = translations?.seo?.siteDescription || siteDescription

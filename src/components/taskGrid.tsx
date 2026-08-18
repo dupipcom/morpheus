@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useCallback, useState, useContext } from 'react'
+import React, { useMemo, useCallback, useState, useContext, useEffect, useRef } from 'react'
 import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock, Trash2 } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -25,6 +25,8 @@ interface TaskGridProps {
   date: string
   userId: string
   jobs?: any[]
+  /** Deep-linked task id (/app/do/list/{id}/{taskId}): shown first + highlighted */
+  initialTaskId?: string
   onRefresh: () => Promise<void>
   onRefreshUser: () => Promise<void>
   onRefreshTasks?: () => Promise<void>
@@ -54,6 +56,7 @@ export const TaskGrid = ({
   date,
   userId,
   jobs = [],
+  initialTaskId,
   onRefresh,
   onRefreshUser,
   onRefreshTasks,
@@ -133,10 +136,12 @@ export const TaskGrid = ({
 
   // Sort tasks by status order. Each task's status index is derived at most
   // once per pass (per-key cache), so the comparator is two Map lookups and
-  // never re-derives status mid-comparison.
+  // never re-derives status mid-comparison. A deep-linked task (initialTaskId)
+  // is boosted to the very front regardless of status.
   const sortedTasks = useMemo(() => {
     const indexCache = new Map<string, number>()
     const indexFor = (task: any): number => {
+      if (initialTaskId && task.id === initialTaskId) return -1
       const key = getTaskEntryKey(task, date)
       let idx = indexCache.get(key)
       if (idx === undefined) {
@@ -147,7 +152,23 @@ export const TaskGrid = ({
     }
 
     return [...tasks].sort((a: any, b: any) => indexFor(a) - indexFor(b))
-  }, [tasks, getEffectiveStatus, date])
+  }, [tasks, getEffectiveStatus, date, initialTaskId])
+
+  // Deep link: once the tasks for the (already resolved) date are rendered,
+  // scroll the deeplinked card into view and ring-highlight it briefly.
+  const deepLinkHandledRef = useRef(false)
+  useEffect(() => {
+    if (!initialTaskId || deepLinkHandledRef.current || tasks.length === 0) return
+    const el = document.querySelector<HTMLElement>(`[data-task-id="${CSS.escape(initialTaskId)}"]`)
+    if (!el) return
+    deepLinkHandledRef.current = true
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    el.classList.add('ring-2', 'ring-primary', 'rounded-lg')
+    const timer = setTimeout(() => {
+      el.classList.remove('ring-2', 'ring-primary', 'rounded-lg')
+    }, 2500)
+    return () => clearTimeout(timer)
+  }, [initialTaskId, tasks])
 
   // Job dialog actions
   const handleRequestSubmit = useCallback(
@@ -394,7 +415,7 @@ export const TaskGrid = ({
     const finalOptionsMenuItems = [...optionsMenuItems, ...jobMenuItems]
 
     return (
-      <div key={`task__container--${key}`} className="flex flex-col">
+      <div key={`task__container--${key}`} className="flex flex-col" data-task-id={displayTask.id}>
         <TaskItem
           key={`task__item--${key}`}
           task={displayTask}
@@ -525,6 +546,7 @@ export const TaskGrid = ({
         onOpenChange={(open) => { if (!open) setEditingTask(null) }}
         selectedTaskListId={selectedTaskList?.id}
         editTask={editingTask}
+        jobBoardEnabled={selectedTaskList?.jobBoardEnabled === true}
         onCreated={async () => {
           await onRefresh()
           if (onRefreshTasks) await onRefreshTasks()

@@ -1,142 +1,126 @@
-import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import prisma from '@/lib/prisma';
-import { generateWallet, getBalance } from '@/lib/utils/kaleido';
+/**
+ * Wallet API Route Handler (Phase 6)
+ *
+ * GET: The user's wallets with authoritative DB balance/pendingBalance first;
+ * on-chain balance only with ?includeOnChain=true (never blocks the response).
+ * POST: Create an extra wallet (max 5 USER-kind wallets; Kaleido address is
+ * lazy and non-blocking — signup/wallet creation never depends on Kaleido).
+ */
+
+import { NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
+import prisma from '@/lib/prisma'
+import { generateWallet, getBalance } from '@/lib/utils/kaleido'
+import { getOrCreateDefaultWallet, countUserWallets, USER_WALLET_CAP } from '@/lib/services/wallet'
+import { ApiError, toResponse } from '@/lib/services/errors'
 
 /**
  * GET /api/v1/wallet
- * Get all wallets for the authenticated user
  */
 export async function GET(req: Request) {
   try {
-    const { userId } = await auth();
-    
+    const { userId } = await auth()
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User not authenticated' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'User not authenticated' }, { status: 401 })
     }
+
+    const { searchParams } = new URL(req.url)
+    const includeOnChain = searchParams.get('includeOnChain') === 'true'
 
     const user = await prisma.user.findUnique({
       where: { userId },
-      include: { wallets: true },
-    });
-
+      select: { id: true }
+    })
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Fetch blockchain balances for all wallets and update database
-    const walletsWithBalances = await Promise.all(
-      user.wallets.map(async (wallet) => {
-        if (!wallet.address) {
-          return { ...wallet, blockchainBalance: 0 };
-        }
-        
-        try {
-          const blockchainBalance = await getBalance(wallet.address);
-          
-          return {
-            ...wallet,
-            blockchainBalance,
-          };
-        } catch (error) {
-          console.error(`Error fetching balance for wallet ${wallet.id}:`, error);
-          return {
-            ...wallet,
-            blockchainBalance: 0,
-          };
-        }
-      })
-    );
+    // Self-heal: pre-Phase-6 users get their default wallet on first read
+    await getOrCreateDefaultWallet(user.id)
 
-    return NextResponse.json({ wallets: walletsWithBalances });
+    const wallets = await prisma.wallet.findMany({
+      where: { userId: user.id },
+      orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }]
+    })
+
+    // On-chain balance is opt-in and never blocks the response
+    const walletsWithBalances = includeOnChain
+      ? await Promise.all(
+          wallets.map(async (wallet) => {
+            if (!wallet.address) return { ...wallet, blockchainBalance: 0 }
+            try {
+              const blockchainBalance = await getBalance(wallet.address)
+              return { ...wallet, blockchainBalance }
+            } catch (error) {
+              console.error(`Error fetching balance for wallet ${wallet.id}:`, error)
+              return { ...wallet, blockchainBalance: 0 }
+            }
+          })
+        )
+      : wallets
+
+    return NextResponse.json({ wallets: walletsWithBalances })
   } catch (error) {
-    console.error('Error fetching wallets:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    if (error instanceof ApiError) return toResponse(error)
+    console.error('Error fetching wallets:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 /**
  * POST /api/v1/wallet
- * Create a new wallet for the authenticated user
  */
 export async function POST(req: Request) {
   try {
-    const { userId } = await auth();
-    
+    const { userId } = await auth()
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User not authenticated' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'User not authenticated' }, { status: 401 })
     }
 
-    const body = await req.json();
-    const { name } = body;
+    const body = await req.json().catch(() => null)
+    const name = typeof body?.name === 'string' ? body.name : undefined
 
     const user = await prisma.user.findUnique({
       where: { userId },
-      include: { wallets: true },
-    });
-
+      select: { id: true }
+    })
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Check wallet limit (max 5 wallets per user)
-    if (user.wallets.length >= 5) {
+    const userWalletCount = await countUserWallets(user.id)
+    if (userWalletCount >= USER_WALLET_CAP) {
       return NextResponse.json(
         { error: 'Maximum wallet limit reached. You can only create up to 5 wallets.' },
         { status: 400 }
-      );
+      )
     }
 
-    // Generate a new wallet
-    const { address } = await generateWallet();
+    // The DB wallet exists immediately; the Kaleido address is lazy — an
+    // outage (or unset env) must never block wallet creation.
+    let address: string | null = null
+    try {
+      address = (await generateWallet()).address
+    } catch (error) {
+      console.error('Kaleido generateWallet failed (continuing without address):', error)
+    }
 
-    // Store the wallet in the database
     const wallet = await prisma.wallet.create({
       data: {
         userId: user.id,
         name: name || `Wallet ${new Date().toLocaleDateString()}`,
-        address: address
-      },
-    });
-
-
-    // Get blockchain balance for the new wallet
-    let blockchainBalance = 0;
-    if (wallet.address) {
-      try {
-        blockchainBalance = await getBalance(wallet.address);
-      } catch (error) {
-        console.error('Error fetching balance for new wallet:', error);
+        address,
+        kind: 'USER',
+        ownerType: 'USER',
+        balance: 0,
+        pendingBalance: 0
       }
-    }
+    })
 
-    return NextResponse.json({
-      wallet: {
-        ...wallet,
-        blockchainBalance,
-      },
-    });
+    return NextResponse.json({ wallet })
   } catch (error) {
-    console.error('Error creating wallet:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    if (error instanceof ApiError) return toResponse(error)
+    console.error('Error creating wallet:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-

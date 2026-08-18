@@ -8,6 +8,7 @@ Task list (List model) CRUD plus Job-based completion calculation. Formerly `tas
 
 - `taskListCrudService.ts` — create/read/update/delete lists + default seeding
 - `listCompletionService.ts` — completion % from ACCEPTED Jobs (not embedded completedTasks)
+- `publicListService.ts` — Phase 5 public surface: allowlist-projected list payload + job-board discovery feed
 - `helpers.ts` — pure, DB-free utilities (IDs, locale, budget parsing)
 - `types.ts` — TaskList/Task/Day/Ephemeral types + `TASK_ALLOWED_KEYS`
 - `index.ts` — barrel re-export of all public surface
@@ -20,6 +21,8 @@ Task list (List model) CRUD plus Job-based completion calculation. Formerly `tas
 | `ensureDefaultTaskLists` | Idempotent daily/weekly list + Task seeding from constants |
 | `createTaskList` / `updateTaskList` / `deleteTaskList` | List CRUD (create demotes existing default; all call `recalculateUserBudget`) |
 | `getTaskListWithTasks` | List with tasks |
+| `getPublicTaskList` | Public list payload (allowlist projection: public tasks, owner/collaborator profiles, project chip, like/viewer state); 404 unless `publicVisible` + `visibility: PUBLIC` |
+| `listPublicTaskLists` | Job-board discovery feed (`q`/`area`/`category` filters, cursor pagination, batched profiles + like counts) |
 | `generatePublicUrl` | Collision-safe public slug (via `buildPublicSlug`) |
 | `calculateListCompletionFromJobs` / `calculateYearCompletionFromJobs` / `getListCompletionData` | Completion % per date/year from unique ACCEPTED-job tasks |
 | `generateObjectId` / `ensureUniqueTaskIds` / `translateTemplateTasks` / `getUserLocale` / `getLocalizedListName` / `parseBudget` / `getUserBalanceValues` | Pure helpers |

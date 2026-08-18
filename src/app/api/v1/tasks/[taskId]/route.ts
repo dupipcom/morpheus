@@ -274,6 +274,16 @@ export async function PUT(
     if (body.visibility !== undefined) updateData.visibility = body.visibility
     if (body.quality !== undefined) updateData.quality = body.quality
     if (body.redacted !== undefined) updateData.redacted = body.redacted
+    // Job-post fields (Phase 5)
+    if (body.jobDescription !== undefined) updateData.jobDescription = sanitizeText(body.jobDescription)
+    if (body.requirements !== undefined) updateData.requirements = sanitizeText(body.requirements)
+    if (body.openings !== undefined) {
+      if (typeof body.openings !== 'number' || body.openings < 1) {
+        return NextResponse.json({ error: 'openings must be a positive number' }, { status: 400 })
+      }
+      updateData.openings = body.openings
+    }
+    if (body.applyBy !== undefined) updateData.applyBy = body.applyBy
     if (body.candidateIds !== undefined) updateData.candidateIds = body.candidateIds
     if (body.raisedTransactionIds !== undefined)
       updateData.raisedTransactionIds = body.raisedTransactionIds
