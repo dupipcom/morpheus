@@ -6,7 +6,9 @@
     "dev": "npx prisma generate && next dev --turbopack",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test e2e/stack-smoke.spec.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1111.0",
@@ -34,6 +36,7 @@
     "@ai-sdk/react": "4.0.69",
     "@ai-sdk/rsc": "3.0.66",
     "@clerk/nextjs": "6.39.6",
+    "@clerk/testing": "^2.2.24",
     "@clerk/themes": "2.4.6",
     "@eslint/eslintrc": "3",
     "@formatjs/intl-localematcher": "0.6.1",
@@ -52,6 +55,7 @@
     "@mux/mux-video": "0.25.2",
     "@payloadcms/richtext-lexical": "3.63.0",
     "@payloadcms/sdk": "3.63.0",
+    "@playwright/test": "^1.62.1",
     "@prisma/client": "6.19.2",
     "@prisma/nextjs-monorepo-workaround-plugin": "6.19.2",
     "@radix-ui/react-accordion": "1.2.12",

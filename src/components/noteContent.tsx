@@ -207,7 +207,7 @@ function useResolvableListLabels(listIds: string[] | null | undefined): Array<{ 
 function useResolvableEventLabels(eventIds: string[] | null | undefined): Array<{ id: string; name: string }> {
   const enabled = !!eventIds?.length
   const { data } = useSWR<{ lifeEvents?: EventResult[] }>(
-    enabled ? '/api/v1/events' : null,
+    enabled ? '/api/v1/life-events' : null,
     jsonFetcher,
     LABEL_SWR_OPTIONS
   )

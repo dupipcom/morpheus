@@ -225,9 +225,9 @@ export async function fetchDayRelations(day: DayWithRelations): Promise<{
           select: { id: true, name: true }
         })
       : [],
-    day.eventIds.length > 0
-      ? prisma.event.findMany({
-          where: { id: { in: day.eventIds } },
+    (day.lifeEventIds || []).length > 0
+      ? prisma.lifeEvent.findMany({
+          where: { id: { in: day.lifeEventIds } },
           select: { id: true, name: true }
         })
       : []

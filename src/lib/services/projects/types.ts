@@ -13,6 +13,9 @@ export interface CreateProjectInput {
   links?: unknown
   supportUrl?: string | null
   collaborators?: string[]
+  // Phase 7: org-owned projects (ownerType ORG + orgId)
+  ownerType?: string
+  orgId?: string | null
 }
 
 export interface UpdateProjectInput {

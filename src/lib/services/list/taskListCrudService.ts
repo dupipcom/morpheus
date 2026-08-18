@@ -227,6 +227,9 @@ export async function createTaskList(params: {
   location?: unknown
   jobBoardEnabled?: boolean
   projectId?: string | null
+  // Phase 7: org-owned lists
+  ownerType?: string
+  orgId?: string | null
   tasks?: NewTaskInput[]
 }): Promise<List> {
   const {
@@ -234,6 +237,7 @@ export async function createTaskList(params: {
     budget, budgetType, budgetPercent, budgetSourceIds,
     bio, profilePhoto, links,
     publicTagline, publicVisible, coverDocumentId, location, jobBoardEnabled, projectId,
+    ownerType, orgId,
     tasks
   } = params
 
@@ -241,6 +245,9 @@ export async function createTaskList(params: {
   if (projectId) {
     await assertProjectCollaborator(userInternalId, projectId)
   }
+  // Org-owned lists require MANAGER+ in the org (validated by the route via
+  // assertOrgManagerRole; the service just persists the owner context)
+  const isOrgOwned = ownerType === 'ORG' && !!orgId
 
   // If creating a new default list, demote the existing default to custom
   if (role && role.endsWith('.default')) {
@@ -283,6 +290,8 @@ export async function createTaskList(params: {
       location: location ?? null,
       jobBoardEnabled: jobBoardEnabled || false,
       projectId: projectId || null,
+      ownerType: isOrgOwned ? 'ORG' : 'USER',
+      orgId: isOrgOwned ? orgId : null,
       // Placeholder avoids the null-collision on the unique publicUrl index;
       // the real slug is generated right after the row exists.
       publicUrl: temporaryPublicUrl()

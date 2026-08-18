@@ -1,0 +1,86 @@
+name: E2E
+
+# Merge gate for dev: the whole-stack smoke + user journey must pass.
+# Required repo secrets (GitHub → Settings → Secrets and variables → Actions):
+#   CLERK_SECRET_KEY                 — Clerk backend key (DEVELOPMENT instance)
+#   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY — the app's publishable key
+#
+# DB: a fresh MongoDB replica-set container per run — `prisma db push` alone
+# reproduces the current schema; the 0021–0028 data migrations are all no-ops
+# on an empty DB (their backfills/repairs only touch legacy rows, which never
+# exist here), so they are not run. The harness self-seeds the SYSTEM:treasury
+# wallet. MongoDB runs as a single-node replica set (rs0) so that Prisma
+# transactions work (P2031). The ledger's interactive-transaction path is
+# exercised here too; the Atlas replica set path is covered in staging.
+
+on:
+  # Every PR gets E2E — the stacked phase PRs target each other, not dev;
+  # only the bottom PR's check can be made required for the dev merge.
+  pull_request:
+  push:
+    branches: [dev]
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      DATABASE_URL: mongodb://localhost:27017/e2e?replicaSet=rs0&directConnection=true
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      INTERNAL_FETCH_SECRET: e2e-internal-secret
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start MongoDB replica set
+        run: |
+          docker run -d --name mongo7 -p 27017:27017 mongo:7 --replSet rs0
+          until docker exec mongo7 mongosh --quiet --eval 'db.runCommand({ping:1})' 2>/dev/null; do
+            echo "Waiting for MongoDB…"; sleep 2
+          done
+          docker exec mongo7 mongosh --eval \
+            'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
+          until docker exec mongo7 mongosh --quiet --eval 'rs.isMaster().ismaster' 2>/dev/null \
+            | grep -q true; do
+            echo "Waiting for primary…"; sleep 2
+          done
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Prepare env
+        run: cp .env.public .env
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Push schema (indexes/collections)
+        run: npx prisma db push --skip-generate
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npx playwright test
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

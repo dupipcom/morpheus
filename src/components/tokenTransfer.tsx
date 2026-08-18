@@ -21,17 +21,26 @@ interface WalletData {
   id: string
   name: string | null
   address: string | null
+  balance?: number      // DB authoritative balance, minor units (Phase 6)
+  pendingBalance?: number
   blockchainBalance?: number
   createdAt: string
 }
 
+/**
+ * Off-chain DPIP transfer (Phase 6): recipient by @username, address or wallet
+ * id; amount in decimal DPIP converted server-side to minor units. Balance
+ * shown from the DB ledger (never Kaleido on the transfer path).
+ */
 export const TokenTransfer = () => {
   const { t } = useI18n()
   const { wallets, isLoading, refreshWallets } = useWallets()
   const [selectedWalletId, setSelectedWalletId] = useLocalStorage<string | null>('dpip_selected_wallet', null)
-  const [toAddress, setToAddress] = useState('')
+  const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
+  const [note, setNote] = useState('')
   const [isTransferring, setIsTransferring] = useState(false)
+  const [confirming, setConfirming] = useState(false)
 
   // Auto-select first wallet if none selected
   useEffect(() => {
@@ -40,54 +49,65 @@ export const TokenTransfer = () => {
     }
   }, [wallets, selectedWalletId, setSelectedWalletId])
 
-  const handleTransfer = async () => {
-    if (!selectedWalletId || !toAddress.trim() || !amount.trim()) {
-      toast.error('Please fill in all fields')
+  const selectedWallet = wallets.find((w: WalletData) => w.id === selectedWalletId)
+
+  const executeTransfer = async () => {
+    if (!selectedWalletId || !recipient.trim() || !amount.trim()) {
+      toast.error(t('wallet.fillAllFields', { defaultValue: 'Please fill in all fields' }))
       return
     }
 
     const amountNum = parseFloat(amount)
     if (isNaN(amountNum) || amountNum <= 0) {
-      toast.error('Please enter a valid amount')
+      toast.error(t('wallet.invalidAmount', { defaultValue: 'Please enter a valid amount' }))
       return
     }
+
+    const recipientTarget = recipient.trim()
+    const isWalletId = /^[a-f0-9]{24}$/i.test(recipientTarget)
+    const isUsername = recipientTarget.startsWith('@')
+
+    const body: Record<string, unknown> = {
+      fromWalletId: selectedWalletId,
+      amount: amountNum,
+      note: note.trim() || null
+    }
+    if (isWalletId) body.toWalletId = recipientTarget
+    else if (isUsername) body.toUsername = recipientTarget
+    else body.toAddress = recipientTarget
 
     try {
       setIsTransferring(true)
       const response = await fetch('/api/v1/wallet/transfer', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fromWalletId: selectedWalletId,
-          toAddress: toAddress.trim(),
-          amount: amountNum.toString(),
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       })
 
       if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          toast.success(t('wallet.transferCompleted'))
-        }
-        setToAddress('')
+        toast.success(t('wallet.transferCompleted', { defaultValue: 'Transfer completed' }))
+        setRecipient('')
         setAmount('')
-        // Refresh wallets to update balances
+        setNote('')
+        setConfirming(false)
         await refreshWallets()
       } else {
-        const error = await response.json()
-        toast.error(error.error || t('wallet.failedToTransferTokens'))
+        const error = await response.json().catch(() => null)
+        toast.error(
+          error?.error ||
+            t('wallet.failedToTransferTokens', { defaultValue: 'Failed to transfer tokens' })
+        )
       }
     } catch (error) {
       console.error('Error transferring tokens:', error)
-      toast.error(t('wallet.errorTransferringTokens'))
+      toast.error(t('wallet.errorTransferringTokens', { defaultValue: 'Error transferring tokens' }))
     } finally {
       setIsTransferring(false)
     }
   }
 
-  const selectedWallet = wallets.find((w: WalletData) => w.id === selectedWalletId)
+  const dbBalanceMinor = selectedWallet?.balance ?? 0
+  const displayBalance = (dbBalanceMinor / 100).toFixed(2)
 
   return (
     <div className="space-y-4 border rounded-lg p-4 bg-muted/50">
@@ -104,7 +124,7 @@ export const TokenTransfer = () => {
         </div>
       ) : wallets.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Create a wallet first to transfer tokens.
+          {t('wallet.noWallets', { defaultValue: 'Create a wallet first to transfer DPIP.' })}
         </p>
       ) : (
         <div className="space-y-4">
@@ -120,43 +140,80 @@ export const TokenTransfer = () => {
               <SelectContent>
                 {wallets.map((wallet: WalletData) => (
                   <SelectItem key={wallet.id} value={wallet.id} className="break-words max-w-full">
-                    {wallet.name || t('wallet.unnamedWallet')} - Ð{(wallet.blockchainBalance ?? 0).toFixed(18)}
+                    {wallet.name || t('wallet.unnamedWallet')} — DPIP {((wallet.balance ?? 0) / 100).toFixed(2)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground">
+              {t('wallet.availableBalance', { defaultValue: 'Available' })}: DPIP {displayBalance}
+            </p>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">{t('wallet.toAddress')}</label>
+            <label className="text-sm font-medium">
+              {t('wallet.recipient', { defaultValue: 'Recipient (@username, wallet id, or address)' })}
+            </label>
             <Input
-              placeholder="0x..."
-              value={toAddress}
-              onChange={(e) => setToAddress(e.target.value)}
+              placeholder="@username"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">{t('wallet.amount')} (Ð)</label>
+            <label className="text-sm font-medium">
+              {t('wallet.amount', { defaultValue: 'Amount' })} (DPIP)
+            </label>
             <Input
               type="number"
-              step="any"
-              placeholder="0.0"
+              step="0.01"
+              min="0.01"
+              placeholder="0.00"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
           </div>
 
-          <Button
-            onClick={handleTransfer}
-            disabled={isTransferring || !selectedWalletId || !toAddress.trim() || !amount.trim()}
-            className="w-full"
-          >
-            {isTransferring ? 'Transferring...' : t('wallet.transferTokens')}
-          </Button>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              {t('wallet.note', { defaultValue: 'Note (optional)' })}
+            </label>
+            <Input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={t('wallet.notePlaceholder', { defaultValue: 'What is this for?' })}
+            />
+          </div>
+
+          {confirming ? (
+            <div className="space-y-2">
+              <p className="text-sm">
+                {t('wallet.confirmTransfer', { defaultValue: 'Send' })} <strong>{amount}</strong> DPIP{' '}
+                {t('wallet.confirmTransferTo', { defaultValue: 'to' })} <strong>{recipient.trim()}</strong>?
+              </p>
+              <div className="flex gap-2">
+                <Button onClick={executeTransfer} disabled={isTransferring} className="flex-1">
+                  {isTransferring
+                    ? t('wallet.transferring', { defaultValue: 'Transferring...' })
+                    : t('wallet.confirm', { defaultValue: 'Confirm' })}
+                </Button>
+                <Button variant="outline" onClick={() => setConfirming(false)} disabled={isTransferring}>
+                  {t('wallet.cancel', { defaultValue: 'Cancel' })}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              onClick={() => setConfirming(true)}
+              disabled={!selectedWalletId || !recipient.trim() || !amount.trim()}
+              className="w-full"
+            >
+              {t('wallet.transferTokens')}
+            </Button>
+          )}
         </div>
       )}
     </div>
   )
 }
-

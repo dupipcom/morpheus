@@ -856,7 +856,9 @@
     "updateFailed": "Failed to update comment",
     "confirmDelete": "Are you sure you want to delete this comment?",
     "deleted": "Comment deleted successfully",
-    "deleteFailed": "Failed to delete comment"
+    "deleteFailed": "Failed to delete comment",
+    "post": "মন্তব্য পোস্ট করুন",
+    "signIn": "কথোপকথনে যোগ দিতে সাইন ইন করুন।"
   },
   "invest": {
     "notice": "এই অ্যাপে বর্তমানে কোনও আসল অর্থ পরিচালনা করা হচ্ছে না। Dupip Invest এখনও পরিকল্পনার পর্যায়ে রয়েছে। এটি কেবল প্রদর্শনের উদ্দেশ্যে একটি পরীক্ষার পরিবেশ।",
@@ -1217,5 +1219,40 @@
       "maxTagsReached": "Maximum of 10 tags",
       "searching": "Searching…"
     }
+  },
+  "events": {
+    "form": {
+      "cover": "কভার ছবি",
+      "flier": "ফ্লায়ার ছবি",
+      "publish": "প্রকাশ করুন",
+      "draftSaved": "একটি খসড়া সংরক্ষিত হয়েছে — উপরের ক্ষেত্রগুলো ঠিক করে আবার প্রকাশ করার চেষ্টা করুন।"
+    },
+    "manage": {
+      "title": "ইভেন্ট পরিচালনা করুন",
+      "short": "পরিচালনা করুন",
+      "publish": "প্রকাশ করুন",
+      "save": "সংরক্ষণ করুন",
+      "delete": "ইভেন্ট মুছুন",
+      "confirmDelete": "এই ইভেন্টটি মুছবেন? খসড়াগুলি স্থায়ীভাবে মুছে ফেলা হয়; প্রকাশিত ইভেন্ট বাতিল করা হয়।",
+      "published": "ইভেন্ট প্রকাশিত হয়েছে",
+      "view": "ইভেন্ট দেখুন",
+      "unpublish": "খসড়ায় ফিরে যান"
+    },
+    "public": {
+      "flier": "ফ্লায়ার",
+      "nearby": "কাছাকাছি ইভেন্ট",
+      "comments": "মন্তব্য",
+      "mapAlt": "ইভেন্টের অবস্থানের মানচিত্র"
+    },
+    "portal": {
+      "back": "ইভেন্টে ফিরে যান",
+      "unavailable": "এই ইভেন্টটি সর্বজনীনভাবে উপলব্ধ নয়।"
+    }
+  },
+  "repost": {
+    "title": "রিপোস্ট",
+    "submit": "রিপোস্ট",
+    "placeholder": "একটি মন্তব্য যোগ করুন (ঐচ্ছিক)...",
+    "success": "সফলভাবে রিপোস্ট করা হয়েছে"
   }
 }

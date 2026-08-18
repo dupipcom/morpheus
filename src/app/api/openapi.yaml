@@ -22,6 +22,7 @@ tags:
   - name: budgets
   - name: chat
   - name: comments
+  - name: cron
   - name: days
   - name: delegation
   - name: events
@@ -31,6 +32,7 @@ tags:
   - name: notes
   - name: notifications
   - name: places
+  - name: projects
   - name: profile
   - name: search
   - name: sms
@@ -420,7 +422,158 @@ paths:
   /api/v1/events:
     get:
       tags: [events]
-      summary: List current user life events
+      summary: Management/feed listing (scope=mine|org:<id>|attending, status)
+      parameters:
+        - { name: scope, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: cursor, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Events }
+    post:
+      tags: [events]
+      summary: Create an event (DRAFT; ORG ownership requires MANAGER+)
+      responses:
+        '200': { description: Event }
+
+  /api/v1/events/{eventId}:
+    get:
+      tags: [events]
+      summary: Event detail (owner/manager)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Event }
+    put:
+      tags: [events]
+      summary: Update event fields (owner/manager)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [events]
+      summary: Published to CANCELLED (soft); draft hard delete
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Cancelled }
+
+  /api/v1/events/{eventId}/publish:
+    post:
+      tags: [events]
+      summary: DRAFT to PUBLISHED with validation
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Published }
+        '400': { description: Missing publish requirements }
+
+  /api/v1/events/{eventId}/rsvp:
+    post:
+      tags: [events]
+      summary: RSVP upsert (INTERESTED | GOING; NOT_GOING removes)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: RSVP state and counts }
+
+  /api/v1/events/{eventId}/lists:
+    post:
+      tags: [events]
+      summary: Link a list to the event (owner/manager)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Linked }
+    delete:
+      tags: [events]
+      summary: Unlink a list (?listId=)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+        - { name: listId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Unlinked }
+
+  /api/v1/events/{eventId}/projects:
+    post:
+      tags: [events]
+      summary: Link a project to the event (owner/manager)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Linked }
+    delete:
+      tags: [events]
+      summary: Unlink a project (?projectId=)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+        - { name: projectId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Unlinked }
+
+  /api/v1/events/{eventId}/staff:
+    get:
+      tags: [events]
+      summary: Staff members (owner/manager)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Staff }
+    post:
+      tags: [events]
+      summary: Add/update staff (SCANNER | MANAGER)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [events]
+      summary: Remove staff (?userId=)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string } }
+        - { name: userId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Removed }
+
+  /api/v1/events/public:
+    get:
+      tags: [events]
+      summary: Public discovery (PUBLISHED + PUBLIC only)
+      security: []
+      parameters:
+        - { name: from, in: query, schema: { type: string } }
+        - { name: to, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: near, in: query, schema: { type: string, description: lat,lng,radiusKm } }
+        - { name: category, in: query, schema: { type: string } }
+        - { name: project, in: query, schema: { type: string } }
+        - { name: cursor, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Events with counts }
+
+  /api/v1/events/public/{publicUrl}:
+    get:
+      tags: [events]
+      summary: Public event payload (404 unless published)
+      security: []
+      parameters:
+        - { name: publicUrl, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Public event }
+        '404': { description: Unpublished or missing }
+
+  /api/v1/events/legacy:
+    get:
+      tags: [events]
+      summary: Legacy life-events shim to /api/v1/life-events
+      security: []
+      responses:
+        '307': { description: Redirect }
+
+  /api/v1/life-events:
+    get:
+      tags: [events]
+      summary: The user's life events (pre-Phase-8 Event model)
       responses:
         '200': { description: Life events }
     post:
@@ -429,17 +582,17 @@ paths:
       responses:
         '200': { description: Life event }
 
-  /api/v1/events/{id}:
+  /api/v1/life-events/{id}:
     put:
       tags: [events]
-      summary: Update own life event
+      summary: Update an owned life event
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Updated }
     delete:
       tags: [events]
-      summary: Delete own life event
+      summary: Delete an owned life event
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
@@ -909,6 +1062,76 @@ paths:
       responses:
         '200': { description: Profiles }
 
+  /api/v1/orgs:
+    get:
+      tags: [orgs]
+      summary: Organizations the viewer belongs to (with role)
+      responses:
+        '200': { description: Organizations }
+    post:
+      tags: [orgs]
+      summary: Create an organization (Clerk org + mirror + OWNER + general channel + org wallet)
+      responses:
+        '200': { description: Organization }
+        '400': { description: Name required }
+
+  /api/v1/orgs/{orgId}:
+    get:
+      tags: [orgs]
+      summary: Organization detail (members only)
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Organization }
+        '403': { description: Not a member }
+    put:
+      tags: [orgs]
+      summary: Update public-profile fields (OWNER/ADMIN)
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+        '403': { description: Not owner/admin }
+
+  /api/v1/orgs/{orgId}/members:
+    get:
+      tags: [orgs]
+      summary: Members of an org (any member)
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Members }
+    post:
+      tags: [orgs]
+      summary: Add a member (proxied to Clerk, then mirrored; OWNER/ADMIN)
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Added }
+        '403': { description: Not owner/admin }
+
+  /api/v1/orgs/public/{username}:
+    get:
+      tags: [orgs]
+      summary: Public org payload — allowlist projection (404 unless published + ACTIVE)
+      security: []
+      parameters:
+        - { name: username, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Public organization }
+        '404': { description: Unpublished or missing }
+
+  /api/v1/resolve-handle:
+    get:
+      tags: [user]
+      summary: Resolve a shared /@ handle to its entity kind (for the edge middleware)
+      security: []
+      parameters:
+        - { name: handle, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Handle kind (profile | org | project) }
+        '404': { description: Unknown handle }
+
   /api/v1/search:
     get:
       tags: [search]
@@ -1189,6 +1412,45 @@ paths:
         - { name: walletId, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Deleted }
+
+  /api/v1/wallet/[walletId]/statement:
+    get:
+      tags: [wallet]
+      summary: Paginated ledger entries for an owned wallet (newest first)
+      parameters:
+        - { name: walletId, in: path, required: true, schema: { type: string } }
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 50, maximum: 100 } }
+      responses:
+        '200': { description: Statement with nextCursor }
+
+  /api/v1/wallet/[walletId]/sync-onchain:
+    post:
+      tags: [wallet]
+      summary: Opt-in Kaleido mirror (address + balance refresh)
+      parameters:
+        - { name: walletId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Synced }
+        '503': { description: Kaleido unavailable }
+
+  /api/v1/wallet/resolve:
+    get:
+      tags: [wallet]
+      summary: Resolve a recipient across the shared /@ namespace
+      parameters:
+        - { name: username, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Recipient wallet }
+        '404': { description: Recipient not found }
+
+  /api/v1/cron/ledger-reconcile:
+    get:
+      tags: [cron]
+      summary: Ledger reconciliation sweep (abandoned PENDING + invariant checks)
+      security: []
+      responses:
+        '200': { description: Reconciliation report }
 
   /api/v1/wallet/nft:
     post:
