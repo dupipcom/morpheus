@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { listVoicemails } from '@/lib/services/voicemail'
+import { ensureVoicemailAudio } from '@/lib/services/voicemail/recordingHandler'
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,6 +25,27 @@ export async function GET(request: NextRequest) {
     }
 
     const result = await listVoicemails(user.id)
+
+    // Lazy recording attach: viewing the inbox kicks a throttled pull of any
+    // recording that is still missing (assistant connections have no event
+    // webhook). Fire-and-forget — never delays the list response.
+    void prisma.voicemail
+      .findMany({
+        where: {
+          targetUserId: user.id,
+          audioKey: null,
+          createdAt: { gte: new Date(Date.now() - 24 * 3600 * 1000) }
+        },
+        select: { id: true },
+        take: 10
+      })
+      .then((rows) => {
+        rows.forEach((row) => {
+          void ensureVoicemailAudio(row.id).catch(() => {})
+        })
+      })
+      .catch(() => {})
+
     return NextResponse.json(result)
   } catch (error) {
     console.error('Error in GET /api/v1/voicemails:', error)

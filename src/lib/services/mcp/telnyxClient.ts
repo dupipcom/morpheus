@@ -91,11 +91,62 @@ export async function getConversationMessages(
 
 export interface TelnyxRecording {
   id: string
+  status?: string
   downloadUrls: { mp3?: string; wav?: string }
   callSessionId?: string
   callControlId?: string
+  durationMillis?: number
   from?: string
   to?: string
+}
+
+/**
+ * GET /recordings with call-correlation filters. Used by the voicemail
+ * recording sweep: the assistant's managed connection has no event webhook,
+ * so recordings are pulled by call_session_id after the call ends.
+ */
+export async function listRecordings(filters: {
+  callSessionId?: string
+  callControlId?: string
+}): Promise<TelnyxRecording[]> {
+  const params = new URLSearchParams()
+  if (filters.callSessionId) params.set('filter[call_session_id]', filters.callSessionId)
+  if (filters.callControlId) params.set('filter[call_control_id]', filters.callControlId)
+  params.set('page[size]', '10')
+
+  const path = `/recordings?${params.toString()}`
+  const response = await telnyxFetch(path)
+  if (!response.ok) return readError(path, response)
+
+  const payload: { data?: unknown } = await response.json()
+  if (!Array.isArray(payload.data)) return []
+
+  const recordings: TelnyxRecording[] = []
+  for (const entry of payload.data) {
+    if (!entry || typeof entry !== 'object') continue
+    const data = entry as Record<string, unknown>
+    const id = typeof data.id === 'string' ? data.id : ''
+    if (!id) continue
+    const downloadUrls =
+      data.download_urls && typeof data.download_urls === 'object'
+        ? (data.download_urls as Record<string, unknown>)
+        : {}
+    recordings.push({
+      id,
+      status: typeof data.status === 'string' ? data.status : undefined,
+      downloadUrls: {
+        mp3: typeof downloadUrls.mp3 === 'string' ? downloadUrls.mp3 : undefined,
+        wav: typeof downloadUrls.wav === 'string' ? downloadUrls.wav : undefined
+      },
+      callSessionId:
+        typeof data.call_session_id === 'string' ? data.call_session_id : undefined,
+      callControlId:
+        typeof data.call_control_id === 'string' ? data.call_control_id : undefined,
+      durationMillis:
+        typeof data.duration_millis === 'number' ? data.duration_millis : undefined
+    })
+  }
+  return recordings
 }
 
 /** GET /recordings/{id} — null on 404. download_urls expire ~10 min after the call. */

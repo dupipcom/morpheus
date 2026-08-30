@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { getVoicemailAudioKey } from '@/lib/services/voicemail'
+import { ensureVoicemailAudio } from '@/lib/services/voicemail/recordingHandler'
 import { getObjectStream } from '@/lib/storage/s3'
 
 export async function GET(
@@ -29,7 +30,22 @@ export async function GET(
     }
 
     const { id } = await params
-    const audio = await getVoicemailAudioKey(user.id, id)
+    let audio = await getVoicemailAudioKey(user.id, id)
+    if (!audio) {
+      // Lazy recording attach (owner-only): playing a still-processing
+      // voicemail triggers one throttled pull of the finalized recording
+      // (assistant connections have no event webhook), then retries once.
+      const owned = await prisma.voicemail.findFirst({
+        where: { id, targetUserId: user.id },
+        select: { id: true }
+      })
+      if (owned) {
+        const attempt = await ensureVoicemailAudio(id)
+        if (attempt.attached) {
+          audio = await getVoicemailAudioKey(user.id, id)
+        }
+      }
+    }
     if (!audio) {
       return NextResponse.json({ error: 'Voicemail audio not found' }, { status: 404 })
     }
