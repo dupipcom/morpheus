@@ -15,6 +15,7 @@ import {
   Send,
   UserPlus,
   Users,
+  Voicemail,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -46,6 +47,7 @@ import {
 } from '@/components/ui/sidebar'
 import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
 import { SmsSidebarCard } from '@/components/chat/smsSidebarCard'
+import { VoicemailSidebarCard } from '@/components/chat/voicemailSidebarCard'
 import { VirtualNumberGate } from '@/components/chat/virtualNumberGate'
 import { VirtualNumberPicker } from '@/components/chat/virtualNumberPicker'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -55,6 +57,7 @@ import type {
   ChatUserProfile,
 } from '@/lib/chat/types'
 import type { SmsConversationSummary } from '@/lib/services/sms'
+import type { VoicemailListItem } from '@/lib/services/voicemail'
 
 /**
  * Shared types for the chat sidebar tree. The server response shape is owned
@@ -95,6 +98,7 @@ export type ChatActiveRoom =
   | { type: 'channel'; id: string; orgId: string; name: string }
   | { type: 'dm'; id: string; name: string }
   | { type: 'sms'; id: string; name: string }
+  | { type: 'voicemails'; name: string }
   | null
 
 interface DmCandidate {
@@ -113,6 +117,9 @@ interface ChatSidebarProps {
   isSmsConversationsLoading: boolean
   smsConversationsHasError: boolean
   hasAssignedVirtualNumber: boolean
+  voicemails: VoicemailListItem[]
+  isVoicemailsLoading: boolean
+  voicemailsHasError: boolean
   // DM / invite search state (owned by parent for SWR)
   dmQuery: string
   onDmQueryChange: (value: string) => void
@@ -129,6 +136,7 @@ interface ChatSidebarProps {
   onSelectDm: (dm: ChatSidebarDm) => void
   onSelectChannel: (channel: ChatSidebarChannel) => void
   onSelectSmsConversation: (conversation: SmsConversationSummary) => void
+  onSelectVoicemail: (voicemail: VoicemailListItem) => void
   onStartDm: (participantUserId: string) => void
   onCreateOrg: () => void
   onCreateChannel: () => void
@@ -195,6 +203,9 @@ export function ChatSidebar({
   isSmsConversationsLoading,
   smsConversationsHasError,
   hasAssignedVirtualNumber,
+  voicemails,
+  isVoicemailsLoading,
+  voicemailsHasError,
   dmQuery,
   onDmQueryChange,
   dmCandidates,
@@ -208,6 +219,7 @@ export function ChatSidebar({
   onSelectDm,
   onSelectChannel,
   onSelectSmsConversation,
+  onSelectVoicemail,
   onStartDm,
   onCreateOrg,
   onCreateChannel,
@@ -237,6 +249,7 @@ export function ChatSidebar({
   const dmsLabel = hasTranslation('chat.sidebar.directMessages') ? t('chat.sidebar.directMessages') : 'Direct messages'
   const orgsLabel = hasTranslation('chat.sidebar.organizations') ? t('chat.sidebar.organizations') : 'Organizations'
   const smsGroupLabel = hasTranslation('chat.sidebar.sms') ? t('chat.sidebar.sms') : 'SMS'
+  const voicemailsGroupLabel = hasTranslation('chat.voicemail.label') ? t('chat.voicemail.label') : 'Voicemails'
   const virtualNumberLabel = hasTranslation('chat.sidebar.virtualNumber') ? t('chat.sidebar.virtualNumber') : 'Virtual number'
   const dmSearchPlaceholder = hasTranslation('chat.sidebar.searchDmPlaceholder') ? t('chat.sidebar.searchDmPlaceholder') : 'Search friends to start a DM'
   const createChannelPlaceholder = hasTranslation('chat.sidebar.createChannelPlaceholder') ? t('chat.sidebar.createChannelPlaceholder') : 'Create a channel'
@@ -607,6 +620,22 @@ export function ChatSidebar({
                 })
               )}
             </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          <SidebarGroupLabel>
+            <Voicemail className="mr-2 h-4 w-4" />
+            {voicemailsGroupLabel}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <VoicemailSidebarCard
+              voicemails={voicemails}
+              isLoading={isVoicemailsLoading}
+              hasError={voicemailsHasError}
+              onSelectVoicemail={onSelectVoicemail}
+            />
           </SidebarGroupContent>
         </SidebarGroup>
 

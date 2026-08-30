@@ -13,6 +13,8 @@ export const CHAT_EVENTS = {
   MEMBERSHIP_UPDATED: 'membership.updated',
   SMS_MESSAGE_CREATED: 'sms.message.created',
   SMS_MESSAGE_UPDATED: 'sms.message.updated',
+  VOICEMAIL_CREATED: 'voicemail.created',
+  VOICEMAIL_UPDATED: 'voicemail.updated',
 } as const
 
 export type ChatEventName = (typeof CHAT_EVENTS)[keyof typeof CHAT_EVENTS]

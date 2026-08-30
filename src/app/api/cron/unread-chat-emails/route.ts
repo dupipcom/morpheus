@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { isAuthorizedCronRequest, processUnreadChatEmailNotifications } from '@/lib/chat/unreadChatEmailNotifications'
+import {
+  isAuthorizedCronRequest,
+  processUnreadChatEmailNotifications,
+  processUnreadVoicemailEmailNotifications,
+} from '@/lib/chat/unreadChatEmailNotifications'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -14,7 +18,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    return NextResponse.json(await processUnreadChatEmailNotifications())
+    const [chatResult, voicemailResult] = await Promise.all([
+      processUnreadChatEmailNotifications(),
+      processUnreadVoicemailEmailNotifications(),
+    ])
+
+    return NextResponse.json({ chat: chatResult, voicemails: voicemailResult })
   } catch (error) {
     console.error('Error sending unread chat emails:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

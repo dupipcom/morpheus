@@ -14,6 +14,7 @@ export const NOTIFICATION_TYPES = {
   JOB_ACCEPTED: 'JOB_ACCEPTED',
   JOB_REJECTED: 'JOB_REJECTED',
   LIST_INVITE: 'LIST_INVITE',
+  VOICEMAIL: 'VOICEMAIL',
 } as const
 
 /** Shape of a notification as returned by listNotifications */
