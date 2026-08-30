@@ -9,7 +9,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { resolveCallerByPhone } from '@/lib/services/mcp/callerLookup'
+import {
+  resolveCallerByPhone,
+  resolvePhoneDelegationForTarget
+} from '@/lib/services/mcp/callerLookup'
 import { resolveTargetUser } from '@/lib/services/mcp/targetResolution'
 import { resolvePhoneAccess } from '@/lib/services/mcp/queryUserData'
 
@@ -41,22 +44,47 @@ export async function POST(request: NextRequest) {
 
   let accessLevel = caller.identity.accessLevel
   let relationship = caller.identity.relationship
-  if (caller.callerUserId && targetUser) {
-    const access = await resolvePhoneAccess(caller.callerUserId, targetUser.userId)
-    accessLevel = access.accessLevel
-    relationship =
-      access.accessLevel === 'OWNER'
-        ? 'self'
-        : access.accessLevel === 'DELEGATE'
-          ? 'delegate'
-          : 'none'
+  let known = caller.identity.known
+  let name = caller.identity.name ?? null
+  const userId = caller.identity.userId ?? null
+
+  if (targetUser) {
+    if (caller.callerUserId) {
+      const access = await resolvePhoneAccess(
+        caller.callerUserId,
+        targetUser.userId,
+        caller.phoneDelegations
+      )
+      accessLevel = access.accessLevel
+      relationship =
+        access.accessLevel === 'OWNER'
+          ? 'self'
+          : access.accessLevel === 'DELEGATE'
+            ? 'delegate'
+            : 'none'
+    } else {
+      // Phone delegation (/app/feel third-party tab): the target granted this
+      // caller's NUMBER access — recognized caller at DELEGATE tier, greeted
+      // by the grant's label when set.
+      const phoneGrant = resolvePhoneDelegationForTarget(
+        caller.phoneDelegations,
+        targetUser.userId
+      )
+      if (phoneGrant) {
+        const access = await resolvePhoneAccess(null, targetUser.userId, caller.phoneDelegations)
+        accessLevel = access.accessLevel
+        relationship = 'delegate'
+        known = true
+        name = phoneGrant.label ?? null
+      }
+    }
   }
 
   return NextResponse.json({
     caller: {
-      known: caller.identity.known,
-      userId: caller.identity.userId ?? null,
-      name: caller.identity.name ?? null,
+      known,
+      userId,
+      name,
       username: caller.identity.username ?? null,
       accessLevel,
       relationship,

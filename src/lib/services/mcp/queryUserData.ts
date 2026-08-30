@@ -4,7 +4,9 @@
  * Access ladder — re-validated on EVERY call, never trusting the caller:
  *   1. OWNER    caller === target → full access (existing agent semantics)
  *   2. DELEGATE explicit Delegation → scope-mapped visibility allow-lists
- *   3. PUBLIC   everyone else (friends included, unless delegated) → PUBLIC
+ *   3. DELEGATE phone delegation (/app/feel third-party tab) — same scopes,
+ *               resolved per-target from the caller's number
+ *   4. PUBLIC   everyone else (friends included, unless delegated) → PUBLIC
  *               days + PUBLIC notes + public profile fields only
  *
  * Privacy invariant: notes with legacy visibility AI_ENABLED — or aiEnabled
@@ -36,6 +38,10 @@ import { DEEPSEEK_CHAT_MODEL, getDeepseekOpenAI } from '@/lib/deepseek'
 import { telnyxChatCompletion } from './telnyxClient'
 import type { PhoneAccessLevel } from './types'
 import type { NoteVisibility } from '@/generated/prisma/client'
+import {
+  resolvePhoneDelegationForTarget
+} from './callerLookup'
+import type { PhoneDelegationGrant } from './callerLookup'
 
 export const PHONE_TIMEFRAMES = [
   'last_week',
@@ -80,7 +86,8 @@ export interface PhoneQueryAccess {
 
 export async function resolvePhoneAccess(
   callerUserId: string | null,
-  targetUserId: string
+  targetUserId: string,
+  phoneDelegations: PhoneDelegationGrant[] = []
 ): Promise<PhoneQueryAccess> {
   const target = await prisma.user.findUnique({
     where: { id: targetUserId },
@@ -124,6 +131,23 @@ export async function resolvePhoneAccess(
     }
   }
 
+  // Phone delegation: the target user granted this caller's NUMBER access —
+  // same DELEGATE semantics, scopes chosen per-target (agentTarget fixes the
+  // target on a call, so the matching grant is unambiguous).
+  const phoneGrant = resolvePhoneDelegationForTarget(phoneDelegations, targetUserId)
+  if (phoneGrant) {
+    const scopes = getDelegationScopes(phoneGrant.scopes, phoneGrant.scope)
+    const effectiveScope = resolveEffectiveDelegationScope(scopes, phoneGrant.scope)
+    if (!effectiveScope) throw new Error('Not authorized for selected user data')
+
+    return {
+      accessLevel: 'DELEGATE',
+      visibilityFilter: getAllowedDayVisibilities(effectiveScope),
+      noteVisibilityFilter: resolveNoteVisibilityFilter(scopes, phoneGrant.scope) ?? ['PUBLIC'],
+      requireAiOptIn: true
+    }
+  }
+
   // No delegation → PUBLIC tier, regardless of friendship.
   return {
     accessLevel: 'PUBLIC',
@@ -153,6 +177,7 @@ export interface PhoneQueryInput {
   query: string
   timeframe: PhoneTimeframe
   locale?: string
+  phoneDelegations?: PhoneDelegationGrant[]
 }
 
 export interface PhoneQueryResult {
@@ -163,7 +188,11 @@ export interface PhoneQueryResult {
 
 export async function queryUserDataForPhone(input: PhoneQueryInput): Promise<PhoneQueryResult> {
   const { startDate, endDate } = timeframeToRange(input.timeframe)
-  const access = await resolvePhoneAccess(input.callerUserId, input.targetUserId)
+  const access = await resolvePhoneAccess(
+    input.callerUserId,
+    input.targetUserId,
+    input.phoneDelegations
+  )
 
   const ctx: ResolvedAgentContext = {
     targetUserId: input.targetUserId,

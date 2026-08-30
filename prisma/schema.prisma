@@ -453,6 +453,7 @@ model User {
   eventStaff         EventStaff[]    @relation("EventStaff")
   delegatedAccessGranted Delegation[] @relation("Delegator")
   delegatedAccessReceived Delegation[] @relation("Delegated")
+  phoneDelegations   PhoneDelegation[] @relation("PhoneDelegations")
   emailNotifications EmailNotification[]
   virtualNumbers    VirtualNumber[]
   voicemails        Voicemail[] @relation("UserVoicemails")
@@ -639,6 +640,28 @@ model Delegation {
   @@unique([delegatorId, delegatedId])
   @@index([delegatorId])
   @@index([delegatedId])
+}
+
+// Phone-number delegation (phase 12): grants a caller phone number access to
+// the delegator's data during Telnyx phone conversations, at the same
+// fine-grained scopes as user Delegations. Phone calls only — no app-side
+// visibility changes.
+model PhoneDelegation {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Delegator (grants access to THEIR data when this number calls their assistant)
+  userId String @db.ObjectId
+  user   User   @relation("PhoneDelegations", fields: [userId], references: [id], onDelete: Cascade)
+
+  phoneNumber String  // E.164, normalized (+1...)
+  label       String? // optional display name ("Mom") for greetings/transcripts
+  scopes      NoteVisibility[] @default([PUBLIC])
+  scope       NoteVisibility @default(PUBLIC)
+
+  @@unique([userId, phoneNumber])
+  @@index([phoneNumber])
 }
 
 model Role {
@@ -1542,6 +1565,11 @@ model Voicemail {
   telnyxConversationId String? @unique
   callSessionId        String?
   callControlId        String?
+
+  // Lazy recording attach throttle (assistant connections have no event
+  // webhook, so the recordings API is polled from the client-triggered paths)
+  recordingAttemptedAt DateTime?
+  recordingAttempts    Int      @default(0)
 
   readAt DateTime?
 

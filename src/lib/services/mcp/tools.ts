@@ -19,7 +19,10 @@ import { z } from 'zod'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
 import { getTrueCaller } from './callerIdentity'
-import { resolveCallerByPhone } from './callerLookup'
+import {
+  resolveCallerByPhone,
+  resolvePhoneDelegationForTarget
+} from './callerLookup'
 import { resolveTargetUser } from './targetResolution'
 import {
   PHONE_TIMEFRAMES,
@@ -93,15 +96,33 @@ async function handlePhoneAuthByCallerId(
 
   // Access level is relative to the user who owns the dialed number.
   const target = await resolveTargetUser(null, trueCaller.agentTarget ?? null)
-  if (target && caller.callerUserId) {
-    const access = await resolvePhoneAccess(caller.callerUserId, target.userId)
-    identity.accessLevel = access.accessLevel
-    identity.relationship =
-      access.accessLevel === 'OWNER'
-        ? 'self'
-        : access.accessLevel === 'DELEGATE'
-          ? 'delegate'
-          : 'none'
+  if (target) {
+    if (caller.callerUserId) {
+      const access = await resolvePhoneAccess(
+        caller.callerUserId,
+        target.userId,
+        caller.phoneDelegations
+      )
+      identity.accessLevel = access.accessLevel
+      identity.relationship =
+        access.accessLevel === 'OWNER'
+          ? 'self'
+          : access.accessLevel === 'DELEGATE'
+            ? 'delegate'
+            : 'none'
+    } else {
+      // Phone delegation (/app/feel third-party tab): recognized by number.
+      const phoneGrant = resolvePhoneDelegationForTarget(
+        caller.phoneDelegations,
+        target.userId
+      )
+      if (phoneGrant) {
+        identity.known = true
+        identity.accessLevel = 'DELEGATE'
+        identity.relationship = 'delegate'
+        if (phoneGrant.label) identity.name = phoneGrant.label
+      }
+    }
   }
 
   return okResult({ ...identity })
@@ -139,7 +160,8 @@ async function handlePhoneQueryUserData(
     targetUserId: target.userId,
     query,
     timeframe: timeframeRaw as PhoneTimeframe,
-    locale: args.locale
+    locale: args.locale,
+    phoneDelegations: caller.phoneDelegations
   })
 
   return okResult({
@@ -184,18 +206,27 @@ async function handlePhoneRecordMessage(
     verified: trueCaller.verified
   })
 
+  // A phone-delegation label ("Mom") wins over an unknown caller's display.
+  const callerName =
+    caller.identity.name ??
+    resolvePhoneDelegationForTarget(caller.phoneDelegations, target.userId)?.label ??
+    undefined
+
   const result = await createVoicemail({
     targetUserId: target.userId,
     callerUserId: caller.callerUserId ?? undefined,
     callerPhone: trueCaller.phone,
-    callerName: caller.identity.name,
+    callerName,
     callerVerified: trueCaller.verified,
     text: text || undefined,
     audioUrl: voiceFileUrl || undefined,
     durationSec: args.duration_secs,
     telnyxConversationId: trueCaller.conversationId,
-    callControlId: args.call_control_id,
-    callSessionId: args.call_session_id
+    // Correlation ids enable the recording sweep to attach the call audio
+    // once Telnyx finalizes the recording (the assistant connection has no
+    // event webhook, so call.recording.saved never reaches morpheus).
+    callControlId: args.call_control_id ?? trueCaller.callControlId ?? undefined,
+    callSessionId: args.call_session_id ?? trueCaller.callSessionId ?? undefined
   })
 
   return okResult({
