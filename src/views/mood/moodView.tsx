@@ -214,6 +214,13 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const GRANTABLE_DELEGATION_SCOPES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
   const [delegationScopes, setDelegationScopes] = useState<NoteVisibility[]>(GRANTABLE_DELEGATION_SCOPES)
   const [delegationRoleKeys, setDelegationRoleKeys] = useState<RoleKey[]>([])
+  // Phone-number delegation (phase 12) — numbers authorized to converse with
+  // the Telnyx assistant at the selected scopes.
+  const [phoneDelegationNumber, setPhoneDelegationNumber] = useState('')
+  const [phoneDelegationLabel, setPhoneDelegationLabel] = useState('')
+  const [phoneDelegationScopes, setPhoneDelegationScopes] = useState<NoteVisibility[]>(GRANTABLE_DELEGATION_SCOPES)
+  const [phoneDelegationError, setPhoneDelegationError] = useState('')
+  const [isSubmittingPhoneDelegation, setIsSubmittingPhoneDelegation] = useState(false)
   const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
 
   // Initialize mood contacts from server data
@@ -326,8 +333,20 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     }
   )
 
+  const { data: phoneDelegationsData, mutate: mutatePhoneDelegations, isLoading: phoneDelegationsLoading } = useSWR(
+    session?.user ? '/api/v1/phone-delegations' : null,
+    async () => {
+      const response = await fetch('/api/v1/phone-delegations')
+      if (!response.ok) {
+        return { delegations: [] }
+      }
+      return response.json()
+    }
+  )
+
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
   const friendSuggestions: FriendSuggestion[] = delegationsData?.friendSuggestions || []
+  const phoneDelegations = phoneDelegationsData?.delegations || []
   const allScopesSelected = delegationScopes.length === GRANTABLE_DELEGATION_SCOPES.length
   const minimumOneScopeText = t('mood.thirdParty.minimumOneScope') || MINIMUM_ONE_SCOPE_FALLBACK
   const filteredFriendSuggestions = useMemo(() => {
@@ -555,6 +574,57 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
       await mutateDelegations()
     } catch (error) {
       console.error('Error removing delegation:', error)
+    }
+  }
+
+  const handleAddPhoneDelegation = async () => {
+    const phoneNumber = phoneDelegationNumber.trim()
+    if (!phoneNumber || isSubmittingPhoneDelegation) return
+    if (phoneDelegationScopes.length === 0) {
+      setPhoneDelegationError(minimumOneScopeText)
+      return
+    }
+    setIsSubmittingPhoneDelegation(true)
+    setPhoneDelegationError('')
+    try {
+      const response = await fetch('/api/v1/phone-delegations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phoneNumber,
+          label: phoneDelegationLabel.trim() || undefined,
+          scopes: phoneDelegationScopes
+        })
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) {
+        setPhoneDelegationError(
+          data?.error || (t('mood.thirdParty.phone.addError') || 'Could not add phone number')
+        )
+        return
+      }
+      setPhoneDelegationNumber('')
+      setPhoneDelegationLabel('')
+      await mutatePhoneDelegations()
+    } catch (error) {
+      console.error('Error adding phone delegation:', error)
+      setPhoneDelegationError(t('mood.thirdParty.phone.addError') || 'Could not add phone number')
+    } finally {
+      setIsSubmittingPhoneDelegation(false)
+    }
+  }
+
+  const handleRemovePhoneDelegation = async (phoneDelegationId: string) => {
+    try {
+      const response = await fetch(`/api/v1/phone-delegations/${phoneDelegationId}`, {
+        method: 'DELETE'
+      })
+      if (!response.ok) {
+        return
+      }
+      await mutatePhoneDelegations()
+    } catch (error) {
+      console.error('Error removing phone delegation:', error)
     }
   }
 
@@ -997,6 +1067,105 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                         )}
                       </div>
                       <Button variant="outline" size="sm" onClick={() => handleRemoveDelegation(delegation.id)}>
+                        {t('common.remove') || 'Remove'}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 border rounded-lg bg-transparent border-body">
+              <h3 className="text-lg font-semibold mb-4">{t('mood.thirdParty.phone.title') || 'Phone Numbers'}</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                {t('mood.thirdParty.phone.hint') || 'Authorize phone numbers to call your assistant and ask about your data at the selected access level.'}
+              </p>
+              <div className="space-y-3">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Input
+                    value={phoneDelegationNumber}
+                    onChange={(event) => {
+                      setPhoneDelegationNumber(event.target.value)
+                      setPhoneDelegationError('')
+                    }}
+                    placeholder={t('mood.thirdParty.phone.numberPlaceholder') || '+1 415 555 1234'}
+                    autoComplete="off"
+                    inputMode="tel"
+                  />
+                  <Input
+                    value={phoneDelegationLabel}
+                    onChange={(event) => setPhoneDelegationLabel(event.target.value)}
+                    placeholder={t('mood.thirdParty.phone.labelPlaceholder') || 'Label (optional, e.g. Mom)'}
+                    autoComplete="off"
+                  />
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('mood.thirdParty.scope') || 'Data scope'}>
+                      <span className="truncate">
+                        {phoneDelegationScopes.length === 0
+                          ? (t('mood.thirdParty.scope') || 'Scope')
+                          : phoneDelegationScopes
+                              .map((visibility) => t(`mood.publish.visibility.${visibility}`) || visibility)
+                              .join(', ')}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {GRANTABLE_DELEGATION_SCOPES.map((visibility) => {
+                      const isSingleSelectedScope =
+                        phoneDelegationScopes.length === 1 && phoneDelegationScopes.includes(visibility)
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={visibility}
+                          checked={phoneDelegationScopes.includes(visibility)}
+                          disabled={isSingleSelectedScope}
+                          aria-disabled={isSingleSelectedScope}
+                          onCheckedChange={() => {
+                            setPhoneDelegationScopes((prev) => {
+                              if (prev.length === 1 && prev.includes(visibility)) return prev
+                              if (prev.includes(visibility)) return prev.filter((item) => item !== visibility)
+                              return [...prev, visibility]
+                            })
+                          }}
+                        >
+                          {t(`mood.publish.visibility.${visibility}`) || visibility}
+                        </DropdownMenuCheckboxItem>
+                      )
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button
+                  onClick={handleAddPhoneDelegation}
+                  disabled={!phoneDelegationNumber.trim() || isSubmittingPhoneDelegation || phoneDelegationScopes.length === 0}
+                  aria-busy={isSubmittingPhoneDelegation}
+                >
+                  {isSubmittingPhoneDelegation
+                    ? (t('mood.thirdParty.phone.adding') || 'Adding...')
+                    : (t('mood.thirdParty.phone.addNumber') || 'Add phone number')}
+                </Button>
+                {phoneDelegationError && (
+                  <p className="text-sm text-red-500" role="alert">{phoneDelegationError}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 border rounded-lg bg-transparent border-body">
+              <h3 className="text-lg font-semibold mb-4">{t('mood.thirdParty.phone.activeNumbers') || 'Authorized Numbers'}</h3>
+              {phoneDelegationsLoading ? (
+                <p className="text-sm text-muted-foreground">{t('common.loading') || 'Loading...'}</p>
+              ) : phoneDelegations.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t('mood.thirdParty.phone.empty') || 'No phone numbers authorized yet.'}</p>
+              ) : (
+                <div className="space-y-3">
+                  {phoneDelegations.map((delegation: any) => (
+                    <div key={delegation.id} className="flex items-center justify-between border rounded-md p-3">
+                      <div>
+                        <p className="font-medium">{delegation.label || delegation.phoneNumber}</p>
+                        <p className="text-xs text-muted-foreground">{delegation.phoneNumber}</p>
+                        <p className="text-xs text-muted-foreground">{normalizeDelegationScopes(delegation.scopes, delegation.scope)}</p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => handleRemovePhoneDelegation(delegation.id)}>
                         {t('common.remove') || 'Remove'}
                       </Button>
                     </div>

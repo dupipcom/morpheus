@@ -26,6 +26,10 @@ export interface TrueCaller {
   verified: boolean
   /** The called number (metadata.telnyx_agent_target) */
   agentTarget?: string
+  /** Call correlation ids from conversation metadata — used to attach the
+   *  call recording to the voicemail once it becomes available. */
+  callSessionId: string | null
+  callControlId: string | null
   conversationId: string
 }
 

@@ -1,17 +1,21 @@
 {
+  "id": "assistant-f01f7462-229b-49d1-b828-e4358b328e3d",
   "name": "Dupip Personal Assistant",
-  "instructions": "You are a personal assistant for a Dupip user. You answer inbound calls from the user's friends and general audiences. Callers who are recognized Dupip users (caller_known is \"true\") may ask questions about the user's life; callers who are not recognized may only leave a voicemail. Never disclose private data beyond the caller's access level and never fabricate information.",
+  "description": "",
   "model": "moonshotai/Kimi-K2.6",
+  "instructions": "You are a personal assistant for a Dupip user. You answer inbound calls from the user's friends and general audiences. Callers who are recognized Dupip users (caller_known is \"true\") may ask questions about the user's life; callers who are not recognized may only leave a voicemail. Never disclose private data beyond the caller's access level and never fabricate information.",
   "tools": [
     {
+      "tool_id": "tool-cc96ca51-1950-4a81-a7f2-3fdc4c9836cc",
       "type": "hangup",
+      "timeout_ms": 5000,
+      "shared": true,
+      "name": "hang-up",
       "hangup": {
         "description": "This tool is used to hang up the call."
       }
     }
   ],
-  "dynamic_variables_webhook_url": "https://dupip-mcp-edge-afd30602-9.telnyxcompute.com",
-  "dynamic_variables_webhook_timeout_ms": 5000,
   "mcp_servers": [
     {
       "id": "a98cdbb7-c451-4824-b251-6a613365fbc0",
@@ -22,124 +26,368 @@
       ]
     }
   ],
+  "mcp_messages": [],
+  "a2a_agents": [],
+  "created_at": "2026-08-30T16:37:10.538092Z",
+  "version_id": "20260830T183219186529",
+  "version_created_at": "2026-08-30T18:32:19.186529Z",
+  "greeting": "",
+  "llm_api_key_ref": "",
+  "fallback_config": {
+    "model": null,
+    "llm_api_key_ref": "",
+    "external_llm": null
+  },
+  "external_llm": null,
+  "voice_settings": {
+    "voice": "Telnyx.Ultra.f786b574-daa5-4673-aa0c-cbe3e8534c02",
+    "api_key_ref": null,
+    "voice_speed": 1.0,
+    "background_audio": {
+      "type": "predefined_media",
+      "value": "silence",
+      "volume": 0.5
+    },
+    "temperature": null,
+    "repetition_penalty": null,
+    "top_p": null,
+    "similarity_boost": 0.5,
+    "style": 0.0,
+    "use_speaker_boost": true,
+    "language_boost": "English",
+    "expressive_mode": false,
+    "pronunciation_dict_id": null
+  },
+  "transcription": {
+    "model": "deepgram/flux",
+    "language": "en",
+    "api_key_ref": null,
+    "region": null,
+    "settings": {
+      "smart_format": null,
+      "numerals": null,
+      "eot_threshold": 0.8,
+      "eot_timeout_ms": 5000,
+      "eager_eot_threshold": 0.8,
+      "keyterm": null,
+      "eager_turn_probability": null,
+      "final_turn_probability": null,
+      "end_of_turn_confidence_threshold": null,
+      "min_turn_silence": null,
+      "max_turn_silence": null,
+      "interim_results": null,
+      "enable_endpoint_detection": null,
+      "max_endpoint_delay_ms": null
+    }
+  },
+  "telephony_settings": {
+    "default_texml_app_id": "3038036986670614202",
+    "supports_unauthenticated_web_calls": false,
+    "noise_suppression": "disabled",
+    "noise_suppression_config": null,
+    "time_limit_secs": 1800,
+    "user_idle_timeout_secs": null,
+    "user_idle_reply_secs": 10,
+    "fallback_destination": null,
+    "voicemail_detection": null,
+    "recording_settings": {
+      "enabled": true,
+      "channels": "dual",
+      "format": "mp3",
+      "stop_on_conversation_end": false
+    },
+    "send_conversation_message_events": false,
+    "send_message_history_updates": null,
+    "disable_dtmf": false
+  },
+  "messaging_settings": null,
+  "enabled_features": [
+    "telephony"
+  ],
+  "insight_settings": {
+    "insight_group_id": "81be4a00-0c38-496f-acf2-efe532baf95e",
+    "use_insights_for_memory": null
+  },
+  "privacy_settings": {
+    "data_retention": true,
+    "pii_redaction": "disabled"
+  },
+  "post_conversation_settings": {
+    "enabled": false
+  },
+  "dynamic_variables_webhook_url": "https://dupip-mcp-edge-afd30602-9.telnyxcompute.com",
+  "dynamic_variables_webhook_timeout_ms": 10000,
+  "dynamic_variables": {
+    "target_user_name": "",
+    "caller_full_name": "friend",
+    "caller_username": "",
+    "caller_known": "false",
+    "caller_access_level": "UNKNOWN",
+    "caller_relationship": "none",
+    "caller_verified": "false",
+    "call_count": "1",
+    "voicemail_flow_enabled": "true"
+  },
+  "import_metadata": null,
+  "widget_settings": {
+    "theme": "dark",
+    "audio_visualizer_config": {
+      "color": "verdant",
+      "preset": "roundBars"
+    },
+    "start_call_text": "",
+    "default_state": "collapsed",
+    "position": "fixed",
+    "view_history_url": null,
+    "report_issue_url": null,
+    "give_feedback_url": null,
+    "agent_thinking_text": "",
+    "speak_to_interrupt_text": "",
+    "logo_icon_url": null
+  },
+  "interruption_settings": {
+    "enable": true,
+    "disable_greeting_interruption": false,
+    "start_speaking_plan": {
+      "wait_seconds": 0.1,
+      "transcription_endpointing_plan": {
+        "on_punctuation_seconds": 0.1,
+        "on_no_punctuation_seconds": 0.1,
+        "on_number_seconds": 0.1
+      },
+      "custom_endpointing_rules": null
+    },
+    "interrupt_prediction_threshold": 0.0
+  },
+  "integrations": null,
+  "observability_settings": {
+    "status": "disabled",
+    "secret_key_ref": null,
+    "public_key_ref": null,
+    "host": null,
+    "prompt_name": null,
+    "prompt_version": null,
+    "prompt_label": null,
+    "prompt_sync": "disabled"
+  },
+  "version_name": "Removed and re-added Hangup tool",
+  "related_mission_ids": [],
   "conversation_flow": {
-    "start_node_id": "n_greeting",
+    "start_node_id": "greeting_disclosure",
     "nodes": [
       {
-        "id": "n_greeting",
         "type": "speak",
+        "id": "greeting_disclosure",
         "name": "Greeting & disclosure",
-        "message": "Hi, you've reached {{target_user_name}}'s personal assistant. I'm an AI assistant, and this call may be recorded. You can ask me about their life, week, or year — or leave them a message."
+        "message": "Hi, you've reached {{target_user_name}}'s personal assistant. I'm an AI assistant, and this call may be recorded. You can ask me about their life, week, or year \u2014 or leave them a message.",
+        "position": null
       },
       {
-        "id": "n_router",
+        "type": "prompt",
+        "id": "identify_intent",
         "name": "Identify intent",
+        "instructions": "You are the call router for {{target_user_name}}'s personal assistant.\n\nContext: the caller is {{caller_full_name}} (known caller: {{caller_known}}, access level: {{caller_access_level}}, relationship: {{caller_relationship}}, verified caller ID: {{caller_verified}}). This is call number {{call_count}} from this number.\n\nClassify the caller's intent and answer with EXACTLY one of the following as the last line of your response:\nDECISION: QUERY \u2014 the caller asks a question about {{target_user_name}}'s life, week, month, year, mood, tasks, or notes.\nDECISION: VOICEMAIL \u2014 the caller wants to leave a recorded message, or their intent is unclear or unsupported.\nDECISION: GOODBYE \u2014 the caller is ending the call without a question or message.\n\nIf {{caller_known}} is \"false\", always answer DECISION: VOICEMAIL.",
         "instructions_mode": "replace",
-        "instructions": "You are the call router for {{target_user_name}}'s personal assistant.\n\nContext: the caller is {{caller_full_name}} (known caller: {{caller_known}}, access level: {{caller_access_level}}, relationship: {{caller_relationship}}, verified caller ID: {{caller_verified}}). This is call number {{call_count}} from this number.\n\nClassify the caller's intent and answer with EXACTLY one of the following as the last line of your response:\nDECISION: QUERY — the caller asks a question about {{target_user_name}}'s life, week, month, year, mood, tasks, or notes.\nDECISION: VOICEMAIL — the caller wants to leave a recorded message, or their intent is unclear or unsupported.\nDECISION: GOODBYE — the caller is ending the call without a question or message.\n\nIf {{caller_known}} is \"false\", always answer DECISION: VOICEMAIL."
+        "shared_tool_ids": null,
+        "tools": [],
+        "tools_mode": "replace",
+        "model": null,
+        "llm_api_key_ref": null,
+        "external_llm": null,
+        "voice_settings": null,
+        "transcription": null,
+        "position": null
       },
       {
-        "id": "n_query",
+        "type": "prompt",
+        "id": "answer_questions_about_the_user",
         "name": "Answer questions about the user",
+        "instructions": "You are the personal assistant of {{target_user_name}}, a Dupip user. You answer questions from a phone caller about {{target_user_name}}'s life, week, month, year, mood, tasks, habits, and notes.\n\nSTRICT SCOPE DISCIPLINE\n- Answer ONLY from data returned by phone_query_user_data for the caller's access level. If access_level is PUBLIC or the tool returns nothing, say what you can see and never imply access to private data.\n- Never fabricate moods, tasks, notes, dates, or analysis. If there is no data for the question, say \"I don't have information about that.\"\n- Summarize; never recite note text verbatim at length.\n- Never discuss the tools, access levels, or that other data exists.\n\nTONE AND FORM\n- Warm, concise, conversational \u2014 under 120 words per answer, plain spoken sentences, no lists or markdown.\n- The caller is {{caller_full_name}} (access: {{caller_access_level}}, relationship: {{caller_relationship}}). Address them naturally.\n\nTOOL USE\n- Call phone_query_user_data once per distinct question, passing the real question as query and the person's name as target_user.\n- Infer the timeframe from the question and pass it (\"how was his week?\" \u2192 last_week; \"how has her year been?\" \u2192 last_year; \"how is he doing lately?\" \u2192 last_month). Default to last_year when unclear.\n- Ask one clarifying question before repeating a failed or empty lookup.\n- If the tool errors or times out, apologize and offer to leave a message.",
         "instructions_mode": "append",
-        "instructions": "You are the personal assistant of {{target_user_name}}, a Dupip user. You answer questions from a phone caller about {{target_user_name}}'s life, week, month, year, mood, tasks, habits, and notes.\n\nSTRICT SCOPE DISCIPLINE\n- Answer ONLY from data returned by phone_query_user_data for the caller's access level. If access_level is PUBLIC or the tool returns nothing, say what you can see and never imply access to private data.\n- Never fabricate moods, tasks, notes, dates, or analysis. If there is no data for the question, say \"I don't have information about that.\"\n- Summarize; never recite note text verbatim at length.\n- Never discuss the tools, access levels, or that other data exists.\n\nTONE AND FORM\n- Warm, concise, conversational — under 120 words per answer, plain spoken sentences, no lists or markdown.\n- The caller is {{caller_full_name}} (access: {{caller_access_level}}, relationship: {{caller_relationship}}). Address them naturally.\n\nTOOL USE\n- Call phone_query_user_data once per distinct question, passing the real question as query and the person's name as target_user.\n- Infer the timeframe from the question and pass it (\"how was his week?\" → last_week; \"how has her year been?\" → last_year; \"how is he doing lately?\" → last_month). Default to last_year when unclear.\n- Ask one clarifying question before repeating a failed or empty lookup.\n- If the tool errors or times out, apologize and offer to leave a message."
+        "shared_tool_ids": null,
+        "tools": [],
+        "tools_mode": "append",
+        "model": null,
+        "llm_api_key_ref": null,
+        "external_llm": null,
+        "voice_settings": null,
+        "transcription": null,
+        "position": null
       },
       {
-        "id": "n_voicemail",
+        "type": "prompt",
+        "id": "take_a_voicemail",
         "name": "Take a voicemail",
+        "instructions": "You are taking a recorded message for {{target_user_name}} on their Dupip voicemail.\n- Warmly ask the caller to speak their message: \"Go ahead \u2014 {{target_user_name}} will see this message and can read or listen to it.\"\n- If the caller asks questions instead, remind them this is the message recorder, then take their message.\n- After they finish, call phone_record_message once with the message text as text and {{target_user_name}}'s name as target_user.\n- Then say: \"Got it \u2014 saved for {{target_user_name}}. Anything else?\" and end the call when they are done.\n- If the tool fails, say the message could not be saved and suggest trying again later.",
         "instructions_mode": "append",
-        "instructions": "You are taking a recorded message for {{target_user_name}} on their Dupip voicemail.\n- Warmly ask the caller to speak their message: \"Go ahead — {{target_user_name}} will see this message and can read or listen to it.\"\n- If the caller asks questions instead, remind them this is the message recorder, then take their message.\n- After they finish, call phone_record_message once with the message text as text and {{target_user_name}}'s name as target_user.\n- Then say: \"Got it — saved for {{target_user_name}}. Anything else?\" and end the call when they are done.\n- If the tool fails, say the message could not be saved and suggest trying again later."
+        "shared_tool_ids": null,
+        "tools": [],
+        "tools_mode": "append",
+        "model": null,
+        "llm_api_key_ref": null,
+        "external_llm": null,
+        "voice_settings": null,
+        "transcription": null,
+        "position": null
       },
       {
-        "id": "n_goodbye",
+        "type": "prompt",
+        "id": "goodbye",
         "name": "Goodbye",
+        "instructions": "Say a warm, brief goodbye and then end the call using the hangup tool.",
         "instructions_mode": "replace",
-        "instructions": "Say a warm, brief goodbye and then end the call using the hangup tool."
+        "shared_tool_ids": [
+          "tool-cc96ca51-1950-4a81-a7f2-3fdc4c9836cc"
+        ],
+        "tools": [
+          {
+            "tool_id": "tool-cc96ca51-1950-4a81-a7f2-3fdc4c9836cc",
+            "type": "hangup",
+            "function": null,
+            "retrieval": null,
+            "handoff": null,
+            "invite": null,
+            "client_side_tool": null,
+            "whatsapp_template": null,
+            "pay": null,
+            "timeout_ms": 5000,
+            "shared": true,
+            "name": "hang-up",
+            "description": "",
+            "hangup": {
+              "description": "This tool is used to hang up the call."
+            }
+          }
+        ],
+        "tools_mode": "replace",
+        "model": null,
+        "llm_api_key_ref": null,
+        "external_llm": null,
+        "voice_settings": null,
+        "transcription": null,
+        "position": null
       }
     ],
     "edges": [
       {
-        "id": "e_greeting_to_router",
-        "start_node_id": "n_greeting",
-        "target": { "type": "node", "node_id": "n_router" },
-        "condition": { "type": "default" }
+        "id": "greeting_disclosure_to_identify_intent",
+        "start_node_id": "greeting_disclosure",
+        "target": {
+          "type": "node",
+          "node_id": "identify_intent"
+        },
+        "condition": {
+          "type": "default"
+        }
       },
       {
-        "id": "e_router_unknown_to_voicemail",
-        "start_node_id": "n_router",
-        "target": { "type": "node", "node_id": "n_voicemail" },
+        "id": "identify_intent_to_take_a_voicemail",
+        "start_node_id": "identify_intent",
+        "target": {
+          "type": "node",
+          "node_id": "take_a_voicemail"
+        },
         "condition": {
           "type": "expression",
           "expression": {
             "type": "comparison",
-            "left": { "type": "variable", "name": "caller_known" },
             "op": "==",
-            "right": { "type": "string_literal", "value": "false" }
+            "left": {
+              "type": "variable",
+              "name": "caller_known"
+            },
+            "right": {
+              "type": "string_literal",
+              "value": "false"
+            }
           }
         }
       },
       {
-        "id": "e_router_to_voicemail",
-        "start_node_id": "n_router",
-        "target": { "type": "node", "node_id": "n_voicemail" },
+        "id": "identify_intent_to_take_a_voicemail_2",
+        "start_node_id": "identify_intent",
+        "target": {
+          "type": "node",
+          "node_id": "take_a_voicemail"
+        },
         "condition": {
           "type": "llm",
           "prompt": "The caller wants to leave a recorded message for the user, or their intent is unclear or unsupported."
         }
       },
       {
-        "id": "e_router_to_query",
-        "start_node_id": "n_router",
-        "target": { "type": "node", "node_id": "n_query" },
+        "id": "identify_intent_to_answer_questions_about_the_user",
+        "start_node_id": "identify_intent",
+        "target": {
+          "type": "node",
+          "node_id": "answer_questions_about_the_user"
+        },
         "condition": {
           "type": "llm",
           "prompt": "The caller asks a question about the user's life, week, month, year, mood, tasks, or notes (not a message to leave)."
         }
       },
       {
-        "id": "e_router_to_goodbye",
-        "start_node_id": "n_router",
-        "target": { "type": "node", "node_id": "n_goodbye" },
+        "id": "identify_intent_to_goodbye",
+        "start_node_id": "identify_intent",
+        "target": {
+          "type": "node",
+          "node_id": "goodbye"
+        },
         "condition": {
           "type": "llm",
           "prompt": "The caller is ending the call or saying goodbye without a question or message."
         }
       },
       {
-        "id": "e_query_to_voicemail",
-        "start_node_id": "n_query",
-        "target": { "type": "node", "node_id": "n_voicemail" },
+        "id": "answer_questions_about_the_user_to_take_a_voicemail",
+        "start_node_id": "answer_questions_about_the_user",
+        "target": {
+          "type": "node",
+          "node_id": "take_a_voicemail"
+        },
         "condition": {
           "type": "llm",
           "prompt": "The caller now wants to leave a message instead of asking questions."
         }
       },
       {
-        "id": "e_query_to_goodbye",
-        "start_node_id": "n_query",
-        "target": { "type": "node", "node_id": "n_goodbye" },
+        "id": "answer_questions_about_the_user_to_goodbye",
+        "start_node_id": "answer_questions_about_the_user",
+        "target": {
+          "type": "node",
+          "node_id": "goodbye"
+        },
         "condition": {
           "type": "llm",
           "prompt": "The caller is done asking questions and wants to end the call."
         }
       },
       {
-        "id": "e_voicemail_to_query",
-        "start_node_id": "n_voicemail",
-        "target": { "type": "node", "node_id": "n_query" },
+        "id": "take_a_voicemail_to_answer_questions_about_the_user",
+        "start_node_id": "take_a_voicemail",
+        "target": {
+          "type": "node",
+          "node_id": "answer_questions_about_the_user"
+        },
         "condition": {
           "type": "llm",
           "prompt": "The message was recorded and now the caller asks a question about the user."
         }
       },
       {
-        "id": "e_voicemail_to_goodbye",
-        "start_node_id": "n_voicemail",
-        "target": { "type": "node", "node_id": "n_goodbye" },
+        "id": "take_a_voicemail_to_goodbye",
+        "start_node_id": "take_a_voicemail",
+        "target": {
+          "type": "node",
+          "node_id": "goodbye"
+        },
         "condition": {
           "type": "llm",
           "prompt": "The message was recorded and the caller is done."
         }
       }
     ]
-  }
+  },
+  "tags": []
 }

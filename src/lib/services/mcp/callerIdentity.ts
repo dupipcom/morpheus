@@ -59,6 +59,8 @@ async function resolveFromConversation(conversationId: string): Promise<TrueCall
     phone,
     verified: conversation.metadata?.telnyx_end_user_target_verified === 'true',
     agentTarget: conversation.metadata?.telnyx_agent_target,
+    callSessionId: conversation.metadata?.call_session_id ?? null,
+    callControlId: conversation.metadata?.call_control_id ?? null,
     conversationId
   }
 }
