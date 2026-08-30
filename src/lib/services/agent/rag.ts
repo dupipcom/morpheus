@@ -6,6 +6,7 @@
  */
 
 import prisma from '@/lib/prisma'
+import type { Prisma } from '@/generated/prisma/client'
 import { chunkCompactDays, MAX_CHUNKS } from './chunker'
 import { buildDaySelectForDimensions, buildDayWhere, compactDay } from './daySelect'
 import type { AgentDayRecord } from './daySelect'
@@ -50,24 +51,39 @@ export async function fetchCompactDays(ctx: ResolvedAgentContext): Promise<Compa
  * Fetch the target user's notes the requester is authorized to read.
  * `noteVisibilityFilter` is undefined for the owner (full access) and an
  * allow-list for delegated viewers (see resolveNoteVisibilityFilter).
- * Only notes with `aiEnabled = true` (or the legacy `visibility = AI_ENABLED`)
- * are ever surfaced to the RAG — notes without the AI toggle are excluded
- * regardless of visibility or delegation scope.
+ * By default only notes with `aiEnabled = true` (or the legacy
+ * `visibility = AI_ENABLED`) are ever surfaced to the RAG — notes without the
+ * AI toggle are excluded regardless of visibility or delegation scope.
+ * `requireAiOptIn: false` (phone PUBLIC tier) skips that opt-in requirement and
+ * surfaces every note whose visibility is in the allow-list — used only with
+ * `noteVisibilityFilter: ['PUBLIC']` so AI-enabled private notes still cannot
+ * leak (phase 12 privacy invariant).
  * Undated notes are included regardless of the date range — the range still
  * applies to dated notes; the result is bounded by MAX_COMPACT_NOTES.
  */
-export async function fetchCompactNotes(ctx: ResolvedAgentContext): Promise<CompactNote[]> {
+export async function fetchCompactNotes(
+  ctx: ResolvedAgentContext,
+  options: { requireAiOptIn?: boolean } = {}
+): Promise<CompactNote[]> {
+  const requireAiOptIn = options.requireAiOptIn ?? true
+
+  // Date range filter: dated notes must fall within the window; undated are always included
+  const dateRangeClause: Prisma.NoteWhereInput = {
+    OR: [{ date: { gte: ctx.startDate, lte: ctx.endDate } }, { date: null }]
+  }
+  // Only notes the owner has opted into AI (new toggle) or legacy AI_ENABLED visibility
+  const aiOptInClause: Prisma.NoteWhereInput = {
+    OR: [{ aiEnabled: true }, { visibility: 'AI_ENABLED' }]
+  }
+
+  const where: Prisma.NoteWhereInput = {
+    userId: ctx.targetUserId,
+    ...(ctx.noteVisibilityFilter ? { visibility: { in: ctx.noteVisibilityFilter } } : {}),
+    AND: requireAiOptIn ? [aiOptInClause, dateRangeClause] : [dateRangeClause]
+  }
+
   const notes = await prisma.note.findMany({
-    where: {
-      userId: ctx.targetUserId,
-      ...(ctx.noteVisibilityFilter ? { visibility: { in: ctx.noteVisibilityFilter } } : {}),
-      AND: [
-        // Only notes the owner has opted into AI (new toggle) or legacy AI_ENABLED visibility
-        { OR: [{ aiEnabled: true }, { visibility: 'AI_ENABLED' }] },
-        // Date range filter: dated notes must fall within the window; undated are always included
-        { OR: [{ date: { gte: ctx.startDate, lte: ctx.endDate } }, { date: null }] }
-      ]
-    },
+    where,
     select: { id: true, date: true, content: true },
     orderBy: { createdAt: 'desc' },
     take: MAX_COMPACT_NOTES

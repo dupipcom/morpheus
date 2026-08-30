@@ -13,6 +13,7 @@ import { CHAT_EVENTS } from '@/lib/chat/realtime/events'
 import { sanitizeText } from '@/lib/utils/sanitize'
 
 import { mapInboundSmsPayload, mapOutboundSmsStatus, shouldApplyOutboundStatus } from './helpers'
+import { handleRecordingSaved } from '@/lib/services/voicemail/recordingHandler'
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -34,6 +35,9 @@ export async function handleTelnyxWebhook(rawPayload: unknown): Promise<void> {
     await handleInboundSms(payload)
   } else if (eventType === 'message.sent' || eventType === 'message.finalized') {
     await handleOutboundSmsStatus(payload)
+  } else if (eventType === 'call.recording.saved') {
+    // Voice call recordings (phase 12): attach audio + transcript to voicemails
+    await handleRecordingSaved(payload)
   }
   // Unknown events are a no-op
 }

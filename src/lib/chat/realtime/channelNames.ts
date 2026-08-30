@@ -17,3 +17,7 @@ export function getChatOrgMetaChannelName(orgId: string) {
 export function getChatSmsChannelName(conversationId: string) {
   return `chat:sms:${conversationId}`
 }
+
+export function getChatVoicemailChannelName(userId: string) {
+  return `chat:voicemail:${userId}`
+}

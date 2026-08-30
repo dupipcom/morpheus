@@ -455,6 +455,7 @@ model User {
   delegatedAccessReceived Delegation[] @relation("Delegated")
   emailNotifications EmailNotification[]
   virtualNumbers    VirtualNumber[]
+  voicemails        Voicemail[] @relation("UserVoicemails")
   notifications     Notification[] @relation("UserNotifications")
 }
 
@@ -1510,4 +1511,41 @@ model SmsMessage {
 
   @@index([conversationId, createdAt])
   @@index([userId, createdAt])
+}
+
+// Voicemail left by a phone caller for a Dupip user (Telnyx AI assistant voice mail).
+// Audio lives in iDrive e2 under vm/<targetUserId>/...; transcript/summary are text.
+model Voicemail {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Recipient (the Dupip user whose assistant received the message)
+  targetUserId String   @db.ObjectId
+  targetUser   User     @relation("UserVoicemails", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  // Caller (known Dupip user when resolvable; phone number otherwise)
+  callerUserId   String?
+  callerPhone    String?
+  callerName     String?
+  callerVerified Boolean @default(false) // STIR/SHAKEN A attestation on the inbound call
+
+  // Stored media + AI outputs
+  audioKey         String?
+  audioMimeType    String?
+  audioDurationSec Int?
+  transcript       String?
+  summary          String?
+  source           String   @default("AI_ASSISTANT") // AI_ASSISTANT | RECORDING
+
+  // Telnyx correlation (idempotent re-delivery + recording attachment)
+  telnyxConversationId String? @unique
+  callSessionId        String?
+  callControlId        String?
+
+  readAt DateTime?
+
+  @@index([targetUserId, createdAt])
+  @@index([callSessionId])
+  @@index([callControlId])
 }

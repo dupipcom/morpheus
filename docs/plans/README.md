@@ -20,6 +20,7 @@ One file per phase. Each phase is one PR unless stated otherwise.
 | 9 | Ticketing & checkout | Tiers, promo windows, bundles, buy/reserve with DPIP, escrow | ⬜ planned | `phase-09-ticketing.md` |
 | 10 | QR attendance & door control | Rotating signed QR, scanner API + UI, attendance records, pay-at-door | ⬜ planned | `phase-10-qr-attendance.md` |
 | 11 | Subscription DPIP allowances | Plan catalog, Clerk billing webhook + cron top-ups, idempotent grants | ⬜ planned | `phase-11-subscription-allowances.md` |
+| 12 | MCP server + Telnyx voice assistant | MCP endpoint in morpheus (4 tools: web_auth, phone_auth_by_callerid, phone_query_user_data, phone_record_message), Edge Function dynamic-variables webhook (KV + Stateful Actor), voicemails → /app/chat | ⬜ planned | `phase-12-mcp-voice-assistant.md` |
 
 ## Dependency graph
 
@@ -36,6 +37,8 @@ graph TD
   P8 --> P9
   P9 --> P10[10 QR attendance]
   P5 --> P8
+  P3 --> P12[12 MCP + Telnyx voice<br/>assistant]
+  P4 --> P12
 ```
 
 Phases 3, 4, 6 are independent of each other and can run in parallel. 7 can start any time after 3,

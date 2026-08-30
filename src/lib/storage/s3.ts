@@ -172,13 +172,42 @@ export function objectKeyForUpload(userId: string, extension: string): string {
   return `u/${userId}/${yyyy}/${mm}/${randomUUID()}.${extension}`
 }
 
+/** Voicemail audio key: `vm/<targetUserId>/<yyyy>/<mm>/<uuid>.<ext>`. */
+export function objectKeyForVoicemail(targetUserId: string, extension: string): string {
+  const now = new Date()
+  const yyyy = now.getUTCFullYear()
+  const mm = String(now.getUTCMonth() + 1).padStart(2, '0')
+  return `vm/${targetUserId}/${yyyy}/${mm}/${randomUUID()}.${extension}`
+}
+
+/**
+ * Server-side object PUT (used by webhooks/MCP tools that already hold bytes —
+ * e.g. a Telnyx recording download). Content-Type is pinned so the stored
+ * object matches what playback routes will serve.
+ */
+export async function putObject(
+  key: string,
+  body: Buffer | Uint8Array | ReadableStream | string,
+  contentType: string,
+  contentLength?: number
+): Promise<void> {
+  const command = new PutObjectCommand({
+    Bucket: BUCKET,
+    Key: key,
+    Body: body,
+    ContentType: contentType,
+    ...(contentLength !== undefined ? { ContentLength: contentLength } : {})
+  })
+  await getClient().send(command)
+}
+
 /* ---------------------------------------------------------------------------
  * Media policy — kind allowlists, caps and sniffing rules shared by the
  * presign and create routes (single source of truth so the two can't drift).
  * Plan §4.2: image 5 MB (flier 8 MB), video 25 MB, pdf/document 10 MB, cv 10 MB.
  * ------------------------------------------------------------------------- */
 
-export const VALID_KINDS = ['image', 'video', 'document', 'cv'] as const
+export const VALID_KINDS = ['image', 'video', 'audio', 'document', 'cv'] as const
 export type AttachmentKind = (typeof VALID_KINDS)[number]
 
 export const VALID_ROLES = ['cover', 'flier', 'evidence', 'inline', 'cv'] as const
@@ -187,6 +216,7 @@ export type AttachmentRole = (typeof VALID_ROLES)[number]
 export const EXTENSIONS_BY_KIND: Record<AttachmentKind, string[]> = {
   image: ['heic', 'heif', 'jpg', 'jpeg', 'png', 'webp', 'gif'],
   video: ['mp4', 'mov', 'webm'],
+  audio: ['mp3', 'wav', 'm4a', 'ogg'],
   document: ['pdf'],
   cv: ['pdf']
 }
@@ -203,12 +233,17 @@ export const MIME_BY_EXTENSION: Record<string, string> = {
   mp4: 'video/mp4',
   mov: 'video/quicktime',
   webm: 'video/webm',
+  mp3: 'audio/mpeg',
+  wav: 'audio/wav',
+  m4a: 'audio/x-m4a',
+  ogg: 'audio/ogg',
   pdf: 'application/pdf'
 }
 
 export const KIND_CAPS: Record<AttachmentKind, number> = {
   image: 5 * 1024 * 1024,
   video: 25 * 1024 * 1024,
+  audio: 25 * 1024 * 1024,
   document: 10 * 1024 * 1024,
   cv: 10 * 1024 * 1024
 }
@@ -240,5 +275,6 @@ export function extensionAllowedFor(kind: AttachmentKind, ext: string): boolean 
 export function kindFamilyMatches(kind: AttachmentKind, mime: string): boolean {
   if (kind === 'image') return mime.startsWith('image/')
   if (kind === 'video') return mime.startsWith('video/')
+  if (kind === 'audio') return mime.startsWith('audio/')
   return mime === 'application/pdf'
 }

@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { ChatComposer } from '@/components/chat/chatComposer'
 import { ChatMessageContent } from '@/components/chat/chatMessageContent'
+import { VoicemailPlayer } from '@/components/chat/voicemailPlayer'
 import { ChatSidebar, type ChatActiveRoom, type ChatSidebarChannel, type ChatSidebarDm, type ChatSidebarResponse } from '@/components/chat/chatSidebar'
 import { useI18n } from '@/lib/contexts/i18n'
 import { useFeatureFlag } from '@/lib/hooks/useFeatureFlag'
@@ -24,11 +25,13 @@ import {
   getChatOrgMetaChannelName,
   getChatSmsChannelName,
   getChatUserChannelName,
+  getChatVoicemailChannelName,
 } from '@/lib/chat/realtime/channelNames'
 import { buildChatRoomPath, type ChatRoomRouteTarget } from '@/lib/chat/routes'
 import { cn } from '@/lib/utils/utils'
 import type { ChatMessageSummary, ChatPendingInviteSummary } from '@/lib/chat/types'
 import type { SmsConversationSummary, SmsMessageStatusValue, SmsMessageSummary } from '@/lib/services/sms'
+import type { VoicemailListItem } from '@/lib/services/voicemail'
 import { CHAT_ANONYMOUS_MARKER, CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from '@/lib/chat/constants'
 import { buildChatInviteUrl } from '@/lib/chat/invites'
 
@@ -71,6 +74,11 @@ interface VirtualNumberAssignmentResponse {
   quota: number
 }
 
+interface VoicemailsResponse {
+  voicemails: VoicemailListItem[]
+  unreadCount: number
+}
+
 interface RelationshipCandidate {
   id: string
   displayName: string
@@ -98,9 +106,10 @@ interface ChatViewProps {
   initialOrgId?: string
   initialChannelId?: string
   initialSmsConversationId?: string
+  initialVoicemails?: boolean
 }
 
-export function ChatView({ initialUsername, initialMessageId, initialOrgId, initialChannelId, initialSmsConversationId }: ChatViewProps = {}) {
+export function ChatView({ initialUsername, initialMessageId, initialOrgId, initialChannelId, initialSmsConversationId, initialVoicemails }: ChatViewProps = {}) {
   const { t, hasTranslation, locale } = useI18n()
   const { isSignedIn } = useAuth()
   const { isVirtualNumberEnabled } = useFeatureFlag()
@@ -126,6 +135,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   const deepLinkOrgHandledRef = useRef(false)
   const deepLinkThreadHandledRef = useRef(false)
   const deepLinkSmsHandledRef = useRef(false)
+  const deepLinkVoicemailHandledRef = useRef(false)
   const sidebarRef = useRef<SidebarResponse | undefined>(undefined)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const threadContainerRef = useRef<HTMLDivElement>(null)
@@ -133,6 +143,10 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   const getNavigationTargetForRoom = useCallback((room: Exclude<ActiveRoom, null>) => {
     if (room.type === 'channel') {
       return { type: 'channel', orgId: room.orgId, channelId: room.id } satisfies ChatRoomRouteTarget
+    }
+
+    if (room.type === 'voicemails') {
+      return { type: 'voicemails' } satisfies ChatRoomRouteTarget
     }
 
     if (room.type === 'sms') {
@@ -174,6 +188,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     if (!activeRoom) return null
     if (activeRoom.type === 'channel') return `/api/v1/chat/channels/${activeRoom.id}/messages`
     if (activeRoom.type === 'sms') return `/api/v1/sms/conversations/${activeRoom.id}/messages`
+    if (activeRoom.type === 'voicemails') return null
     return `/api/v1/chat/dms/${activeRoom.id}/messages`
   }, [activeRoom])
 
@@ -193,6 +208,16 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     isLoading: isSmsConversationsLoading,
     mutate: mutateSmsConversations,
   } = useSWR<SmsConversationsResponse>(smsConversationsKey, fetcher, {
+    refreshInterval: CHAT_POLL_INTERVAL_MS,
+  })
+
+  const voicemailsKey = '/api/v1/voicemails'
+  const {
+    data: voicemailsData,
+    error: voicemailsError,
+    isLoading: isVoicemailsLoading,
+    mutate: mutateVoicemails,
+  } = useSWR<VoicemailsResponse>(voicemailsKey, fetcher, {
     refreshInterval: CHAT_POLL_INTERVAL_MS,
   })
 
@@ -224,12 +249,14 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   const smsStatusSentLabel = hasTranslation('chat.sms.statusSent') ? t('chat.sms.statusSent') : 'Sent'
   const smsStatusDeliveredLabel = hasTranslation('chat.sms.statusDelivered') ? t('chat.sms.statusDelivered') : 'Delivered'
   const smsStatusFailedLabel = hasTranslation('chat.sms.statusFailed') ? t('chat.sms.statusFailed') : 'Failed'
+  const voicemailsLabel = hasTranslation('chat.voicemail.label') ? t('chat.voicemail.label') : 'Voicemails'
+  const voicemailsEmptyLabel = hasTranslation('chat.voicemail.empty') ? t('chat.voicemail.empty') : 'No voicemails yet'
 
   useEffect(() => {
     if (activeRoom || !sidebar) return
     // Don't auto-select a default room when deep-link props are present —
     // the dedicated deep-link effects will handle the selection instead.
-    if (initialUsername || initialOrgId || initialChannelId || initialSmsConversationId) return
+    if (initialUsername || initialOrgId || initialChannelId || initialSmsConversationId || initialVoicemails) return
 
     // On mobile, don't auto-select a room — show the sidebar/rooms list instead.
     if (isMobile) return
@@ -246,7 +273,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       const room: ActiveRoom = { type: 'dm', id: defaultDm.id, name: getDisplayLabel(defaultDm.participant?.displayName, directMessageLabel) }
       openRoom(room)
     }
-  }, [activeRoom, isMobile, directMessageLabel, openRoom, sidebar, initialUsername, initialOrgId, initialChannelId, initialSmsConversationId])
+  }, [activeRoom, isMobile, directMessageLabel, openRoom, sidebar, initialUsername, initialOrgId, initialChannelId, initialSmsConversationId, initialVoicemails])
 
   // Deep link: open DM for initialUsername when sidebar is ready
   useEffect(() => {
@@ -313,6 +340,13 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     openRoom(room)
   }, [initialSmsConversationId, openRoom, smsConversationsData])
 
+  // Deep link: open the voicemails inbox
+  useEffect(() => {
+    if (!initialVoicemails || deepLinkVoicemailHandledRef.current) return
+    deepLinkVoicemailHandledRef.current = true
+    openRoom({ type: 'voicemails', name: voicemailsLabel })
+  }, [initialVoicemails, openRoom, voicemailsLabel])
+
   // Deep link: scroll to initialMessageId and open thread panel when messages are loaded
   useEffect(() => {
     if (!initialMessageId || !messagesData?.messages?.length || deepLinkThreadHandledRef.current) return
@@ -328,6 +362,17 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
 
   useEffect(() => {
     if (!activeRoom) return
+
+    if (activeRoom.type === 'voicemails') {
+      const hasUnread = (voicemailsData?.voicemails ?? []).some((voicemail) => !voicemail.readAt)
+      if (!hasUnread) return
+
+      void fetch('/api/v1/voicemails/read', { method: 'POST' }).then(() => {
+        void mutateVoicemails()
+        void mutateSidebar()
+      })
+      return
+    }
 
     if (activeRoom.type === 'sms') {
       const smsMessages = smsMessagesData?.messages ?? []
@@ -359,7 +404,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     }).then(() => mutateSidebar())
-  }, [activeRoom, messagesData, smsMessagesData, mutateSidebar, mutateSmsConversations])
+  }, [activeRoom, messagesData, smsMessagesData, voicemailsData, mutateSidebar, mutateSmsConversations, mutateVoicemails])
 
   useEffect(() => {
     const currentUserId = sidebar?.currentUserId
@@ -387,6 +432,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     }
 
     void subscribe(getChatUserChannelName(currentUserId), invalidate)
+    void subscribe(getChatVoicemailChannelName(currentUserId), invalidate)
 
     if (activeRoom?.type === 'channel') {
       void subscribe(getChatOrgChannelName(activeRoom.orgId, activeRoom.id), invalidate)
@@ -427,7 +473,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   }, [threadData])
 
   const sendMessage = useCallback(async (content: string) => {
-    if (!activeRoom) return
+    if (!activeRoom || activeRoom.type === 'voicemails') return
 
     if (activeRoom.type === 'sms') {
       const response = await fetch(`/api/v1/sms/conversations/${activeRoom.id}/messages`, {
@@ -465,7 +511,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   }, [activeRoom, mutateMessages, mutateSidebar, mutateSmsConversations, mutateSmsMessages, smsSendErrorLabel])
 
   const sendThreadReply = useCallback(async (content: string) => {
-    if (!activeRoom || !threadData?.root?.id) return
+    if (!activeRoom || activeRoom.type === 'voicemails' || !threadData?.root?.id) return
 
     const replyToMessageId = threadData.replies?.length
       ? threadData.replies[threadData.replies.length - 1].id
@@ -625,6 +671,10 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     openRoom(room)
   }
 
+  const openVoicemailsRoom = () => {
+    openRoom({ type: 'voicemails', name: voicemailsLabel })
+  }
+
   const smsStatusLabel = (status: SmsMessageStatusValue | null) => {
     if (status === 'DELIVERED') return smsStatusDeliveredLabel
     if (status === 'FAILED') return smsStatusFailedLabel
@@ -699,7 +749,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
         <div className="flex min-w-0 items-center gap-2">
           <SidebarTrigger className="md:hidden" />
           <div className="min-w-0">
-            <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? directMessageLabel : activeRoom?.type === 'sms' ? smsLabel : 'Select a room'}</p>
+            <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? directMessageLabel : activeRoom?.type === 'sms' ? smsLabel : activeRoom?.type === 'voicemails' ? voicemailsLabel : 'Select a room'}</p>
             <h2 className="truncate text-lg font-semibold">{activeRoom?.name || chatTitle}</h2>
           </div>
         </div>
@@ -709,7 +759,32 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       </div>
 
       <div ref={messagesContainerRef} className={`flex-1 space-y-4 overflow-y-auto p-4 ${MOBILE_CONTENT_BOTTOM_PADDING_CLASS} md:pb-4`}>
-        {activeRoom?.type === 'sms' ? (
+        {activeRoom?.type === 'voicemails' ? (
+          isVoicemailsLoading ? (
+            <p className="text-sm text-muted-foreground">Loading voicemails…</p>
+          ) : (voicemailsData?.voicemails ?? []).length > 0 ? (
+            (voicemailsData?.voicemails ?? []).map((voicemail) => (
+              <VoicemailPlayer
+                key={voicemail.id}
+                voicemail={voicemail}
+                onPlayed={(id) => {
+                  void fetch(`/api/v1/voicemails/${id}`, { method: 'PATCH' }).then(() => {
+                    void mutateVoicemails()
+                    void mutateSidebar()
+                  })
+                }}
+                onDeleted={() => {
+                  void mutateVoicemails()
+                  void mutateSidebar()
+                }}
+              />
+            ))
+          ) : (
+            <Card>
+              <CardContent className="pt-6 text-sm text-muted-foreground">{voicemailsEmptyLabel}</CardContent>
+            </Card>
+          )
+        ) : activeRoom?.type === 'sms' ? (
           isSmsMessagesLoading ? (
             <p className="text-sm text-muted-foreground">Loading messages…</p>
           ) : smsMessages.length > 0 ? (
@@ -730,7 +805,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
         )}
       </div>
 
-      {activeRoom && <ChatComposer placeholder={activeRoom.type === 'sms' ? smsComposerPlaceholder : 'Write a message…'} onSubmit={sendMessage} collapsible />}
+      {activeRoom && activeRoom.type !== 'voicemails' && <ChatComposer placeholder={activeRoom.type === 'sms' ? smsComposerPlaceholder : 'Write a message…'} onSubmit={sendMessage} collapsible />}
     </div>
   )
 
@@ -797,6 +872,9 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
             smsConversations={smsConversationsData?.conversations ?? []}
             isSmsConversationsLoading={isSmsConversationsLoading}
             smsConversationsHasError={Boolean(smsConversationsError)}
+            voicemails={voicemailsData?.voicemails ?? []}
+            isVoicemailsLoading={isVoicemailsLoading}
+            voicemailsHasError={Boolean(voicemailsError)}
             hasAssignedVirtualNumber={Boolean(
               virtualNumberAssignmentData?.assignments?.some((assignment) => assignment.enabled),
             )}
@@ -813,6 +891,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
             onSelectDm={openDmFromSidebar}
             onSelectChannel={openChannelFromSidebar}
             onSelectSmsConversation={openSmsConversation}
+            onSelectVoicemail={openVoicemailsRoom}
             onStartDm={(id) => { void startDm(id) }}
             onCreateOrg={() => { void createOrg() }}
             onCreateChannel={() => { void createChannel() }}

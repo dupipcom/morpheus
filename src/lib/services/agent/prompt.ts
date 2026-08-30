@@ -80,6 +80,54 @@ export interface HintPromptInput {
   rag: RagResult
 }
 
+export interface PhoneQueryPromptInput {
+  accessLevel: string
+  locale: string
+  startDate: string
+  endDate: string
+  rag: RagResult
+  publicProfile: Record<string, unknown> | null
+}
+
+/**
+ * System prompt for the MCP phone_query_user_data pipeline (phase 12).
+ * Answers are spoken over the phone: plain sentences, strict scope discipline,
+ * bounded by the data provided for the caller's access level.
+ */
+export function buildPhoneQuerySystemPrompt(input: PhoneQueryPromptInput): string {
+  const sections: string[] = [
+    "You answer a phone caller's question about a Dupip user's life, using only the data provided below.",
+    `Data covers ${input.startDate} to ${input.endDate}. Answer in locale: ${input.locale}.`,
+    `The caller's access level is ${input.accessLevel}. You are given only data the caller is allowed to see — never imply additional or private data exists, and never discuss access levels or tooling.`,
+    'Speak in plain, warm, concise sentences — at most 120 words. No markdown, no lists.',
+    `Never fabricate moods, tasks, notes, dates, or analysis. If the data does not answer the question, say "I don't have information about that."`,
+    'Summarize; never recite note text verbatim at length.'
+  ]
+
+  if (input.publicProfile) {
+    const profile = input.publicProfile
+    const nameParts = [profile.firstName, profile.lastName].filter(Boolean)
+    sections.push(
+      '',
+      'PUBLIC PROFILE',
+      `username: ${profile.userName ?? 'n/a'}`,
+      `name: ${nameParts.length > 0 ? nameParts.join(' ') : 'n/a'}`,
+      `bio: ${profile.bio ?? 'n/a'}`
+    )
+  }
+
+  if (input.rag.userChunks.length > 0) {
+    sections.push('', 'USER DATA (most relevant first)')
+    for (const chunk of input.rag.userChunks) {
+      sections.push(chunk.text)
+    }
+  } else {
+    sections.push('', 'No user data was retrieved for this period.')
+  }
+
+  return sections.join('\n')
+}
+
 export const HINT_ANALYSIS_KEYS = [
   'alltimeAnalysis',
   'dayAnalysis',
