@@ -301,6 +301,8 @@ export default {
       console.log('[dupip-mcp-edge] assistant.initialization received')
     }
 
+    console.log('[dupip-mcp-edge] assistant.initialization received')
+
     const data = payload.data?.payload ?? {}
     const callerPhone =
       typeof data.telnyx_end_user_target === 'string' ? data.telnyx_end_user_target : ''
