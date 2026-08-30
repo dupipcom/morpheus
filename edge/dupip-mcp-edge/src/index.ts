@@ -166,9 +166,11 @@ export default {
 
     const publicKeySecret = await env.SECRETS.get('TELNYX_WEBHOOK_PUBLIC_KEY').catch(() => '')
     if (!publicKeySecret) {
+      console.log('[dupip-mcp-edge] missing public key secret')
       return jsonResponse({ error: 'Missing TELNYX_WEBHOOK_PUBLIC_KEY secret' }, 500)
     }
     if (!(await verifyTelnyxSignature(publicKeySecret, timestamp, rawBody, signature))) {
+      console.log('[dupip-mcp-edge] signature verification failed')
       return jsonResponse({ error: 'Invalid signature' }, 401)
     }
 
@@ -181,8 +183,11 @@ export default {
 
     if (payload.event_type !== 'assistant.initialization') {
       // Unknown events are a no-op (2xx fast so Telnyx does not retry)
+      console.log(`[dupip-mcp-edge] ignoring event_type=${payload.event_type ?? 'unknown'}`)
       return jsonResponse({ ok: true })
     }
+
+    console.log('[dupip-mcp-edge] assistant.initialization received')
 
     const data = payload.data?.payload ?? {}
     const callerPhone =
@@ -256,6 +261,10 @@ export default {
 
     const caller = context.caller
     const target = context.targetUser
+
+    console.log(
+      `[dupip-mcp-edge] resolved: known=${context.caller.known} level=${context.caller.accessLevel} target=${target?.name ?? target?.username ?? 'none'} calls=${callCount}`
+    )
 
     // All values are strings — they interpolate into {{var}} slots in the
     // assistant's instructions, greeting, and expression edge conditions.
