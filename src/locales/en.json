@@ -155,7 +155,18 @@
       "addError": "Could not add delegated analyst",
       "invitationDraft": "Invitation draft prepared for this email.",
       "roles": "Roles",
-      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes.",
+      "phone": {
+        "title": "Phone Numbers",
+        "hint": "Authorize phone numbers to call your assistant and ask about your data at the selected access level.",
+        "numberPlaceholder": "+1 415 555 1234",
+        "labelPlaceholder": "Label (optional, e.g. Mom)",
+        "addNumber": "Add phone number",
+        "adding": "Adding...",
+        "addError": "Could not add phone number",
+        "activeNumbers": "Authorized Numbers",
+        "empty": "No phone numbers authorized yet."
+      }
     }
   },
   "roles": {
