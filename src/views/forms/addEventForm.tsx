@@ -15,7 +15,7 @@ import {
   commitAttachmentToEntity,
   type PickedAttachment
 } from '@/components/attachmentPicker'
-import { PlacePicker, type PlaceLocation } from '@/components/placePicker'
+import { EventVenueFields, type EventVenueValue } from '@/views/forms/eventVenueFields'
 import type { EventManage } from '@/views/be/eventTypes'
 
 /**
@@ -44,7 +44,7 @@ export const AddEventForm = ({
   const [timezone, setTimezone] = useState('UTC')
   const [isOnline, setIsOnline] = useState(false)
   const [onlineUrl, setOnlineUrl] = useState('')
-  const [venue, setVenue] = useState<PlaceLocation | null>(null)
+  const [venue, setVenue] = useState<EventVenueValue | null>(null)
   const [capacity, setCapacity] = useState('')
   const [visibility, setVisibility] = useState('PUBLIC')
   const [ownerOrgId, setOwnerOrgId] = useState('')
@@ -112,10 +112,10 @@ export const AddEventForm = ({
     onlineUrl: isOnline ? onlineUrl.trim() || null : null,
     location: isOnline
       ? null
-      : venue
+      : venue && typeof venue.lat === 'number' && typeof venue.lng === 'number'
         ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng }
         : null,
-    venueName: isOnline ? null : venue?.name ?? null,
+    venueName: isOnline ? null : venue?.name?.trim() || null,
     capacity: capacity ? parseInt(capacity, 10) || null : null,
     visibility,
     ...(ownerOrgId ? { ownerType: 'ORG', orgId: ownerOrgId } : {})
@@ -287,10 +287,7 @@ export const AddEventForm = ({
               <Input id="event-online-url" value={onlineUrl} onChange={(e) => setOnlineUrl(e.target.value)} placeholder="https://" />
             </div>
           ) : (
-            <div>
-              <Label>{t('events.form.venue', { defaultValue: 'Venue name' })}</Label>
-              <PlacePicker value={venue} onChange={setVenue} inlineResults />
-            </div>
+            <EventVenueFields value={venue} onChange={setVenue} />
           )}
           <div>
             <Label htmlFor="event-capacity">{t('events.form.capacity', { defaultValue: 'Capacity (optional)' })}</Label>
@@ -338,6 +335,11 @@ export const AddEventForm = ({
                 value={cover}
                 onChange={setCover}
               />
+              <p className="text-xs text-muted-foreground">
+                {t('events.form.coverHint', {
+                  defaultValue: 'Ideal 16:9 (e.g. 1920×1080) — displays in full on cards and the event page.'
+                })}
+              </p>
             </div>
             <div>
               <Label>{t('events.form.flier', { defaultValue: 'Flier image' })}</Label>

@@ -17,6 +17,7 @@ on:
   # Every PR gets E2E — the stacked phase PRs target each other, not dev;
   # only the bottom PR's check can be made required for the dev merge.
   pull_request:
+    branches: [dev, main]
   push:
     branches: [dev]
 

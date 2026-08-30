@@ -38,11 +38,13 @@ export const EventCard = ({
   const cardInner = (
     <Card className="h-full hover:shadow-md transition-shadow overflow-hidden">
       {event.coverDocumentId && (
+        // 16:9 — same proportions as the event detail page, so an ideal-ratio
+        // cover displays entirely (no cropped bleed at the top).
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={attachmentFileUrl(event.coverDocumentId)}
           alt=""
-          className="w-full h-32 object-cover"
+          className="w-full aspect-video object-cover"
         />
       )}
       <CardContent className="pt-3 space-y-1">

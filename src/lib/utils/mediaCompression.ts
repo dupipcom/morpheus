@@ -65,24 +65,39 @@ export type PreCheckResult =
   | { ok: false; kind: AttachmentKind | null; reason: 'unsupported' | 'too-large'; size: number; cap: number }
 
 /**
+ * Size cap for the final uploaded blob, honoring the flier override for images.
+ * Mirrors the server's `capFor` in src/lib/storage/s3.ts so the client never
+ * compresses toward a budget the server rejects (or rejects what the server
+ * accepts — fliers compress toward 8 MB, not the 5 MB image cap).
+ */
+export function capForKind(kind: AttachmentKind, role?: string): number {
+  if (role === 'flier' && kind === 'image') return CAPS.flier
+  if (kind === 'cv') return CAPS.cv
+  if (kind === 'video') return CAPS.video
+  if (kind === 'document') return CAPS.document
+  return CAPS.image
+}
+
+/**
  * Client-side pre-checks before the pipeline starts. The server is the authority
  * (presign cap + post-upload magic-byte/HEAD checks); this only saves bandwidth.
  *
  * - Disallowed extensions → 'unsupported'.
  * - PDFs pass through unmodified, so their ORIGINAL size must already fit the cap.
  * - Images/videos may be compressed, so the hard limit to even attempt is cap × 3.
+ * - `role` (e.g. 'flier') selects the role-aware cap.
  */
-export function preCheckFile(file: File, requested: AttachmentKind | 'any'): PreCheckResult {
+export function preCheckFile(
+  file: File,
+  requested: AttachmentKind | 'any',
+  role?: string
+): PreCheckResult {
   const actual = kindFromFileNameAndMime(file.name, file.type)
   if (!actual) return { ok: false, kind: null, reason: 'unsupported', size: file.size, cap: 0 }
   if (requested !== 'any' && actual !== requested && !(actual === 'document' && requested === 'cv')) {
     return { ok: false, kind: null, reason: 'unsupported', size: file.size, cap: 0 }
   }
-  const cap =
-    requested === 'cv' ? CAPS.cv
-    : actual === 'video' ? CAPS.video
-    : actual === 'image' ? CAPS.image
-    : CAPS.document
+  const cap = capForKind(actual === 'document' && requested === 'cv' ? 'cv' : actual, role)
   const limit = actual === 'document' ? cap : cap * 3
   if (file.size > limit) return { ok: false, kind: actual, reason: 'too-large', size: file.size, cap }
   return { ok: true, kind: actual, cap }

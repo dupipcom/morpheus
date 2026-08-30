@@ -17,7 +17,7 @@ import {
   attachmentFileUrl,
   type PickedAttachment
 } from '@/components/attachmentPicker'
-import { PlacePicker, type PlaceLocation } from '@/components/placePicker'
+import { EventVenueFields, type EventVenueValue } from '@/views/forms/eventVenueFields'
 import type { EventManage } from '@/views/be/eventTypes'
 
 /** ISO instant → `datetime-local` value (browser-local; inverse of the create form). */
@@ -76,7 +76,7 @@ export const ManageEventForm = ({
   const [timezone, setTimezone] = useState('UTC')
   const [isOnline, setIsOnline] = useState(false)
   const [onlineUrl, setOnlineUrl] = useState('')
-  const [venue, setVenue] = useState<PlaceLocation | null>(null)
+  const [venue, setVenue] = useState<EventVenueValue | null>(null)
   const [capacity, setCapacity] = useState('')
   const [visibility, setVisibility] = useState('PUBLIC')
   const [cover, setCover] = useState<PickedAttachment[]>([])
@@ -104,7 +104,9 @@ export const ManageEventForm = ({
             name: event.location.name,
             address: event.location.address
           }
-        : null
+        : event.venueName
+          ? { name: event.venueName }
+          : null
     )
     setCapacity(event.capacity != null ? String(event.capacity) : '')
     setVisibility(event.visibility ?? 'PUBLIC')
@@ -126,10 +128,10 @@ export const ManageEventForm = ({
     onlineUrl: isOnline ? onlineUrl.trim() || null : null,
     location: isOnline
       ? null
-      : venue
+      : venue && typeof venue.lat === 'number' && typeof venue.lng === 'number'
         ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng }
         : null,
-    venueName: isOnline ? null : venue?.name ?? null,
+    venueName: isOnline ? null : venue?.name?.trim() || null,
     capacity: capacity ? parseInt(capacity, 10) || null : null,
     visibility,
     coverDocumentId: cover[0]?.documentId ?? null,
@@ -293,10 +295,12 @@ export const ManageEventForm = ({
                 <Input id="manage-event-online-url" value={onlineUrl} onChange={(e) => setOnlineUrl(e.target.value)} placeholder="https://" />
               </div>
             ) : (
-              <div>
-                <Label>{t('events.form.venue', { defaultValue: 'Venue name' })}</Label>
-                <PlacePicker value={venue} onChange={setVenue} inlineResults />
-              </div>
+              <EventVenueFields
+                value={venue}
+                onChange={setVenue}
+                nameInputId="manage-event-venue-name"
+                addressInputId="manage-event-venue-address"
+              />
             )}
             <div>
               <Label htmlFor="manage-event-capacity">{t('events.form.capacity', { defaultValue: 'Capacity (optional)' })}</Label>
@@ -328,6 +332,11 @@ export const ManageEventForm = ({
                   value={cover}
                   onChange={setCover}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {t('events.form.coverHint', {
+                    defaultValue: 'Ideal 16:9 (e.g. 1920×1080) — displays in full on cards and the event page.'
+                  })}
+                </p>
               </div>
               <div>
                 <Label>{t('events.form.flier', { defaultValue: 'Flier image' })}</Label>

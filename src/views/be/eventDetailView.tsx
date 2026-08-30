@@ -111,8 +111,9 @@ export function EventDetailView({
     <div className="space-y-6">
       <Card className="overflow-hidden">
         {event.cover && (
+          // 16:9 — the documented cover proportions (same as the event cards).
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={attachmentFileUrl(event.cover)} alt="" className="w-full h-56 object-cover" />
+          <img src={attachmentFileUrl(event.cover)} alt="" className="w-full aspect-video object-cover" />
         )}
         <CardContent className="pt-4 space-y-3">
           <h1 className="text-2xl font-bold">{event.name}</h1>
