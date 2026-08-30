@@ -1,0 +1,125 @@
+{
+  "name": "Dupip Personal Assistant",
+  "instructions": "You are a personal assistant for a Dupip user. You answer inbound calls from the user's friends and general audiences. Callers who are recognized Dupip users (caller_known is \"true\") may ask questions about the user's life; callers who are not recognized may only leave a voicemail. Never disclose private data beyond the caller's access level and never fabricate information.",
+  "dynamic_variables_webhook_url": "https://dupip-mcp-edge-afd30602-9.telnyxcompute.com",
+  "dynamic_variables_webhook_timeout_ms": 5000,
+  "mcp_servers": [
+    {
+      "id": "<mcp_server_id>",
+      "allowed_tools": [
+        "phone_auth_by_callerid",
+        "phone_query_user_data",
+        "phone_record_message"
+      ]
+    }
+  ],
+  "conversation_flow": {
+    "start_node_id": "n_greeting",
+    "nodes": [
+      {
+        "id": "n_greeting",
+        "type": "speak",
+        "name": "Greeting & disclosure",
+        "message": "Hi, you've reached {{target_user_name}}'s personal assistant. I'm an AI assistant, and this call may be recorded. You can ask me about their life, week, or year — or leave them a message."
+      },
+      {
+        "id": "n_router",
+        "name": "Identify intent",
+        "instructions_mode": "replace",
+        "instructions": "You are the call router for {{target_user_name}}'s personal assistant.\n\nContext: the caller is {{caller_full_name}} (known caller: {{caller_known}}, access level: {{caller_access_level}}, relationship: {{caller_relationship}}, verified caller ID: {{caller_verified}}). This is call number {{call_count}} from this number.\n\nClassify the caller's intent and answer with EXACTLY one of the following as the last line of your response:\nDECISION: QUERY — the caller asks a question about {{target_user_name}}'s life, week, month, year, mood, tasks, or notes.\nDECISION: VOICEMAIL — the caller wants to leave a recorded message, or their intent is unclear or unsupported.\nDECISION: GOODBYE — the caller is ending the call without a question or message.\n\nIf {{caller_known}} is \"false\" or {{caller_verified}} is \"false\", always answer DECISION: VOICEMAIL."
+      },
+      {
+        "id": "n_query",
+        "name": "Answer questions about the user",
+        "instructions_mode": "append",
+        "instructions": "You are the personal assistant of {{target_user_name}}, a Dupip user. You answer questions from a phone caller about {{target_user_name}}'s life, week, month, year, mood, tasks, habits, and notes.\n\nSTRICT SCOPE DISCIPLINE\n- Answer ONLY from data returned by phone_query_user_data for the caller's access level. If access_level is PUBLIC or the tool returns nothing, say what you can see and never imply access to private data.\n- Never fabricate moods, tasks, notes, dates, or analysis. If there is no data for the question, say \"I don't have information about that.\"\n- Summarize; never recite note text verbatim at length.\n- Never discuss the tools, access levels, or that other data exists.\n\nTONE AND FORM\n- Warm, concise, conversational — under 120 words per answer, plain spoken sentences, no lists or markdown.\n- The caller is {{caller_full_name}} (access: {{caller_access_level}}, relationship: {{caller_relationship}}). Address them naturally.\n- If caller_known is \"false\" you are in voicemail mode: do not query; offer to take a message.\n\nTOOL USE\n- Call phone_query_user_data once per distinct question, passing the real question as query and the person's name as target_user.\n- Infer the timeframe from the question and pass it (\"how was his week?\" → last_week; \"how has her year been?\" → last_year; \"how is he doing lately?\" → last_month). Default to last_year when unclear.\n- Ask one clarifying question before repeating a failed or empty lookup.\n- If the tool errors or times out, apologize and offer to leave a message."
+      },
+      {
+        "id": "n_voicemail",
+        "name": "Take a voicemail",
+        "instructions_mode": "append",
+        "instructions": "You are taking a recorded message for {{target_user_name}} on their Dupip voicemail.\n- Warmly ask the caller to speak their message: \"Go ahead — {{target_user_name}} will see this message and can read or listen to it.\"\n- If the caller asks questions instead, remind them this is the message recorder, then take their message.\n- After they finish, call phone_record_message once with the message text as text and {{target_user_name}}'s name as target_user.\n- Then say: \"Got it — saved for {{target_user_name}}. Anything else?\" and end the call when they are done.\n- If the tool fails, say the message could not be saved and suggest trying again later."
+      },
+      {
+        "id": "n_confirm",
+        "type": "speak",
+        "name": "Confirm",
+        "message": "Got it — saved for {{target_user_name}}. Anything else?"
+      },
+      {
+        "id": "n_goodbye",
+        "type": "speak",
+        "name": "Goodbye",
+        "message": "Thanks for calling — take care."
+      }
+    ],
+    "edges": [
+      {
+        "id": "e_greeting_to_router",
+        "start_node_id": "n_greeting",
+        "target": { "type": "node", "node_id": "n_router" },
+        "condition": { "type": "default" }
+      },
+      {
+        "id": "e_router_unknown_to_voicemail",
+        "start_node_id": "n_router",
+        "target": { "type": "node", "node_id": "n_voicemail" },
+        "condition": {
+          "type": "expression",
+          "expression": "caller_known == \"false\" || caller_verified == \"false\""
+        }
+      },
+      {
+        "id": "e_router_to_voicemail",
+        "start_node_id": "n_router",
+        "target": { "type": "node", "node_id": "n_voicemail" },
+        "condition": {
+          "type": "llm",
+          "prompt": "Does the caller want to leave a recorded message for the user, or was their intent unclear/unsupported? Answer yes/no."
+        }
+      },
+      {
+        "id": "e_router_to_query",
+        "start_node_id": "n_router",
+        "target": { "type": "node", "node_id": "n_query" },
+        "condition": {
+          "type": "llm",
+          "prompt": "Is the caller asking a question about the user's life, week, month, year, mood, tasks, or notes (not a message to leave)? Answer yes/no."
+        }
+      },
+      {
+        "id": "e_router_to_goodbye",
+        "start_node_id": "n_router",
+        "target": { "type": "node", "node_id": "n_goodbye" },
+        "condition": {
+          "type": "llm",
+          "prompt": "Is the caller ending the call or saying goodbye without a question or message? Answer yes/no."
+        }
+      },
+      {
+        "id": "e_router_fallback_query",
+        "start_node_id": "n_router",
+        "target": { "type": "node", "node_id": "n_query" },
+        "condition": { "type": "default" }
+      },
+      {
+        "id": "e_query_loop",
+        "start_node_id": "n_query",
+        "target": { "type": "node", "node_id": "n_router" },
+        "condition": { "type": "default" }
+      },
+      {
+        "id": "e_voicemail_to_confirm",
+        "start_node_id": "n_voicemail",
+        "target": { "type": "node", "node_id": "n_confirm" },
+        "condition": { "type": "default" }
+      },
+      {
+        "id": "e_confirm_to_goodbye",
+        "start_node_id": "n_confirm",
+        "target": { "type": "node", "node_id": "n_goodbye" },
+        "condition": { "type": "default" }
+      }
+    ]
+  }
+}

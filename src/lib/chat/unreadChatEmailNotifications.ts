@@ -744,3 +744,184 @@ export async function processUnreadChatEmailNotifications() {
     reservedMessages,
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Voicemail digest (phase 12) — unread voicemails fan out through the same
+ * cron, deduped via EmailNotification rows (scopeKey "VOICEMAIL_EMAIL:{id}",
+ * unique per recipient+scopeKey). A voicemail that stays unread is not
+ * re-notified yet — same follow-up as chat messages is a later policy call.
+ * ------------------------------------------------------------------------- */
+
+const VOICEMAIL_EMAIL_NOTIFICATION = 'VOICEMAIL_EMAIL'
+
+export type UnreadVoicemailEmailItem = {
+  id: string
+  callerLabel: string
+  summary: string | null
+  createdAt: Date
+}
+
+export function buildUnreadVoicemailEmailSubject(count: number) {
+  return count === 1 ? 'You have 1 new Dupip voicemail' : `You have ${count} new Dupip voicemails`
+}
+
+export function buildUnreadVoicemailEmailText(items: UnreadVoicemailEmailItem[], voicemailUrl: string) {
+  const lines = items.map((item) => {
+    const when = item.createdAt.toLocaleString()
+    return `- ${item.callerLabel} (${when}): ${item.summary ?? 'Listen to the full message in chat.'}`
+  })
+  return [
+    `You have ${items.length} new voicemail${items.length === 1 ? '' : 's'} on Dupip:`,
+    '',
+    ...lines,
+    '',
+    `Open your voicemail inbox: ${voicemailUrl}`
+  ].join('\n')
+}
+
+export function buildUnreadVoicemailEmailHtml(items: UnreadVoicemailEmailItem[], voicemailUrl: string) {
+  const rows = items
+    .map((item) => {
+      const when = escapeHtml(item.createdAt.toLocaleString())
+      const caller = escapeHtml(item.callerLabel)
+      const summary = item.summary ? escapeHtml(item.summary) : 'Listen to the full message in chat.'
+      return `<li><strong>${caller}</strong> <small>(${when})</small><br/>${summary}</li>`
+    })
+    .join('')
+  return [
+    `<p>You have ${items.length} new voicemail${items.length === 1 ? '' : 's'} on Dupip:</p>`,
+    `<ul>${rows}</ul>`,
+    `<p><a href="${escapeHtml(voicemailUrl)}">Open your voicemail inbox</a></p>`
+  ].join('')
+}
+
+function callerLabelForVoicemail(voicemail: { callerName: string | null; callerPhone: string | null }) {
+  return voicemail.callerName || voicemail.callerPhone || 'Unknown caller'
+}
+
+export async function processUnreadVoicemailEmailNotifications() {
+  const unread = await prisma.voicemail.findMany({
+    where: { readAt: null },
+    orderBy: { createdAt: 'asc' }
+  })
+  if (unread.length === 0) {
+    return { processedRecipients: 0, sentEmails: 0, reservedVoicemails: 0 }
+  }
+
+  // Recipient emails: internal User.email first, Clerk primary email fallback
+  const targetUserIds = [...new Set(unread.map((voicemail) => voicemail.targetUserId))]
+  const users = await prisma.user.findMany({
+    where: { id: { in: targetUserIds } },
+    select: { id: true, email: true, userId: true }
+  })
+  const emailById = new Map<string, string>()
+  const withoutEmail = users.filter((user) => !user.email && user.userId)
+  for (const user of users) {
+    if (user.email) emailById.set(user.id, user.email)
+  }
+  if (withoutEmail.length > 0) {
+    try {
+      const clerk = await clerkClient()
+      const clerkUsers = await clerk.users.getUserList({
+        userId: withoutEmail.map((user) => user.userId as string),
+        limit: withoutEmail.length
+      })
+      for (const clerkUser of clerkUsers.data) {
+        const internal = withoutEmail.find((user) => user.userId === clerkUser.id)
+        const email =
+          clerkUser.primaryEmailAddress?.emailAddress ??
+          clerkUser.emailAddresses?.[0]?.emailAddress
+        if (internal && email) emailById.set(internal.id, email)
+      }
+    } catch {
+      // no Clerk email channel for these recipients — skip them
+    }
+  }
+
+  const transport = createMailTransport()
+  const from = getFromAddress()
+  const voicemailUrl = `${getChatUrl()}/voicemails`
+
+  // Group unsent voicemails per recipient, skipping anything already
+  // reserved/sent (scopeKey dedupe — idempotent across cron runs/retries).
+  const byRecipient = new Map<
+    string,
+    Array<{ voicemail: (typeof unread)[number]; item: UnreadVoicemailEmailItem }>
+  >()
+  for (const voicemail of unread) {
+    if (!emailById.has(voicemail.targetUserId)) continue
+    const scopeKey = createNotificationScopeKey(VOICEMAIL_EMAIL_NOTIFICATION, voicemail.id)
+    const existing = await prisma.emailNotification.findUnique({
+      where: { recipientUserId_scopeKey: { recipientUserId: voicemail.targetUserId, scopeKey } }
+    })
+    if (existing) continue
+
+    const entry = {
+      voicemail,
+      item: {
+        id: voicemail.id,
+        callerLabel: callerLabelForVoicemail(voicemail),
+        summary: voicemail.summary,
+        createdAt: voicemail.createdAt
+      }
+    }
+    const list = byRecipient.get(voicemail.targetUserId) ?? []
+    list.push(entry)
+    byRecipient.set(voicemail.targetUserId, list)
+  }
+
+  if (byRecipient.size === 0) {
+    return { processedRecipients: 0, sentEmails: 0, reservedVoicemails: 0 }
+  }
+
+  let sentEmails = 0
+  let reservedVoicemails = 0
+  for (const [targetUserId, entries] of byRecipient) {
+    const email = emailById.get(targetUserId)
+    if (!email) continue
+
+    const scopeKeys = entries.map((entry) =>
+      createNotificationScopeKey(VOICEMAIL_EMAIL_NOTIFICATION, entry.voicemail.id)
+    )
+
+    // Reserve first (unique recipientUserId+scopeKey prevents double-sends)
+    try {
+      await prisma.emailNotification.createMany({
+        data: entries.map((entry) => ({
+          type: VOICEMAIL_EMAIL_NOTIFICATION,
+          scopeKey: createNotificationScopeKey(VOICEMAIL_EMAIL_NOTIFICATION, entry.voicemail.id),
+          recipientUserId: targetUserId
+        }))
+      })
+    } catch {
+      // Concurrent run already reserved these — skip this recipient
+      continue
+    }
+
+    const items = entries.map((entry) => entry.item)
+    try {
+      await transport.sendMail({
+        from,
+        to: email,
+        subject: buildUnreadVoicemailEmailSubject(items.length),
+        text: buildUnreadVoicemailEmailText(items, voicemailUrl),
+        html: buildUnreadVoicemailEmailHtml(items, voicemailUrl)
+      })
+
+      await prisma.emailNotification.updateMany({
+        where: { recipientUserId: targetUserId, scopeKey: { in: scopeKeys } },
+        data: { sentAt: new Date() }
+      })
+      sentEmails += 1
+      reservedVoicemails += items.length
+    } catch (error) {
+      console.error('Failed to send voicemail digest email:', { targetUserId, error })
+      await prisma.emailNotification.deleteMany({
+        where: { recipientUserId: targetUserId, scopeKey: { in: scopeKeys } }
+      })
+      throw error
+    }
+  }
+
+  return { processedRecipients: byRecipient.size, sentEmails, reservedVoicemails }
+}

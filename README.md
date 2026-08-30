@@ -13,6 +13,17 @@ npm run dev
 
 Documentation: TBD
 
+## MCP server + Telnyx voice assistant
+
+Dupip exposes an MCP server at `/api/mcp` (tools: `web_auth`,
+`phone_auth_by_callerid`, `phone_query_user_data`, `phone_record_message`)
+backed by a Telnyx Edge Function (`edge/dupip-mcp-edge/`) and an AI Assistant
+conversation workflow, so friends can call and catch up asynchronously.
+
+- Plan: `docs/plans/phase-12-mcp-voice-assistant.md`
+- Runbook + demo script: `docs/mcp-voice-assistant.md`
+- Edge function + assistant workflow config: `edge/dupip-mcp-edge/`
+
 ## Unread chat email cron
 
 - Vercel cron schedule is defined in `vercel.json` and calls `/api/cron/unread-chat-emails` daily.

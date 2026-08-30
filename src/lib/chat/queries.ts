@@ -239,7 +239,7 @@ export async function getPendingChatInvites(userId: string) {
 }
 
 export async function getUnreadCount(userId: string) {
-  const [channels, dms, pendingInvites, smsUnreadCount] = await Promise.all([
+  const [channels, dms, pendingInvites, smsUnreadCount, voicemailUnreadCount] = await Promise.all([
     prisma.chatChannel.findMany({
       where: {
         archived: false,
@@ -257,6 +257,7 @@ export async function getUnreadCount(userId: string) {
     }),
     getPendingChatInvites(userId),
     getSmsUnreadCount(userId),
+    getVoicemailUnreadCount(userId),
   ])
 
   const roomCounts = await Promise.all([
@@ -264,7 +265,17 @@ export async function getUnreadCount(userId: string) {
     ...dms.map((conversation) => getUnreadCountForRoom(userId, { dmConversationId: conversation.id })),
   ])
 
-  return roomCounts.reduce((total, count) => total + count, 0) + pendingInvites.length + smsUnreadCount
+  return (
+    roomCounts.reduce((total, count) => total + count, 0) +
+    pendingInvites.length +
+    smsUnreadCount +
+    voicemailUnreadCount
+  )
+}
+
+/** Unread voicemails for the user (phase 12) — kept here to avoid a chat↔voicemail import cycle. */
+export async function getVoicemailUnreadCount(userId: string) {
+  return prisma.voicemail.count({ where: { targetUserId: userId, readAt: null } })
 }
 
 /**

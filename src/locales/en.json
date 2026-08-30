@@ -1162,6 +1162,18 @@
       "noOrgs": "No organizations yet",
       "noDms": "No direct messages yet"
     },
+    "voicemail": {
+      "label": "Voicemails",
+      "loading": "Loading voicemails…",
+      "error": "Could not load your voicemails",
+      "empty": "No voicemails yet",
+      "unknownCaller": "Unknown caller",
+      "newBadge": "New",
+      "audioProcessing": "Audio is being processed.",
+      "summary": "Summary",
+      "transcript": "Transcript",
+      "delete": "Delete voicemail"
+    },
     "virtualNumber": {
       "label": "Virtual number",
       "hint": "Choose your phone numbers. Incoming SMS to these numbers will appear in your chat.",
