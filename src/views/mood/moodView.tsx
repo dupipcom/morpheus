@@ -212,8 +212,9 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [isSubmittingDelegation, setIsSubmittingDelegation] = useState(false)
   // Selectable visibility options for the notes filter (HIDDEN is a system-only state, not user-selectable)
   const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
-  // Grantable delegation scopes — DOC_ENABLED is not a scope: any delegation unlocks doc notes
-  const GRANTABLE_DELEGATION_SCOPES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
+  // Grantable delegation scopes — AI_ENABLED is deprecated (legacy rows only),
+  // DOC_ENABLED is the selectable successor in this panel.
+  const GRANTABLE_DELEGATION_SCOPES: NoteVisibility[] = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
   const [delegationScopes, setDelegationScopes] = useState<NoteVisibility[]>(GRANTABLE_DELEGATION_SCOPES)
   const [delegationRoleKeys, setDelegationRoleKeys] = useState<RoleKey[]>([])
   // Mood-data access granted alongside the scopes. Shared by both delegation
@@ -1071,7 +1072,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <p className="text-xs text-muted-foreground">
-                      {t('mood.thirdParty.rolesHint') || 'Roles describe your relationship with the delegated analyst (e.g. Doctor, Therapist). Delegates can read your DOC_ENABLED notes.'}
+                      {t('mood.thirdParty.rolesHint') || 'Roles describe your relationship with the delegated analyst (e.g. Doctor, Therapist).'}
                     </p>
                   </>
                 )}

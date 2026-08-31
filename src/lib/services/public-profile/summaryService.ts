@@ -301,7 +301,7 @@ export async function getPublicProfileSummary(
     fetchPublicNotes(targetUserId)
   ])
 
-  let snapshot = options.force
+  const snapshot = options.force
     ? null
     : await prisma.publicProfileSummary.findUnique({ where: { userId: targetUserId } })
 

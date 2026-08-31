@@ -33,4 +33,4 @@ Removes an outgoing delegation. Body: `{ delegationId }`.
 - Prisma models: `Delegation`, `User`, `Profile`, `Role`
 
 ## Scopes
-`PRIVATE`, `AI_ENABLED`, `PUBLIC`, `FRIENDS`, `CLOSE_FRIENDS`. Defaults to `AI_ENABLED`. `DOC_ENABLED` is a note visibility, not a grantable scope — any delegation unlocks `DOC_ENABLED` notes.
+`PRIVATE`, `FRIENDS`, `CLOSE_FRIENDS`, `PUBLIC`, `DOC_ENABLED` (grantable). `AI_ENABLED` is deprecated but still accepted for legacy rows. Defaults to `DOC_ENABLED` when no scopes are sent.

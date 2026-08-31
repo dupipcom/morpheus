@@ -156,7 +156,7 @@
       "addError": "Could not add delegated analyst",
       "invitationDraft": "Invitation draft prepared for this email.",
       "roles": "Roles",
-      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes.",
+      "rolesHint": "Roles describe your relationship with the delegated analyst (e.g. Doctor, Therapist).",
       "moodAccess": {
         "label": "Mood data access",
         "hint": "What mood data the delegate can see: every dimension separately, only the overall mood average, or no mood data at all.",

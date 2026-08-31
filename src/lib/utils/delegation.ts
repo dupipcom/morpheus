@@ -38,6 +38,8 @@ export function resolveEffectiveDelegationScope(
   if (normalizedScopes.includes('FRIENDS')) return 'FRIENDS'
   if (normalizedScopes.includes('CLOSE_FRIENDS')) return 'CLOSE_FRIENDS'
   if (normalizedScopes.includes('PUBLIC')) return 'PUBLIC'
+  // Narrowest grant: doc notes only (no days — see getAllowedDayVisibilities)
+  if (normalizedScopes.includes('DOC_ENABLED')) return 'DOC_ENABLED'
 
   return null
 }

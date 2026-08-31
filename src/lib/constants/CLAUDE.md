@@ -8,7 +8,7 @@ Small shared constant modules for mobile navigation layout, delegation role keys
 |---|---|
 | `mobileNav.ts` | Bottom-nav stack geometry: main nav (80px) + secondary toolbar (50px) = 130px; exports Tailwind classes for offset and content bottom padding |
 | `roles.ts` | `ROLE_KEYS` — 13 seeded delegation roles (DOCTOR, TUTOR, MENTOR, TEACHER, GUIDE, ASSISTANT, FRIEND, CLOSE_FRIEND, LAWYER, SOLICITOR, FAMILY, HOUSEHOLD, THERAPIST) + `isRoleKey` guard |
-| `visibility.ts` | `NOTE_VISIBILITIES` (7, incl. `DOC_ENABLED`), `DELEGATION_SCOPES` (5), `WRITABLE_NOTE_VISIBILITIES` (HIDDEN excluded — system-only, not in Prisma enum) |
+| `visibility.ts` | `NOTE_VISIBILITIES` (7, incl. `DOC_ENABLED`), `DELEGATION_SCOPES` (6 — AI_ENABLED legacy-accepted, DOC_ENABLED grantable), `WRITABLE_NOTE_VISIBILITIES` (HIDDEN excluded — system-only, not in Prisma enum) |
 
 ## Key Exports
 

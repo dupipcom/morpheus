@@ -38,8 +38,9 @@ function parseMoodScope(body: unknown): MoodScopeValue | null {
 }
 
 function parseDelegationScopes(body: unknown): DelegationScope[] {
+  // AI_ENABLED is deprecated — new delegations default to DOC_ENABLED.
   if (!body || typeof body !== 'object') {
-    return ['AI_ENABLED']
+    return ['DOC_ENABLED']
   }
 
   const record = body as Record<string, unknown>
@@ -53,7 +54,7 @@ function parseDelegationScopes(body: unknown): DelegationScope[] {
     .map((scope) => String(scope).trim().toUpperCase())
     .filter(isDelegationScope)
 
-  return scopes.length > 0 ? Array.from(new Set(scopes)) : ['AI_ENABLED']
+  return scopes.length > 0 ? Array.from(new Set(scopes)) : ['DOC_ENABLED']
 }
 
 function parseRoleKeys(body: unknown): RoleKey[] {
