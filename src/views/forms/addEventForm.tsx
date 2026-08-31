@@ -312,12 +312,13 @@ export const AddEventForm = ({
           {orgs.length > 0 && (
             <div>
               <Label htmlFor="event-owner">{t('events.form.owner', { defaultValue: 'Owner' })}</Label>
-              <Select value={ownerOrgId} onValueChange={setOwnerOrgId}>
+              {/* Radix SelectItems reject empty values — "me" is the no-org sentinel */}
+              <Select value={ownerOrgId} onValueChange={(v) => setOwnerOrgId(v === 'me' ? '' : v)}>
                 <SelectTrigger id="event-owner" className="w-full">
                   <SelectValue placeholder={t('events.form.ownerMe', { defaultValue: 'Me' })} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{t('events.form.ownerMe', { defaultValue: 'Me' })}</SelectItem>
+                  <SelectItem value="me">{t('events.form.ownerMe', { defaultValue: 'Me' })}</SelectItem>
                   {orgs.map((o) => (
                     <SelectItem key={o.id} value={o.id}>@{o.username}</SelectItem>
                   ))}

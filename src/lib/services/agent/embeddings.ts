@@ -1,27 +1,31 @@
 /**
- * DeepSeek embeddings (deepseek-embed) + cosine similarity for the per-request
- * vector space. Everything is in-memory and discarded after the request —
- * nothing is persisted. On any embedding failure the callers fall back to
- * recency-based retrieval so chat keeps working.
+ * Embeddings + cosine similarity for the per-request vector space. Everything
+ * is in-memory and discarded after the request — nothing is persisted. On any
+ * embedding failure the callers fall back to recency-based retrieval so chat
+ * keeps working.
+ *
+ * Primary provider: Telnyx Inference embeddings (thenlper/gte-large, 1024-dim,
+ * OpenAI-compatible endpoint) — DeepSeek discontinued its embeddings API in
+ * Aug 2026. DeepSeek remains as a legacy fallback when the key is set and
+ * Telnyx is unavailable.
  */
 
+import OpenAI from 'openai'
 import { DEEPSEEK_EMBED_MODEL, getDeepseekOpenAI } from '@/lib/deepseek'
+import { TELNYX_EMBED_MODEL, getTelnyxEmbeddingsOpenAI } from '@/lib/services/mcp/telnyxClient'
 
 export const EMBED_BATCH_SIZE = 32
 
 /**
- * Embed texts in batches. Returns one vector per input text, in order,
- * or null when embeddings are unavailable (missing key, API failure).
- * Never logs content — counts only.
+ * Embed texts in batches with one client/model. Returns one vector per input
+ * text, in order, or null when unavailable. Never logs content — counts only.
  */
-export async function embedTexts(
+async function embedWithClient(
+  client: OpenAI,
+  model: string,
   texts: string[],
-  batchSize: number = EMBED_BATCH_SIZE
+  batchSize: number
 ): Promise<number[][] | null> {
-  if (texts.length === 0) return []
-  if (!process.env.DEEPSEEK_API_KEY) return null
-
-  const client = getDeepseekOpenAI()
   const results: number[][] = []
 
   for (let i = 0; i < texts.length; i += batchSize) {
@@ -30,7 +34,7 @@ export async function embedTexts(
 
     try {
       const response = await client.embeddings.create({
-        model: DEEPSEEK_EMBED_MODEL,
+        model,
         input: batch
       })
       embedded = response.data
@@ -46,7 +50,7 @@ export async function embedTexts(
         for (const text of batch) {
           try {
             const response = await client.embeddings.create({
-              model: DEEPSEEK_EMBED_MODEL,
+              model,
               input: [text]
             })
             embedded.push(response.data[0].embedding)
@@ -54,7 +58,7 @@ export async function embedTexts(
             failed += 1
           }
         }
-        console.error('deepseek_embedding_partial_failure', { failed })
+        console.error('embedding_partial_failure', { model, failed })
         if (failed > 0) embedded = null
       }
     }
@@ -64,6 +68,30 @@ export async function embedTexts(
   }
 
   return results.length === texts.length ? results : null
+}
+
+/**
+ * Embed texts in batches. Returns one vector per input text, in order,
+ * or null when embeddings are unavailable (missing keys, API failure).
+ */
+export async function embedTexts(
+  texts: string[],
+  batchSize: number = EMBED_BATCH_SIZE
+): Promise<number[][] | null> {
+  if (texts.length === 0) return []
+
+  // Telnyx Inference is the primary provider; DeepSeek stays as a legacy
+  // fallback for keys that still work.
+  if (process.env.TELNYX_API_KEY) {
+    const result = await embedWithClient(getTelnyxEmbeddingsOpenAI(), TELNYX_EMBED_MODEL, texts, batchSize)
+    if (result) return result
+  }
+  if (process.env.DEEPSEEK_API_KEY) {
+    const result = await embedWithClient(getDeepseekOpenAI(), DEEPSEEK_EMBED_MODEL, texts, batchSize)
+    if (result) return result
+  }
+
+  return null
 }
 
 /** Cosine similarity between two same-length vectors; 0 on degenerate input */

@@ -1,9 +1,0 @@
-{
-  "name": "dupip-mcp-edge",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@telnyx/edge-runtime": ">=0.3.2"
-  }
-}

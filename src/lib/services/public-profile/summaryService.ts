@@ -21,8 +21,7 @@ import { decodeHtmlEntities } from '@/lib/utils/htmlEntities'
 import { extractProfileData } from '@/lib/services/visibility'
 import { filterProfileFields } from '@/lib/utils/profileUtils'
 import type { ProfileLink } from '@/lib/utils/profileUtils'
-import { DEEPSEEK_CHAT_MODEL, getDeepseekOpenAI } from '@/lib/deepseek'
-import { telnyxChatCompletion } from '@/lib/services/mcp/telnyxClient'
+import { phoneChatCompletion } from '@/lib/services/mcp/llmProvider'
 
 const SNAPSHOT_TTL_MS = 30 * 24 * 60 * 60 * 1000 // 30-day refresh
 const LINK_FETCH_TIMEOUT_MS = 6_000
@@ -269,22 +268,9 @@ async function generateSummary(input: {
     { role: 'user', content: user }
   ] as Array<{ role: 'system' | 'user'; content: string }>
 
-  try {
-    return await telnyxChatCompletion({ messages, maxTokens: 500 })
-  } catch {
-    // DeepSeek fallback — a public summary must not hard-fail when inference is down
-    const completion = await getDeepseekOpenAI().chat.completions.create({
-      model: DEEPSEEK_CHAT_MODEL,
-      messages,
-      max_tokens: 500,
-      temperature: 0.3
-    })
-    const content = completion.choices[0]?.message?.content
-    if (typeof content !== 'string' || !content.trim()) {
-      throw new Error('Summary generation failed')
-    }
-    return content.trim()
-  }
+  // Configurable phone LLM (default: DeepSeek flash — cheap/fast — with a
+  // Telnyx fallback; see llmProvider.ts for the env knobs).
+  return phoneChatCompletion(messages, { maxTokens: 500 })
 }
 
 /**

@@ -174,10 +174,16 @@ export function deriveDateStatus(
 }
 
 /**
- * Check if a task should appear on a specific date based on its RRULE
- * - Tasks without an rrule are one-off tasks: they appear on all dates
- * - Tasks with COMPLETED status only appear in one-off lists (as done), or in
- *   recurring lists on the day they were completed (completedOn)
+ * Check if a task should appear on a specific date based on its RRULE.
+ *
+ * Visibility model: an entry stays visible for its whole occurrence window —
+ * from its occurrence date until the next occurrence takes over (a weekly
+ * Monday task shows Mon–Sun, a monthly task the whole month). One-off tasks
+ * (no rrule) appear on all dates until completed, then only on their
+ * completion day. Recurring tasks stay visible when completed: the completed
+ * row shows as done for the rest of its window, while the materialized child
+ * row takes over at the next occurrence.
+ *
  * @param task - The task to check (needs rrule, dtstart, status)
  * @param targetDate - The date to check against (YYYY-MM-DD)
  * @param isOneOffList - Whether the task belongs to a one-off list
@@ -187,11 +193,44 @@ export function taskOccursOnDate(
   targetDate: string,
   isOneOffList: boolean = false
 ): boolean {
+  // Legacy weekly rules with no explicit BYDAY (signup default lists, migrated
+  // templates) appear on every day of the week: the old engine treated
+  // "no weekdays specified" as "all days", and the default lists rely on it.
+  // The rrule lib instead anchors on the DTSTART weekday, which would hide
+  // these tasks on 6 of 7 days.
+  const isLegacyWeekly =
+    rruleFrequency(task.rrule) === 'WEEKLY' && !/BYDAY=/i.test(task.rrule || '')
+
   // Tasks with COMPLETED status should not appear in recurring lists, except
-  // on their own completion day (materialized occurrences stay visible as done)
+  // within their occurrence window (materialized occurrences stay visible as
+  // done until the next occurrence takes over)
   // In one-off lists, COMPLETED tasks always appear (as done)
-  if (task.status === 'COMPLETED' && !isOneOffList && task.completedOn !== targetDate) {
-    return false
+  if (task.status === 'COMPLETED' && !isOneOffList) {
+    // One-off and legacy-everyday tasks: visible on their completion day only
+    // (no per-week window to fill — the next row materializes the series)
+    if (!task.rrule || isLegacyWeekly) {
+      return task.completedOn === targetDate
+    }
+
+    const fallbackDate = task.createdAt ? task.createdAt.toISOString().slice(0, 10) : null
+    const rule = parseRuleForTask(task.rrule, task.dtstart, fallbackDate)
+    if (!rule) {
+      return task.completedOn === targetDate
+    }
+
+    // Window of the occurrence the task was completed in: [occ, next) where
+    // occ is the latest occurrence on/before completedOn (fallback: the
+    // completion day itself) and next is the following occurrence (the child
+    // row's window). No next occurrence (series exhausted by UNTIL/COUNT) →
+    // only the completion day shows, then the task is over.
+    const completedOn = toUtcMidnight(task.completedOn || targetDate)
+    const occ = rule.before(completedOn, true) ?? completedOn
+    const next = rule.after(occ)
+    if (next === null) {
+      return task.completedOn === targetDate
+    }
+    const target = toUtcMidnight(targetDate)
+    return target >= occ && target < next
   }
 
   // Tasks without recurrence rules are one-time tasks: appear on all dates
@@ -199,12 +238,8 @@ export function taskOccursOnDate(
     return true
   }
 
-  // Legacy weekly rules with no explicit BYDAY (signup default lists, migrated
-  // templates) must appear on every day of the week: the old engine treated
-  // "no weekdays specified" as "all days", and the default lists rely on it.
-  // The rrule lib instead anchors on the DTSTART weekday, which would hide
-  // these tasks on 6 of 7 days.
-  if (rruleFrequency(task.rrule) === 'WEEKLY' && !/BYDAY=/i.test(task.rrule)) {
+  // Legacy weekly rules appear every day (see above)
+  if (isLegacyWeekly) {
     return true
   }
 
@@ -217,8 +252,18 @@ export function taskOccursOnDate(
 
   const target = toUtcMidnight(targetDate)
 
-  // Inclusive check for an occurrence landing exactly on the target date
-  return rule.between(target, target, true).length > 0
+  // Window check: visible once the first occurrence has passed (the latest
+  // occurrence on/before the target date anchors the current entry), until the
+  // next occurrence takes over. Between-window days (e.g. Tuesday after a
+  // Monday occurrence) stay covered by the most recent occurrence. Finite
+  // series (UNTIL/COUNT, e.g. a delete-onwards cap) have no next occurrence to
+  // hand the window to — their last occurrence shows only on its own day.
+  const occ = rule.before(target, true)
+  if (!occ) {
+    return false
+  }
+  const next = rule.after(occ)
+  return next === null ? formatYmdUtc(occ) === targetDate : true
 }
 
 /**
@@ -249,9 +294,10 @@ export async function getTasksForDate(
 
   // 1. Fetch all tasks for the list with all jobs
   // For one-off lists, include COMPLETED tasks (they should appear as done)
-  // For recurring lists (daily/weekly), filter out COMPLETED tasks except those
-  // completed on the target date itself (materialized occurrences stay visible
-  // as done on their completion day)
+  // For recurring lists (daily/weekly), filter out COMPLETED one-off tasks
+  // except those completed on the target date itself; COMPLETED recurring
+  // tasks stay in the query — taskOccursOnDate keeps them visible as done for
+  // the rest of their occurrence window.
   const tasks = await prisma.task.findMany({
     where: {
       listId,
@@ -261,7 +307,8 @@ export async function getTasksForDate(
         : {
             OR: [
               { status: { not: 'COMPLETED' } },
-              { status: 'COMPLETED', completedOn: targetDate }
+              { status: 'COMPLETED', completedOn: targetDate },
+              { status: 'COMPLETED', rrule: { not: null } }
             ]
           })
     },

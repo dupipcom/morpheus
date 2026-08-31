@@ -2,7 +2,8 @@
 
 ## Routes
 - `GET /api/v1/projects` — projects the viewer participates in (project picker / list form selector)
-- `POST /api/v1/projects` — create (creator = OWNER, always unpublished). Body: `{ name, bio?, photoDocumentId?, coverDocumentId?, links?, supportUrl?, collaborators? }`
+- `POST /api/v1/projects` — create (creator = OWNER, always unpublished). Body: `{ name, username?, bio?, photoDocumentId?, coverDocumentId?, links?, supportUrl?, collaborators? }`. `username` is an explicit @handle (validated + availability-checked; auto-generated from `name` when omitted)
+- `GET /api/v1/projects/available?username=` — `{ available: boolean }` handle availability in the shared `/@` namespace (Project/Profile/Organization usernames + handle shape)
 - `GET /api/v1/projects/[projectId]` — detail + member lists (any member)
 - `PUT /api/v1/projects/[projectId]` — update public-profile fields (OWNER/MANAGER): `{ name?, bio?, photoDocumentId?, coverDocumentId?, links?, supportUrl?, spotlight?, publicVisible?, collaborators? }`
 - `GET /api/v1/projects/public` — discovery feed (spotlight first, cursor pagination, `q` filter)

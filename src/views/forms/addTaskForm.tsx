@@ -10,6 +10,15 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { CadencePicker } from '@/components/cadencePicker'
 import { Switch } from '@/components/ui/switch'
 
+/** YYYY-MM-DD of the Monday starting the current week (local time). */
+const getCurrentWeekMonday = (): string => {
+  const d = new Date()
+  const day = d.getDay()
+  const diff = day === 0 ? -6 : 1 - day
+  d.setDate(d.getDate() + diff)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 /**
  * Create/edit task dialog (mirrors the AddListForm dialog pattern).
  * Controlled via `open` / `onOpenChange`.
@@ -96,18 +105,33 @@ export const AddTaskForm = ({
 
       if (isEditMode && editTask?.id) {
         // Update existing task via the tasks endpoint
+        const editBody: Record<string, unknown> = {
+          name: name.trim(),
+          rrule,
+          times: Math.max(1, Number(times) || 1),
+          premium: parsedPremium,
+          premiumType: parsedPremium != null ? premiumType : null,
+          redacted,
+          ...jobFields,
+        }
+        // Anchor a newly-set cadence at the current week's Monday when the
+        // task's effective start is missing or newer: a weekly task edited
+        // mid-week must appear for the whole current week instead of waiting
+        // for next week's occurrence.
+        if (rrule) {
+          const weekMonday = getCurrentWeekMonday()
+          const createdAtStart = editTask?.createdAt
+            ? String(editTask.createdAt).slice(0, 10)
+            : null
+          const effectiveStart = editTask?.dtstart || createdAtStart
+          if (!effectiveStart || effectiveStart > weekMonday) {
+            editBody.dtstart = weekMonday
+          }
+        }
         await fetch(`/api/v1/tasks/${editTask.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: name.trim(),
-            rrule,
-            times: Math.max(1, Number(times) || 1),
-            premium: parsedPremium,
-            premiumType: parsedPremium != null ? premiumType : null,
-            redacted,
-            ...jobFields,
-          }),
+          body: JSON.stringify(editBody),
         })
       } else {
         // Create a new task; dtstart anchors the cadence at today
