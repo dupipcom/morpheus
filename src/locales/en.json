@@ -473,7 +473,7 @@
       "taglinePlaceholder": "One line about this list...",
       "bioLabel": "Bio",
       "bioPlaceholder": "About this list...",
-      "coverLabel": "Cover document ID (Phase 4 upload)",
+      "coverLabel": "List image",
       "linksLabel": "Links",
       "linkLabelPlaceholder": "Label",
       "addLink": "+ Add link",
@@ -481,7 +481,16 @@
       "projectLabel": "Project",
       "projectPlaceholder": "None",
       "noProject": "None",
-      "publicUrlLabel": "Public URL"
+      "publicUrlLabel": "Public URL",
+      "createProjectOption": "+ Create new project",
+      "newProjectName": "Project name...",
+      "newProjectHandle": "handle",
+      "newProjectHandlePlaceholder": "my-project",
+      "handleAvailable": "Handle is available",
+      "handleTaken": "That handle is already taken",
+      "handleInvalid": "Use lowercase letters, digits and dashes only",
+      "creatingProject": "Creating…",
+      "createProjectButton": "Create project"
     },
     "addTemplateForm": {
       "title": "Create New Template",

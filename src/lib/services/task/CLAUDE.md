@@ -17,7 +17,7 @@ Task recurrence/occurrence engine and completion logic: which tasks appear on wh
 | Export | Purpose |
 |---|---|
 | `getTasksForDate` | Tasks for a date with jobs aggregated (weekly tasks across whole week), `dateStatus` derived from ACCEPTED-job counts vs `times` |
-| `taskOccursOnDate` | RRULE occurrence check; no-rrule = one-off (always appears); legacy WEEKLY w/o BYDAY = all days; COMPLETED hidden in recurring lists |
+| `taskOccursOnDate` | Occurrence-window check: entries stay visible from their occurrence until the next one takes over (weekly Monday = whole Mon–Sun week, monthly = month, daily = day); no-rrule = one-off (always appears until completed, then completion day only); legacy WEEKLY w/o BYDAY = all days; COMPLETED recurring rows show as done for the rest of their window (the materialized child row takes over at the next occurrence) |
 | `getWeekRange` | Monday–Sunday range + all 7 dates (UTC) |
 | `rruleFrequency` | Extract `FREQ` value from an RRULE string |
 | `getTaskCompletionCountForDate` / `getTaskTotalCompletionCount` / `calculateStatusFromCount` | Completion counts + DONE/IN_PROGRESS/OPEN status |

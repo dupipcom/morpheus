@@ -5,6 +5,7 @@
 
 export {
   generateProjectUsername,
+  isUsernameAvailable,
   createProject,
   updateProject,
   getPublicProject,

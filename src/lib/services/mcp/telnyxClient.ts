@@ -10,6 +10,8 @@
 
 import 'server-only'
 
+import OpenAI from 'openai'
+
 const TELNYX_API_BASE = 'https://api.telnyx.com/v2'
 
 const getTelnyxApiKey = (): string => {
@@ -34,6 +36,29 @@ async function telnyxFetch(path: string, init?: RequestInit): Promise<Response> 
 async function readError(path: string, response: Response): Promise<never> {
   const errorText = await response.text().catch(() => '')
   throw new Error(`Telnyx ${path} failed: ${response.status} ${errorText}`)
+}
+
+/* ---------------------------------------------------------------------------
+ * Telnyx Inference embeddings (OpenAI-compatible endpoint).
+ * DeepSeek discontinued its embeddings API (Aug 2026), so the RAG pipeline's
+ * primary embedding provider is Telnyx: POST /v2/ai/openai/embeddings with
+ * thenlper/gte-large (1024-dim).
+ * ------------------------------------------------------------------------- */
+
+export const TELNYX_EMBED_MODEL = process.env.TELNYX_EMBED_MODEL || 'thenlper/gte-large'
+const TELNYX_EMBED_BASE_URL = 'https://api.telnyx.com/v2/ai/openai'
+
+let telnyxEmbeddingsClient: OpenAI | null = null
+
+/** Lazy OpenAI-compatible client for Telnyx embeddings (constructed on first use). */
+export function getTelnyxEmbeddingsOpenAI(): OpenAI {
+  if (!telnyxEmbeddingsClient) {
+    telnyxEmbeddingsClient = new OpenAI({
+      apiKey: process.env.TELNYX_API_KEY,
+      baseURL: TELNYX_EMBED_BASE_URL
+    })
+  }
+  return telnyxEmbeddingsClient
 }
 
 export interface TelnyxConversation {

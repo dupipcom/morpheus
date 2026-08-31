@@ -103,23 +103,24 @@ export default function JobsPage() {
           onChange={(e) => setQ(e.target.value)}
           placeholder={t('jobs.board.searchPlaceholder', { defaultValue: 'Search jobs...' })}
         />
-        <Select value={area} onValueChange={setArea}>
+        {/* Radix SelectItems reject empty values — "all" is the no-filter sentinel */}
+        <Select value={area} onValueChange={(v) => setArea(v === 'all' ? '' : v)}>
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder={t('jobs.board.area', { defaultValue: 'Area' })} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">{t('jobs.board.all', { defaultValue: 'All' })}</SelectItem>
+            <SelectItem value="all">{t('jobs.board.all', { defaultValue: 'All' })}</SelectItem>
             {areas.map((a) => (
               <SelectItem key={a} value={a}>{a}</SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Select value={category} onValueChange={setCategory}>
+        <Select value={category} onValueChange={(v) => setCategory(v === 'all' ? '' : v)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={t('jobs.board.category', { defaultValue: 'Category' })} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">{t('jobs.board.all', { defaultValue: 'All' })}</SelectItem>
+            <SelectItem value="all">{t('jobs.board.all', { defaultValue: 'All' })}</SelectItem>
             {categories.map((c) => (
               <SelectItem key={c} value={c}>{c}</SelectItem>
             ))}

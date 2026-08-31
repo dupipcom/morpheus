@@ -123,9 +123,14 @@ export const CadencePicker = ({ value, onChange }: CadencePickerProps) => {
       const next: CadenceState = { ...DEFAULT_STATE }
       next.frequency = freqMap[rule.options.freq] || 'none'
       next.interval = rule.options.interval || 1
-      if (Array.isArray(rule.options.byweekday) && rule.options.byweekday.length > 0) {
+      // Weekday backfill only when the rule explicitly carries BYDAY: legacy
+      // "FREQ=WEEKLY" rules default to Monday inside the lib, but showing that
+      // default as a selected weekday would silently rewrite the task's cadence
+      // on save (the everyday legacy behavior must stay opt-out-able).
+      const hasByday = /BYDAY=/i.test(value)
+      if (hasByday && Array.isArray(rule.options.byweekday) && rule.options.byweekday.length > 0) {
         next.weekdays = rule.options.byweekday as number[]
-      } else if (Array.isArray(rule.origOptions.byweekday) && rule.origOptions.byweekday.length > 0) {
+      } else if (hasByday && Array.isArray(rule.origOptions.byweekday) && rule.origOptions.byweekday.length > 0) {
         // Nth-weekday rules (BYDAY=+1MO): the lib keeps these Weekday
         // instances in origOptions and leaves options.byweekday null.
         const first = rule.origOptions.byweekday[0] as { weekday: number; n?: number }

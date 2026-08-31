@@ -7,6 +7,8 @@
 export interface CreateProjectInput {
   userInternalId: string
   name: string
+  /** Explicit @handle; validated + availability-checked. Auto-generated when omitted. */
+  username?: string | null
   bio?: string | null
   photoDocumentId?: string | null
   coverDocumentId?: string | null
