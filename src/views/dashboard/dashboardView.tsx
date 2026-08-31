@@ -155,6 +155,8 @@ interface DelegatedUserOption {
   scope?: string
   scopes?: string[]
   isSelf?: boolean
+  /** Mood-data access granted by the delegation (ALL_DIMENSIONS/AVERAGE_ONLY/NONE) */
+  moodScope?: string
 }
 
 interface DashboardViewProps {
@@ -220,7 +222,8 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
           id: delegation.delegatorUser.id,
           label: delegation.delegatorUser.displayName || delegation.delegatorUser.userName || delegation.delegatorUser.email || delegation.delegatorUser.userId || delegation.delegatorUser.id,
           scope: delegation.scope,
-          scopes: delegation.scopes || []
+          scopes: delegation.scopes || [],
+          moodScope: delegation.moodScope || 'ALL_DIMENSIONS'
         }))
         const selfOption = {
           id: user.id,
@@ -287,8 +290,48 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   const moodChartConfig = createMoodChartConfig(t)
   const productivityChartConfig = createProductivityChartConfig(t)
   const moneyChartConfig = createMoneyChartConfig(t)
-  
+
   const targetHintUserId = selectedDelegatedUserId || user?.id
+
+  // Mood-access clamp for delegated views (the server enforces the same via
+  // user-dashboard-data + resolveAgentContext — this is the UX layer):
+  // AVERAGE_ONLY keeps just the overall average, NONE hides mood entirely.
+  const selectedDelegation = useMemo(
+    () => delegatedUsers.find((option) => option.id === selectedDelegatedUserId),
+    [delegatedUsers, selectedDelegatedUserId]
+  )
+  const selectedMoodScope = selectedDelegation?.isSelf ? undefined : selectedDelegation?.moodScope
+
+  const effectiveMoodChartDimensions = useMemo(() => {
+    if (selectedMoodScope === 'NONE') {
+      return { moodAverage: false, gratitude: false, optimism: false, restedness: false, tolerance: false, selfEsteem: false, trust: false }
+    }
+    if (selectedMoodScope === 'AVERAGE_ONLY') {
+      return { ...moodChartDimensions, gratitude: false, optimism: false, restedness: false, tolerance: false, selfEsteem: false, trust: false }
+    }
+    return moodChartDimensions
+  }, [moodChartDimensions, selectedMoodScope])
+
+  const effectiveProductivityChartDimensions = useMemo(() => {
+    if (selectedMoodScope === 'NONE') return { ...productivityChartDimensions, moodAverage: false }
+    return productivityChartDimensions
+  }, [productivityChartDimensions, selectedMoodScope])
+
+  const effectiveMoneyChartDimensions = useMemo(() => {
+    if (selectedMoodScope === 'NONE') return { ...moneyChartDimensions, moodAverage: false }
+    return moneyChartDimensions
+  }, [moneyChartDimensions, selectedMoodScope])
+
+  const moodSelectorDimensions = selectedMoodScope === 'AVERAGE_ONLY'
+    ? ['moodAverage']
+    : ['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']
+
+  const sharedSelectorDimensions = selectedMoodScope === 'NONE'
+    ? ['progress']
+    : ['moodAverage', 'progress']
+  const moneySelectorDimensions = selectedMoodScope === 'NONE'
+    ? ['profit', 'stash', 'withdrawn', 'balance']
+    : ['moodAverage', 'profit', 'stash', 'withdrawn', 'balance']
 
   // Filter context for the AI assistant — every chat prompt carries the
   // current dashboard date range, dimension toggles, and target user so the
@@ -298,13 +341,13 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
     endDate: toISODate(rangeEnd),
     userId: selectedDelegatedUserId || user?.id,
     dimensions: Object.entries({
-      ...moodChartDimensions,
-      ...productivityChartDimensions,
-      ...moneyChartDimensions
+      ...effectiveMoodChartDimensions,
+      ...effectiveProductivityChartDimensions,
+      ...effectiveMoneyChartDimensions
     })
       .filter(([, visible]) => visible)
       .map(([key]) => key as AgentDimension)
-  }), [rangeStart, rangeEnd, selectedDelegatedUserId, user?.id, moodChartDimensions, productivityChartDimensions, moneyChartDimensions])
+  }), [rangeStart, rangeEnd, selectedDelegatedUserId, user?.id, effectiveMoodChartDimensions, effectiveProductivityChartDimensions, effectiveMoneyChartDimensions])
 
   // Use shared hint hook and update local state when data changes
   const { data: hintData } = useHint(locale, 'hint', targetHintUserId)
@@ -614,51 +657,55 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         </Accordion>
       )}
       
-      <ChartDimensionSelector
-        dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
-        visibleDimensions={moodChartDimensions}
-        onDimensionToggle={handleMoodDimensionToggle}
-        title={t('dashboard.yourMood')}
-      />
-
-      <ChartContainer config={moodChartConfig}>
-        <AreaChart data={plotDataWeekly} accessibilityLayer>
-          <CartesianGrid vertical={true} horizontal={true} />
-          {moodChartDimensions.moodAverage && (
-            <Area stackId="1" type="monotone" dataKey="moodAverage" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
-          )}
-          {moodChartDimensions.gratitude && (
-            <Area stackId="1" type="monotone" dataKey="gratitude" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
-          )}
-          {moodChartDimensions.optimism && (
-            <Area stackId="1" type="monotone" dataKey="optimism" stroke="#fbd2b0" fill={"#fbd2b0"} radius={4} fillOpacity={0.4} />
-          )}
-          {moodChartDimensions.restedness && (
-            <Area stackId="1" type="monotone" dataKey="restedness" stroke="#fcedd5" fill="#fcedd5" radius={4} fillOpacity={0.4} />
-          )}
-          {moodChartDimensions.tolerance && (
-            <Area stackId="1" type="monotone" dataKey="tolerance" stroke="#FACEFB" fill={"#FACEFB"} radius={4} fillOpacity={0.4} />
-          )}
-          {moodChartDimensions.selfEsteem && (
-            <Area stackId="1" type="monotone" dataKey="selfEsteem" stroke="#2f2f8d" fill="#2f2f8d" radius={4} fillOpacity={0.4} />
-          )}
-          {moodChartDimensions.trust && (
-            <Area stackId="1" type="monotone" dataKey="trust" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
-          )}
-          <XAxis
-            dataKey="dateRange"
-            tickLine={false}
-            tickMargin={5}
-            axisLine={true}
+      {selectedMoodScope !== 'NONE' && (
+        <>
+          <ChartDimensionSelector
+            dimensions={moodSelectorDimensions}
+            visibleDimensions={effectiveMoodChartDimensions}
+            onDimensionToggle={handleMoodDimensionToggle}
+            title={t('dashboard.yourMood')}
           />
-          <ChartTooltip content={<ChartTooltipContent />} />
-          <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
-        </AreaChart>
-      </ChartContainer>
+
+          <ChartContainer config={moodChartConfig}>
+            <AreaChart data={plotDataWeekly} accessibilityLayer>
+              <CartesianGrid vertical={true} horizontal={true} />
+              {effectiveMoodChartDimensions.moodAverage && (
+                <Area stackId="1" type="monotone" dataKey="moodAverage" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+              )}
+              {effectiveMoodChartDimensions.gratitude && (
+                <Area stackId="1" type="monotone" dataKey="gratitude" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
+              )}
+              {effectiveMoodChartDimensions.optimism && (
+                <Area stackId="1" type="monotone" dataKey="optimism" stroke="#fbd2b0" fill={"#fbd2b0"} radius={4} fillOpacity={0.4} />
+              )}
+              {effectiveMoodChartDimensions.restedness && (
+                <Area stackId="1" type="monotone" dataKey="restedness" stroke="#fcedd5" fill="#fcedd5" radius={4} fillOpacity={0.4} />
+              )}
+              {effectiveMoodChartDimensions.tolerance && (
+                <Area stackId="1" type="monotone" dataKey="tolerance" stroke="#FACEFB" fill={"#FACEFB"} radius={4} fillOpacity={0.4} />
+              )}
+              {effectiveMoodChartDimensions.selfEsteem && (
+                <Area stackId="1" type="monotone" dataKey="selfEsteem" stroke="#2f2f8d" fill="#2f2f8d" radius={4} fillOpacity={0.4} />
+              )}
+              {effectiveMoodChartDimensions.trust && (
+                <Area stackId="1" type="monotone" dataKey="trust" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
+              )}
+              <XAxis
+                dataKey="dateRange"
+                tickLine={false}
+                tickMargin={5}
+                axisLine={true}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
+            </AreaChart>
+          </ChartContainer>
+        </>
+      )}
 
       <ChartDimensionSelector
-        dimensions={['moodAverage', 'progress']}
-        visibleDimensions={productivityChartDimensions}
+        dimensions={sharedSelectorDimensions}
+        visibleDimensions={effectiveProductivityChartDimensions}
         onDimensionToggle={handleProductivityDimensionToggle}
         title={t('dashboard.yourProductivity')}
       />
@@ -666,10 +713,10 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       <ChartContainer config={productivityChartConfig}>
         <AreaChart data={plotWeeks} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
-          {productivityChartDimensions.moodAverage && (
+          {effectiveProductivityChartDimensions.moodAverage && (
             <Area stackId="1" type="monotone" dataKey="moodAverage" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
           )}
-          {productivityChartDimensions.progress && (
+          {effectiveProductivityChartDimensions.progress && (
             <Area stackId="2" type="monotone" dataKey="progress" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
           )}
 
@@ -684,8 +731,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       </ChartContainer>
 
       <ChartDimensionSelector
-        dimensions={['moodAverage', 'profit', 'stash', 'withdrawn', 'balance']}
-        visibleDimensions={moneyChartDimensions}
+        dimensions={moneySelectorDimensions}
+        visibleDimensions={effectiveMoneyChartDimensions}
         onDimensionToggle={handleMoneyDimensionToggle}
         title={t('dashboard.yourBalance')}
       />
@@ -693,19 +740,19 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       <ChartContainer config={moneyChartConfig}>
         <AreaChart data={scaledPlotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
-          {moneyChartDimensions.moodAverage && (
+          {effectiveMoneyChartDimensions.moodAverage && (
             <Area stackId="1" type="monotone" dataKey="moodAverageScaled" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
           )}
-          {moneyChartDimensions.profit && (
+          {effectiveMoneyChartDimensions.profit && (
             <Area stackId="2" type="monotone" dataKey="profit" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
           )}
-          {moneyChartDimensions.stash && (
+          {effectiveMoneyChartDimensions.stash && (
             <Area stackId="3" type="monotone" dataKey="stash" stroke="#fbd2b0" fill={"#fbd2b0"} radius={4} fillOpacity={0.4} />
           )}
-          {moneyChartDimensions.withdrawn && (
+          {effectiveMoneyChartDimensions.withdrawn && (
             <Area stackId="4" type="monotone" dataKey="withdraw" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
           )}
-          {moneyChartDimensions.balance && (
+          {effectiveMoneyChartDimensions.balance && (
             <Area stackId="5" type="monotone" dataKey="balance" stroke="#2f2f8d" fill={"#2f2f8d"} radius={4} fillOpacity={0.4} />
           )}
           <XAxis

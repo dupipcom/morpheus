@@ -21,7 +21,7 @@ import prisma from '@/lib/prisma'
 import { clerkClient } from '@clerk/nextjs/server'
 import { extractProfileData } from '@/lib/services/visibility'
 import { filterProfileFields } from '@/lib/utils/profileUtils'
-import type { NoteVisibility } from '@/generated/prisma/client'
+import type { MoodScope, NoteVisibility } from '@/generated/prisma/client'
 import type { CallerIdentity } from './types'
 
 export interface PhoneDelegationGrant {
@@ -29,6 +29,8 @@ export interface PhoneDelegationGrant {
   label: string | null
   scopes: NoteVisibility[]
   scope: NoteVisibility
+  /** Mood-data access granted to this number (default NONE = privacy-first) */
+  moodScope: MoodScope
 }
 
 export interface CallerResolution {
@@ -72,7 +74,7 @@ export async function resolveCallerByPhone(input: {
   //    a number can be both user-owned and delegated by other users)
   const phoneDelegations = await prisma.phoneDelegation.findMany({
     where: { phoneNumber: phone },
-    select: { userId: true, label: true, scopes: true, scope: true }
+    select: { userId: true, label: true, scopes: true, scope: true, moodScope: true }
   })
 
   // 1) Telnyx virtual number owned by a Dupip user

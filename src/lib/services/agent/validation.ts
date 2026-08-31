@@ -8,9 +8,9 @@
 import prisma from '@/lib/prisma'
 import { getDelegationScopes, resolveEffectiveDelegationScope } from '@/lib/utils/delegation'
 import { resolveNoteVisibilityFilter } from '@/lib/services/visibility/noteAccess'
-import { AGENT_DIMENSIONS } from './types'
+import { AGENT_DIMENSIONS, MOOD_DIMENSIONS } from './types'
 import type { AgentDimension, AgentFilterContext, ResolvedAgentContext } from './types'
-import type { NoteVisibility } from '@/generated/prisma/client'
+import type { MoodScope, NoteVisibility } from '@/generated/prisma/client'
 
 export type DayVisibilityFilter = 'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'
 
@@ -39,6 +39,28 @@ export function getAllowedDayVisibilities(scope: string): DayVisibilityFilter[] 
     default:
       return undefined
   }
+}
+
+const MOOD_SUB_DIMENSION_KEYS = new Set<string>(MOOD_DIMENSIONS)
+
+/**
+ * Mood-data access levels on delegations: ALL_DIMENSIONS keeps every mood
+ * dimension; AVERAGE_ONLY drops the six sub-dimensions (the overall average
+ * survives); NONE drops mood entirely. Dimensions are the single filter point
+ * — the DB select, compaction, and chunk text are all dimension-driven — so
+ * clamping here removes mood from everything downstream. Shared by the phone
+ * pipeline (queryUserDataForPhone) and the in-app agent (resolveAgentContext).
+ */
+export function clampDimensionsForMoodScope(
+  dimensions: AgentDimension[],
+  moodScope: MoodScope
+): AgentDimension[] {
+  if (moodScope === 'ALL_DIMENSIONS') return dimensions
+  return dimensions.filter((dim) => {
+    if (MOOD_SUB_DIMENSION_KEYS.has(dim)) return false
+    if (moodScope === 'NONE' && dim === 'moodAverage') return false
+    return true
+  })
 }
 
 function isValidDateString(value: string): boolean {
@@ -115,6 +137,9 @@ export async function resolveAgentContext(
   let userLabel = 'you'
   let visibilityFilter: DayVisibilityFilter[] | undefined
   let noteVisibilityFilter: NoteVisibility[] | undefined
+  // Mood access is clamped server-side — never trusts the client's dimension
+  // toggles. Owner self-view keeps full access.
+  let moodScope: MoodScope = 'ALL_DIMENSIONS'
 
   if (targetUserId !== requestingUser.id) {
     const delegation = await prisma.delegation.findUnique({
@@ -124,7 +149,7 @@ export async function resolveAgentContext(
           delegatedId: requestingUser.id
         }
       },
-      select: { id: true, scope: true, scopes: true }
+      select: { id: true, scope: true, scopes: true, moodScope: true }
     })
 
     if (!delegation) {
@@ -139,6 +164,7 @@ export async function resolveAgentContext(
 
     visibilityFilter = getAllowedDayVisibilities(effectiveScope)
     noteVisibilityFilter = resolveNoteVisibilityFilter(delegationScopes, delegation.scope)
+    moodScope = delegation.moodScope
     userLabel = 'the delegated user'
   }
 
@@ -155,7 +181,7 @@ export async function resolveAgentContext(
     userLabel,
     startDate: filter.startDate,
     endDate: filter.endDate,
-    dimensions: filter.dimensions ?? [],
+    dimensions: clampDimensionsForMoodScope(filter.dimensions ?? [], moodScope),
     visibilityFilter,
     noteVisibilityFilter,
     isRestricted: visibilityFilter !== undefined || noteVisibilityFilter !== undefined

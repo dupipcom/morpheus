@@ -19,9 +19,28 @@ function isDelegationScope(value: string): value is DelegationScope {
   return DELEGATION_SCOPES.includes(value as DelegationScope)
 }
 
+// Mood-data access levels for delegations (mirrors the MoodScope enum).
+// Privacy-first default: NONE — no mood data unless explicitly granted.
+const MOOD_SCOPES = ['ALL_DIMENSIONS', 'AVERAGE_ONLY', 'NONE'] as const
+type MoodScopeValue = typeof MOOD_SCOPES[number]
+
+/**
+ * Parses body.moodScope. Absent → NONE (privacy-first). Present but invalid
+ * → null so the route can reject explicitly (single-select UI, no silent
+ * fallback for garbage).
+ */
+function parseMoodScope(body: unknown): MoodScopeValue | null {
+  if (!body || typeof body !== 'object') return 'NONE'
+  const raw = (body as Record<string, unknown>).moodScope
+  if (raw === undefined || raw === null) return 'NONE'
+  const value = String(raw).trim().toUpperCase()
+  return MOOD_SCOPES.includes(value as MoodScopeValue) ? (value as MoodScopeValue) : null
+}
+
 function parseDelegationScopes(body: unknown): DelegationScope[] {
+  // AI_ENABLED is deprecated — new delegations default to DOC_ENABLED.
   if (!body || typeof body !== 'object') {
-    return ['AI_ENABLED']
+    return ['DOC_ENABLED']
   }
 
   const record = body as Record<string, unknown>
@@ -35,7 +54,7 @@ function parseDelegationScopes(body: unknown): DelegationScope[] {
     .map((scope) => String(scope).trim().toUpperCase())
     .filter(isDelegationScope)
 
-  return scopes.length > 0 ? Array.from(new Set(scopes)) : ['AI_ENABLED']
+  return scopes.length > 0 ? Array.from(new Set(scopes)) : ['DOC_ENABLED']
 }
 
 function parseRoleKeys(body: unknown): RoleKey[] {
@@ -234,6 +253,7 @@ export async function GET() {
           scope: delegation.scope,
           scopes,
           roles: resolveRoleKeys(delegation.roleIds),
+          moodScope: delegation.moodScope,
           createdAt: delegation.createdAt,
           delegatedUser: buildUserSummary(delegation.delegated)
         }
@@ -246,6 +266,7 @@ export async function GET() {
           scope: delegation.scope,
           scopes,
           roles: resolveRoleKeys(delegation.roleIds),
+          moodScope: delegation.moodScope,
           createdAt: delegation.createdAt,
           delegatorUser: buildUserSummary(delegation.delegator)
         }
@@ -271,6 +292,7 @@ export async function POST(request: NextRequest) {
     const scopes = parseDelegationScopes(body)
     const scope = resolveEffectiveDelegationScope(scopes) || 'AI_ENABLED'
     const roleKeys = parseRoleKeys(body)
+    const moodScope = parseMoodScope(body)
 
     if (!identifier) {
       return NextResponse.json({ error: 'Identifier is required' }, { status: 400 })
@@ -278,6 +300,10 @@ export async function POST(request: NextRequest) {
 
     if (!DELEGATION_SCOPES.includes(scope)) {
       return NextResponse.json({ error: 'Invalid scope' }, { status: 400 })
+    }
+
+    if (moodScope === null) {
+      return NextResponse.json({ error: 'Invalid moodScope' }, { status: 400 })
     }
 
     const targetUser = await findUserByIdentifier(identifier)
@@ -317,14 +343,16 @@ export async function POST(request: NextRequest) {
       update: {
         scope,
         scopes,
-        roleIds
+        roleIds,
+        moodScope
       },
       create: {
         delegatorId: currentUserId,
         delegatedId: targetUser.id,
         scope,
         scopes,
-        roleIds
+        roleIds,
+        moodScope
       }
     })
 
@@ -334,6 +362,7 @@ export async function POST(request: NextRequest) {
         scope: delegation.scope,
         scopes: getDelegationScopes(delegation.scopes, delegation.scope),
         roles: roleDocs.map((role) => role.key),
+        moodScope: delegation.moodScope,
         createdAt: delegation.createdAt,
         delegatedUser: buildUserSummary(targetUser)
       }

@@ -104,6 +104,16 @@ enum NoteVisibility {
   DOC_ENABLED
 }
 
+// How much mood data a delegation grants, on top of the note/day visibility
+// scopes: every dimension separately, only the overall average, or none at all.
+// Enforced everywhere a delegate sees the delegator's data (phone assistant,
+// dashboard charts, in-app agent).
+enum MoodScope {
+  ALL_DIMENSIONS
+  AVERAGE_ONLY
+  NONE
+}
+
 enum RecurrenceFrequency {
   DAILY
   WEEKLY
@@ -634,6 +644,9 @@ model Delegation {
   scopes      NoteVisibility[] @default([AI_ENABLED])
   // Relationship labels (Doctor, Tutor, Mentor, ...) — see Role model
   roleIds     String[]       @default([]) @db.ObjectId
+  // Mood-data access granted to the delegate (phone assistant + in-app views).
+  // Privacy-first default: no mood data unless explicitly granted.
+  moodScope   MoodScope      @default(NONE)
   delegator   User           @relation("Delegator", fields: [delegatorId], references: [id], onDelete: Cascade)
   delegated   User           @relation("Delegated", fields: [delegatedId], references: [id], onDelete: Cascade)
 
@@ -644,8 +657,7 @@ model Delegation {
 
 // Phone-number delegation (phase 12): grants a caller phone number access to
 // the delegator's data during Telnyx phone conversations, at the same
-// fine-grained scopes as user Delegations. Phone calls only — no app-side
-// visibility changes.
+// fine-grained scopes as user Delegations, plus a mood-data access level.
 model PhoneDelegation {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime @default(now())
@@ -659,9 +671,24 @@ model PhoneDelegation {
   label       String? // optional display name ("Mom") for greetings/transcripts
   scopes      NoteVisibility[] @default([PUBLIC])
   scope       NoteVisibility @default(PUBLIC)
+  // Mood-data access granted to this number during phone conversations.
+  // Privacy-first default: no mood data unless explicitly granted.
+  moodScope   MoodScope @default(NONE)
 
   @@unique([userId, phoneNumber])
   @@index([phoneNumber])
+}
+
+// AI-generated professional summary of a user's PUBLIC profile + recent public
+// notes. Regenerated at most every 30 days (getPublicProfileSummary).
+model PublicProfileSummary {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique @db.ObjectId
+  summary     String
+  generatedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([generatedAt])
 }
 
 model Role {

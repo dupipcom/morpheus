@@ -1,5 +1,5 @@
 /**
- * The four Dupip MCP tools (phase 12).
+ * The five Dupip MCP tools (phase 12).
  *
  *  - web_auth: MCP session authentication via Clerk redirects (OIDC).
  *  - phone_auth_by_callerid: identify the caller from the ACTUAL call
@@ -8,6 +8,9 @@
  *    caller's access level (owner / delegation scopes / public fallback).
  *  - phone_record_message: store a voicemail (text and/or audio) so it shows
  *    up in the recipient's /app/chat.
+ *  - query_user_public_profile: AI-generated professional summary of the
+ *    target's PUBLIC profile + recent public notes (30-day snapshot) — for
+ *    callers with no delegation.
  *
  * Every phone tool re-derives the true caller from extra._meta (Telnyx injects
  * telnyx_conversation_id there — platform-set, prompt-injection resistant).
@@ -32,6 +35,7 @@ import {
 import type { PhoneTimeframe } from './queryUserData'
 import { buildAuthorizationUrl, isAllowedRedirectUri } from './oauth'
 import { createVoicemail } from '@/lib/services/voicemail'
+import { getPublicProfileSummary } from '@/lib/services/public-profile'
 
 const NO_CONVERSATION_ERROR =
   'Unable to verify the caller for this conversation: telnyx_conversation_id is missing from the request metadata. This tool only works inside a Telnyx AI Assistant call.'
@@ -237,6 +241,32 @@ async function handlePhoneRecordMessage(
   })
 }
 
+async function handleQueryUserPublicProfile(
+  args: { target_user: string; question?: string },
+  extra: { _meta?: Record<string, unknown> }
+): Promise<CallToolResult> {
+  // Public data only — the conversation binding is best-effort. agentTarget
+  // (the dialed number's owner) fixes the target when available, since the
+  // assistant passes a display name that may not resolve on its own.
+  const trueCaller = await getTrueCaller(extra._meta)
+  const target = await resolveTargetUser(args.target_user, trueCaller?.agentTarget ?? null)
+  if (!target) {
+    return errorResult(
+      'Could not resolve the target user. Ask the caller to disambiguate (full name, @username, email, or phone number).'
+    )
+  }
+
+  const result = await getPublicProfileSummary(target.userId)
+
+  return okResult({
+    target_user: result.userName ?? result.name ?? target.username ?? target.userId,
+    professional_summary: result.summary,
+    latest_public_notes: result.latestPublicNotes,
+    summary_generated_at: result.generatedAt,
+    source_links: result.links
+  })
+}
+
 export function registerDupipTools(server: McpServer): void {
   server.registerTool(
     'web_auth',
@@ -300,5 +330,19 @@ export function registerDupipTools(server: McpServer): void {
       }
     },
     handlePhoneRecordMessage
+  )
+
+  server.registerTool(
+    'query_user_public_profile',
+    {
+      title: 'Query a Dupip user\'s public profile summary',
+      description:
+        'Returns the AI-generated professional summary of a Dupip user built from their PUBLIC profile (bio, links) and recent public notes, cached for 30 days. Public data only — no caller access checks apply. Use this for callers asking who the user is, their bio, or what they have been up to publicly.',
+      inputSchema: {
+        target_user: z.string().min(1).describe('The Dupip user to ask about: @username, email, phone, or full name. Prefer the owner of the dialed number.'),
+        question: z.string().optional().describe('The caller\'s question, for context')
+      }
+    },
+    handleQueryUserPublicProfile
   )
 }

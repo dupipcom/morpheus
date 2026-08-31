@@ -301,8 +301,6 @@ export default {
       console.log('[dupip-mcp-edge] assistant.initialization received')
     }
 
-    console.log('[dupip-mcp-edge] assistant.initialization received')
-
     const data = payload.data?.payload ?? {}
     const callerPhone =
       typeof data.telnyx_end_user_target === 'string' ? data.telnyx_end_user_target : ''
@@ -365,15 +363,6 @@ export default {
           // hard cap) so a slow/cold morpheus lookup still lands in time.
           context = await resolveCallerContext(env, callerPhone, verified, agentTarget, remainingMs())
           source = 'phone-auth'
-          await env.CALLER_CACHE.put(callerCacheKey, JSON.stringify(context), {
-            expirationTtl: CALLER_CACHE_TTL_SECONDS
-          })
-          if (context.targetUser) {
-            targetCached = context.targetUser
-            await env.CALLER_CACHE.put(targetCacheKey, JSON.stringify(context.targetUser), {
-              expirationTtl: TARGET_CACHE_TTL_SECONDS
-            })
-          }
         } catch (error) {
           console.warn(
             '[dupip-mcp-edge] phone-auth failed',
@@ -386,6 +375,28 @@ export default {
         // Deadline already exhausted — graceful fallback, call proceeds.
         source = 'fail-open'
         context = failOpenContext()
+      }
+
+      // Cache writes are best-effort: a KV credential hiccup must never
+      // downgrade a successful lookup to fail-open (observed in prod: the
+      // runtime's KV token expired and every call dropped to voicemail).
+      if (context && source === 'phone-auth') {
+        try {
+          await env.CALLER_CACHE.put(callerCacheKey, JSON.stringify(context), {
+            expirationTtl: CALLER_CACHE_TTL_SECONDS
+          })
+          if (context.targetUser) {
+            targetCached = context.targetUser
+            await env.CALLER_CACHE.put(targetCacheKey, JSON.stringify(context.targetUser), {
+              expirationTtl: TARGET_CACHE_TTL_SECONDS
+            })
+          }
+        } catch (error) {
+          console.warn(
+            '[dupip-mcp-edge] KV cache write failed',
+            error instanceof Error ? error.message : error
+          )
+        }
       }
     }
 
