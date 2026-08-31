@@ -149,7 +149,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       supportUrl: typeof supportUrl === 'string' ? sanitizeURL(supportUrl) : null,
       collaborators: Array.isArray(collaborators) ? (collaborators as string[]) : undefined,
       ownerType: isOrgOwned ? 'ORG' : undefined,
-      orgId: isOrgOwned ? orgId : undefined
+      orgId: isOrgOwned ? (orgId as string) : undefined
     })
 
     return NextResponse.json({ project })

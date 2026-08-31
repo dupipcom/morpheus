@@ -39,6 +39,7 @@ Minimal forms for creating and editing tasks and task lists (rebuilt in the Do r
 
 - **Event create-flow contract**: cover/flier uploads in `addEventForm` run with `entityId=null`; after the event is created the form commits each pending descriptor via `commitAttachmentToEntity` (exported by `attachmentPicker.tsx`) and links the ids onto the event with a PUT. Failures only break the image, never the event.
 - **Manage dialog media**: `manageEventForm` seeds existing cover/flier as done picker items (rendered via `attachmentFileUrl`) and commits new uploads directly against `event.id`.
+- **List cover + project creation**: `addListForm` follows the same cover contract for lists (seed existing cover via `attachmentFileUrl`, commit new uploads after the list exists). Its project selector supports inline creation: type `@handle`, availability is checked against the shared `/@` namespace via `GET /api/v1/projects/available`, and `POST /api/v1/projects { name, username }` creates the project (auto-selected on success).
 
 ## User Stories
 1. **As a user**, I can create tasks with a Google-Calendar-like cadence and a completion counter

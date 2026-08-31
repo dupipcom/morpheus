@@ -9,10 +9,17 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
-import { X } from 'lucide-react'
+import { Check, Loader, X } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { useFriendProfiles, FriendProfile } from '@/lib/hooks/useFriendProfiles'
+import { useDebounce } from '@/lib/hooks/useDebounce'
 import { jsonFetcher } from '@/lib/utils/utils'
+import {
+  AttachmentPicker,
+  commitAttachmentToEntity,
+  attachmentFileUrl,
+  type PickedAttachment
+} from '@/components/attachmentPicker'
 
 const VISIBILITY_OPTIONS = ['PRIVATE', 'PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS', 'HIDDEN'] as const
 
@@ -52,19 +59,87 @@ export const AddListForm = ({
   // Public profile (Phase 5)
   const [publicTagline, setPublicTagline] = useState('')
   const [publicBio, setPublicBio] = useState('')
-  const [coverDocumentId, setCoverDocumentId] = useState('')
+  // Cover image: uploaded via the attachments pipeline (create-flow contract —
+  // committed to the list after it exists). Seeded with the existing cover in
+  // edit mode; a removed seed clears the cover on save.
+  const [covers, setCovers] = useState<PickedAttachment[]>([])
   const [links, setLinks] = useState<Array<{ label: string; url: string }>>([])
   const [publicVisible, setPublicVisible] = useState(false)
   const [jobBoardEnabled, setJobBoardEnabled] = useState(false)
   const [projectId, setProjectId] = useState<string>('')
 
   // The viewer's projects (for the project selector)
-  const { data: projectsData } = useSWR<{ projects: Array<{ id: string; name: string; username: string }> }>(
+  const { data: projectsData, mutate: mutateProjects } = useSWR<{ projects: Array<{ id: string; name: string; username: string }> }>(
     open ? '/api/v1/projects' : null,
     jsonFetcher,
     { revalidateOnFocus: false }
   )
   const projects = projectsData?.projects || []
+
+  // Inline project creation with @handle availability (shared /@ namespace)
+  const [showCreateProject, setShowCreateProject] = useState(false)
+  const [newProjectName, setNewProjectName] = useState('')
+  const [newProjectHandle, setNewProjectHandle] = useState('')
+  const [handleStatus, setHandleStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'invalid'>('idle')
+  const [isCreatingProject, setIsCreatingProject] = useState(false)
+
+  const handleFromInput = (value: string) => value.trim().replace(/^@/, '').toLowerCase()
+
+  const checkHandleAvailability = useDebounce(async (value: string) => {
+    const candidate = handleFromInput(value)
+    if (!candidate) {
+      setHandleStatus('idle')
+      return
+    }
+    if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(candidate)) {
+      setHandleStatus('invalid')
+      return
+    }
+    setHandleStatus('checking')
+    try {
+      const res = await fetch(`/api/v1/projects/available?username=${encodeURIComponent(candidate)}`)
+      if (!res.ok) {
+        setHandleStatus('idle')
+        return
+      }
+      const data = (await res.json()) as { available?: boolean }
+      setHandleStatus(data?.available ? 'available' : 'taken')
+    } catch {
+      setHandleStatus('idle')
+    }
+  }, 400)
+
+  const handleCreateProject = async () => {
+    const candidate = handleFromInput(newProjectHandle)
+    if (!newProjectName.trim() || !candidate || handleStatus !== 'available' || isCreatingProject) return
+    setIsCreatingProject(true)
+    try {
+      const res = await fetch('/api/v1/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newProjectName.trim(), username: candidate })
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        setHandleStatus(data?.error === 'That handle is already taken' ? 'taken' : 'idle')
+        return
+      }
+      const data = (await res.json()) as { project?: { id?: string } }
+      if (data?.project?.id) {
+        setProjectId(data.project.id)
+        await mutateProjects()
+      }
+      setShowCreateProject(false)
+      setNewProjectName('')
+      setNewProjectHandle('')
+      setHandleStatus('idle')
+    } catch (error) {
+      console.error('Error creating project:', error)
+      setHandleStatus('idle')
+    } finally {
+      setIsCreatingProject(false)
+    }
+  }
 
   const addLink = () => setLinks((prev) => [...prev, { label: '', url: '' }])
   const updateLink = (index: number, field: 'label' | 'url', value: string) =>
@@ -108,7 +183,19 @@ export const AddListForm = ({
         )
         setPublicTagline(initialList.publicTagline || '')
         setPublicBio(initialList.bio || '')
-        setCoverDocumentId(initialList.coverDocumentId || '')
+        setCovers(
+          initialList.coverDocumentId
+            ? [{
+                key: `cover-${initialList.coverDocumentId}`,
+                publicUrl: attachmentFileUrl(initialList.coverDocumentId),
+                fileName: 'cover',
+                mimeType: 'image/jpeg',
+                kind: 'image',
+                size: 0,
+                documentId: initialList.coverDocumentId
+              }]
+            : []
+        )
         setLinks(Array.isArray(initialList.links) ? initialList.links : [])
         setPublicVisible(initialList.publicVisible === true)
         setJobBoardEnabled(initialList.jobBoardEnabled === true)
@@ -123,12 +210,17 @@ export const AddListForm = ({
         setCollaborators([])
         setPublicTagline('')
         setPublicBio('')
-        setCoverDocumentId('')
+        setCovers([])
         setLinks([])
         setPublicVisible(false)
         setJobBoardEnabled(false)
         setProjectId('')
       }
+      setShowCreateProject(false)
+      setNewProjectName('')
+      setNewProjectHandle('')
+      setHandleStatus('idle')
+      setIsCreatingProject(false)
       setCollabQuery('')
       setNewBudgetName('')
       setNewBudgetAmount('')
@@ -180,6 +272,10 @@ export const AddListForm = ({
       const parsedBudget = budget.trim() === '' ? null : parseFloat(budget)
       const parsedBudgetPercent = budgetPercent.trim() === '' ? null : parseFloat(budgetPercent)
 
+      // Cover: a seeded item (edit mode) carries its documentId; a removed seed
+      // clears the cover (null). New uploads commit after the list exists.
+      const existingCoverId = covers.find((c) => c.documentId)?.documentId ?? null
+
       const body = {
         name: name.trim(),
         visibility,
@@ -190,7 +286,7 @@ export const AddListForm = ({
         budgetSourceIds: budgetType === 'PERCENT' ? budgetSourceIds : [],
         publicTagline: publicTagline.trim() || null,
         bio: publicBio.trim() || null,
-        coverDocumentId: coverDocumentId.trim() || null,
+        coverDocumentId: existingCoverId,
         links: links.filter((l) => l.label.trim() && l.url.trim()).map((l) => ({ label: l.label.trim(), url: l.url.trim() })),
         publicVisible,
         jobBoardEnabled,
@@ -214,6 +310,23 @@ export const AddListForm = ({
         if (!res.ok) throw new Error('Failed to create list')
         const data = await res.json()
         newListId = data?.taskList?.id
+      }
+
+      // Commit a newly uploaded cover to the list and link it. Failures only
+      // break the image, never the list save (same contract as the event forms).
+      const pendingCover = covers.find((c) => !c.documentId)
+      const targetListId = newListId || initialList?.id
+      if (pendingCover && targetListId) {
+        try {
+          const documentId = await commitAttachmentToEntity(pendingCover, 'list', targetListId, 'cover')
+          await fetch(`/api/v1/tasklists/${targetListId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ coverDocumentId: documentId }),
+          })
+        } catch (coverError) {
+          console.error('Error linking list cover:', coverError)
+        }
       }
 
       await onCreated(newListId)
@@ -347,12 +460,15 @@ export const AddListForm = ({
               />
             </div>
             <div>
-              <Label htmlFor="list-cover">{t('forms.addListForm.coverLabel', { defaultValue: 'Cover document ID (Phase 4 upload)' })}</Label>
-              <Input
-                id="list-cover"
-                value={coverDocumentId}
-                onChange={(e) => setCoverDocumentId(e.target.value)}
-                placeholder="ObjectId"
+              <Label htmlFor="list-cover">{t('forms.addListForm.coverLabel', { defaultValue: 'List image' })}</Label>
+              <AttachmentPicker
+                entityType="list"
+                role="cover"
+                kind="image"
+                max={1}
+                compact
+                value={covers}
+                onChange={setCovers}
               />
             </div>
             <div className="space-y-1">
@@ -392,9 +508,18 @@ export const AddListForm = ({
             </div>
             <div>
               <Label htmlFor="list-project">{t('forms.addListForm.projectLabel', { defaultValue: 'Project' })}</Label>
-              {/* Radix SelectItems reject empty values — use a "none" sentinel
-                  and map it back to the empty-string state on change */}
-              <Select value={projectId} onValueChange={(v) => setProjectId(v === 'none' ? '' : v)}>
+              {/* Radix SelectItems reject empty values — sentinels are mapped
+                  back to the empty-string state on change */}
+              <Select
+                value={projectId}
+                onValueChange={(v) => {
+                  if (v === '__create__') {
+                    setShowCreateProject(true)
+                    return
+                  }
+                  setProjectId(v === 'none' ? '' : v)
+                }}
+              >
                 <SelectTrigger id="list-project" className="w-full">
                   <SelectValue placeholder={t('forms.addListForm.projectPlaceholder', { defaultValue: 'None' })} />
                 </SelectTrigger>
@@ -403,8 +528,66 @@ export const AddListForm = ({
                   {projects.map((p) => (
                     <SelectItem key={p.id} value={p.id}>{p.name} (@{p.username})</SelectItem>
                   ))}
+                  <SelectItem value="__create__">{t('forms.addListForm.createProjectOption', { defaultValue: '+ Create new project' })}</SelectItem>
                 </SelectContent>
               </Select>
+              {showCreateProject && (
+                <div className="mt-2 space-y-2 rounded-md border p-2">
+                  <Input
+                    id="list-new-project-name"
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    placeholder={t('forms.addListForm.newProjectName', { defaultValue: 'Project name...' })}
+                  />
+                  <div>
+                    <Label htmlFor="list-new-project-handle" className="text-xs text-muted-foreground">
+                      @{t('forms.addListForm.newProjectHandle', { defaultValue: 'handle' })}
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="list-new-project-handle"
+                        value={newProjectHandle}
+                        onChange={(e) => {
+                          setNewProjectHandle(e.target.value)
+                          checkHandleAvailability(e.target.value)
+                        }}
+                        placeholder={t('forms.addListForm.newProjectHandlePlaceholder', { defaultValue: 'my-project' })}
+                        aria-invalid={handleStatus === 'taken' || handleStatus === 'invalid'}
+                      />
+                      <span className="absolute right-2 top-1/2 -translate-y-1/2">
+                        {handleStatus === 'checking' && <Loader className="h-4 w-4 animate-spin text-muted-foreground" aria-hidden />}
+                        {handleStatus === 'available' && <Check className="h-4 w-4 text-green-600" aria-hidden />}
+                        {(handleStatus === 'taken' || handleStatus === 'invalid') && <X className="h-4 w-4 text-destructive" aria-hidden />}
+                      </span>
+                    </div>
+                    {handleStatus === 'available' && (
+                      <p className="text-xs text-green-600">
+                        {t('forms.addListForm.handleAvailable', { defaultValue: 'Handle is available' })}
+                      </p>
+                    )}
+                    {handleStatus === 'taken' && (
+                      <p className="text-xs text-destructive" role="alert">
+                        {t('forms.addListForm.handleTaken', { defaultValue: 'That handle is already taken' })}
+                      </p>
+                    )}
+                    {handleStatus === 'invalid' && (
+                      <p className="text-xs text-destructive" role="alert">
+                        {t('forms.addListForm.handleInvalid', { defaultValue: 'Use lowercase letters, digits and dashes only' })}
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleCreateProject}
+                    disabled={!newProjectName.trim() || handleStatus !== 'available' || isCreatingProject}
+                  >
+                    {isCreatingProject
+                      ? t('forms.addListForm.creatingProject', { defaultValue: 'Creating…' })
+                      : t('forms.addListForm.createProjectButton', { defaultValue: 'Create project' })}
+                  </Button>
+                </div>
+              )}
             </div>
             {isEditing && initialList?.publicUrl && (
               <p className="text-xs text-muted-foreground">
