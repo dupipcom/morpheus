@@ -37,8 +37,10 @@ export interface DayAnalytics {
   month: number
   quarter: number | null
   semester: number | null
-  mood: Mood
-  moodAverage: number
+  // Nullable: the dashboard data route strips mood for delegation moodScope
+  // clamps (AVERAGE_ONLY keeps moodAverage, NONE strips both).
+  mood: Mood | null
+  moodAverage: number | null
   profit: number
   progress: number
   availableBalance: number

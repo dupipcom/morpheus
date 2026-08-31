@@ -11,7 +11,7 @@ import {
   listPhoneDelegations,
   upsertPhoneDelegation
 } from '@/lib/services/phone-delegation'
-import type { NoteVisibility } from '@/generated/prisma/client'
+import type { MoodScope, NoteVisibility } from '@/generated/prisma/client'
 
 export async function GET(request: NextRequest) {
   try {
@@ -48,11 +48,17 @@ export async function POST(request: NextRequest) {
 
     const label = typeof body.label === 'string' && body.label.trim() ? body.label : undefined
     const scopes = Array.isArray(body.scopes) ? (body.scopes as NoteVisibility[]) : undefined
+    // Validated against the MoodScope enum inside the service (default NONE).
+    const moodScope =
+      typeof body.moodScope === 'string' && body.moodScope.trim()
+        ? (body.moodScope as MoodScope)
+        : undefined
 
     const delegation = await upsertPhoneDelegation(authResult.user!.id, {
       phoneNumber,
       label,
-      scopes
+      scopes,
+      moodScope
     })
 
     return NextResponse.json({ delegation })

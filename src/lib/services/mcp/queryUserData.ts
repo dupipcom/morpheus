@@ -31,13 +31,14 @@ import {
   fetchCompactNotes
 } from '@/lib/services/agent'
 import type { ResolvedAgentContext } from '@/lib/services/agent'
+import { clampDimensionsForMoodScope } from '@/lib/services/agent/validation'
 import { buildPhoneQuerySystemPrompt } from '@/lib/services/agent/prompt'
 import { extractProfileData } from '@/lib/services/visibility'
 import { filterProfileFields } from '@/lib/utils/profileUtils'
 import { DEEPSEEK_CHAT_MODEL, getDeepseekOpenAI } from '@/lib/deepseek'
 import { telnyxChatCompletion } from './telnyxClient'
 import type { PhoneAccessLevel } from './types'
-import type { NoteVisibility } from '@/generated/prisma/client'
+import type { MoodScope, NoteVisibility } from '@/generated/prisma/client'
 import {
   resolvePhoneDelegationForTarget
 } from './callerLookup'
@@ -82,6 +83,8 @@ export interface PhoneQueryAccess {
   noteVisibilityFilter: NoteVisibility[] | undefined
   /** Whether notes must be AI-opted-in (owner/delegate) or merely PUBLIC (public tier) */
   requireAiOptIn: boolean
+  /** Mood-data access for this caller (delegation-controlled; owner/public = full) */
+  moodScope: MoodScope
 }
 
 export async function resolvePhoneAccess(
@@ -100,7 +103,8 @@ export async function resolvePhoneAccess(
       accessLevel: 'OWNER',
       visibilityFilter: undefined, // full
       noteVisibilityFilter: undefined, // full
-      requireAiOptIn: true
+      requireAiOptIn: true,
+      moodScope: 'ALL_DIMENSIONS'
     }
   }
 
@@ -112,7 +116,7 @@ export async function resolvePhoneAccess(
           delegatedId: callerUserId
         }
       },
-      select: { id: true, scope: true, scopes: true }
+      select: { id: true, scope: true, scopes: true, moodScope: true }
     })
 
     if (delegation) {
@@ -126,7 +130,8 @@ export async function resolvePhoneAccess(
         // AI_ENABLED notes only enter the filter when the delegation grants
         // AI_ENABLED/PRIVATE scopes (see noteAccess mapping) — privacy invariant.
         noteVisibilityFilter: resolveNoteVisibilityFilter(scopes, delegation.scope) ?? ['PUBLIC'],
-        requireAiOptIn: true
+        requireAiOptIn: true,
+        moodScope: delegation.moodScope
       }
     }
   }
@@ -144,16 +149,20 @@ export async function resolvePhoneAccess(
       accessLevel: 'DELEGATE',
       visibilityFilter: getAllowedDayVisibilities(effectiveScope),
       noteVisibilityFilter: resolveNoteVisibilityFilter(scopes, phoneGrant.scope) ?? ['PUBLIC'],
-      requireAiOptIn: true
+      requireAiOptIn: true,
+      moodScope: phoneGrant.moodScope
     }
   }
 
-  // No delegation → PUBLIC tier, regardless of friendship.
+  // No delegation → PUBLIC tier, regardless of friendship. Public days stay
+  // fully visible (a PUBLIC day's mood is public) — moodScope only governs
+  // delegations.
   return {
     accessLevel: 'PUBLIC',
     visibilityFilter: ['PUBLIC'],
     noteVisibilityFilter: ['PUBLIC'],
-    requireAiOptIn: false
+    requireAiOptIn: false,
+    moodScope: 'ALL_DIMENSIONS'
   }
 }
 
@@ -199,7 +208,10 @@ export async function queryUserDataForPhone(input: PhoneQueryInput): Promise<Pho
     userLabel: input.callerUserId === input.targetUserId ? 'you' : 'the person you asked about',
     startDate,
     endDate,
-    dimensions: [...AGENT_DIMENSIONS],
+    // Delegation-controlled mood access: AVERAGE_ONLY keeps just the overall
+    // average; NONE removes mood entirely (the DB select, compaction, and
+    // chunk text are all driven by this list).
+    dimensions: clampDimensionsForMoodScope([...AGENT_DIMENSIONS], access.moodScope),
     visibilityFilter: access.visibilityFilter,
     noteVisibilityFilter: access.noteVisibilityFilter,
     isRestricted: access.accessLevel !== 'OWNER'
@@ -226,7 +238,8 @@ export async function queryUserDataForPhone(input: PhoneQueryInput): Promise<Pho
     startDate,
     endDate,
     rag,
-    publicProfile
+    publicProfile,
+    moodScope: access.moodScope
   })
 
   const messages = [

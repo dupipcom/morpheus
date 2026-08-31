@@ -142,9 +142,10 @@
       "settings": "Delegation Settings",
       "activeDelegations": "Active Delegations",
       "empty": "No active delegations.",
-      "identifierPlaceholder": "Username, email, or user ID",
+      "identifierPlaceholder": "Username, email, or phone number",
       "noFriendsFound": "No matching friendships found.",
-      "friendsHint": "Suggestions include your friends. You can also enter any email address.",
+      "friendsHint": "Suggestions include your friends. You can also enter any email address or a full phone number.",
+      "phoneHint": "This number will be authorized to call your assistant.",
       "scope": "Data scope",
       "allScopes": "All scopes",
       "scopesSelected": "scopes selected",
@@ -156,6 +157,13 @@
       "invitationDraft": "Invitation draft prepared for this email.",
       "roles": "Roles",
       "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes.",
+      "moodAccess": {
+        "label": "Mood data access",
+        "hint": "What mood data the delegate can see: every dimension separately, only the overall mood average, or no mood data at all.",
+        "ALL_DIMENSIONS": "All mood data (each dimension separately)",
+        "AVERAGE_ONLY": "Only mood average",
+        "NONE": "No mood data"
+      },
       "phone": {
         "title": "Phone Numbers",
         "hint": "Authorize phone numbers to call your assistant and ask about your data at the selected access level.",

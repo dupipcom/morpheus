@@ -17,7 +17,9 @@ import {
   fetchCompactNotes,
   HINT_ANALYSIS_KEYS
 } from '@/lib/services/agent'
+import { clampDimensionsForMoodScope } from '@/lib/services/agent/validation'
 import type { AgentDayRecord, CompactDay } from '@/lib/services/agent'
+import type { MoodScope } from '@/generated/prisma/client'
 
 // Logger helper function for consistent console logging format
 const logger = (str: string, originalMessage?: unknown) => {
@@ -184,6 +186,8 @@ export async function GET(req: NextRequest) {
   const targetUserId = requestedUserId || requestingUser.id
   let delegationAccess: DelegationVisibilityAccess = { kind: 'full' }
   let noteVisibilityFilter: ReturnType<typeof resolveNoteVisibilityFilter> = undefined
+  // Mood-data access granted by the delegation; self-view keeps everything.
+  let moodScope: string = 'ALL_DIMENSIONS'
 
   if (targetUserId !== requestingUser.id) {
     const delegation = await prisma.delegation.findUnique({
@@ -193,7 +197,7 @@ export async function GET(req: NextRequest) {
           delegatedId: requestingUser.id
         }
       },
-      select: { id: true, scope: true, scopes: true }
+      select: { id: true, scope: true, scopes: true, moodScope: true }
     })
 
     if (!delegation) {
@@ -212,6 +216,7 @@ export async function GET(req: NextRequest) {
     }
 
     noteVisibilityFilter = resolveNoteVisibilityFilter(delegation.scopes, delegation.scope)
+    moodScope = delegation.moodScope
   }
 
   const targetUser = await prisma.user.findUnique({
@@ -230,7 +235,10 @@ export async function GET(req: NextRequest) {
   const quarter = Math.floor((month - 1) / 3) + 1
   const semester = month <= 6 ? 1 : 2
 
-  const canReadPersistedHint = delegationAccess.kind === 'full'
+  // Persisted hints discuss every mood dimension, so delegates with clamped
+  // mood access (AVERAGE_ONLY / NONE) never read them — they get a fresh
+  // generation from clamped dimensions instead.
+  const canReadPersistedHint = delegationAccess.kind === 'full' && moodScope === 'ALL_DIMENSIONS'
   const existingDay = canReadPersistedHint
     ? await prisma.day.findFirst({
         where: { userId: targetUser.id, date },
@@ -246,7 +254,8 @@ export async function GET(req: NextRequest) {
     try {
       // Minimal MongoDB payload: only the fields the hint dimensions need.
       // `analysis` and `productivity` are never selected (recursion guard).
-      const dimensions = [...AGENT_DIMENSIONS]
+      // Delegation moodScope clamps the mood dimensions out of the context.
+      const dimensions = clampDimensionsForMoodScope([...AGENT_DIMENSIONS], moodScope as MoodScope)
       const days = await prisma.day.findMany({
         where: buildDayWhere(
           targetUser.id,
