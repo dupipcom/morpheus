@@ -5,10 +5,13 @@ import { sanitizeText } from '@/lib/utils/sanitize'
 import { getDelegationScopes, resolveEffectiveDelegationScope } from '@/lib/utils/delegation'
 import { isValidE164 } from '@/lib/services/virtual-number/helpers'
 import { ApiError } from '@/lib/services/errors'
-import type { NoteVisibility } from '@/generated/prisma/client'
+import type { MoodScope, NoteVisibility } from '@/generated/prisma/client'
 import type { PhoneDelegationDTO, UpsertPhoneDelegationInput } from './types'
 
 const MAX_LABEL_LENGTH = 80
+
+/** Mood-data access levels accepted by the API (mirrors the MoodScope enum). */
+const MOOD_SCOPES: MoodScope[] = ['ALL_DIMENSIONS', 'AVERAGE_ONLY', 'NONE']
 
 /** Strip common phone separators before validation/storage. */
 export function normalizePhoneNumber(input: string): string {
@@ -19,7 +22,7 @@ export async function listPhoneDelegations(userId: string): Promise<PhoneDelegat
   const rows = await prisma.phoneDelegation.findMany({
     where: { userId },
     orderBy: { createdAt: 'asc' },
-    select: { id: true, phoneNumber: true, label: true, scopes: true, createdAt: true }
+    select: { id: true, phoneNumber: true, label: true, scopes: true, moodScope: true, createdAt: true }
   })
 
   return rows.map((row) => ({
@@ -27,6 +30,7 @@ export async function listPhoneDelegations(userId: string): Promise<PhoneDelegat
     phoneNumber: row.phoneNumber,
     label: row.label,
     scopes: row.scopes as NoteVisibility[],
+    moodScope: row.moodScope,
     createdAt: row.createdAt.toISOString()
   }))
 }
@@ -46,13 +50,19 @@ export async function upsertPhoneDelegation(
     throw new ApiError(400, 'SCOPE_INVALID', 'Provide at least one valid delegation scope')
   }
 
+  // Privacy-first: no mood data unless explicitly granted.
+  const moodScope = input.moodScope ?? 'NONE'
+  if (!MOOD_SCOPES.includes(moodScope)) {
+    throw new ApiError(400, 'MOOD_SCOPE_INVALID', 'moodScope must be ALL_DIMENSIONS, AVERAGE_ONLY, or NONE')
+  }
+
   const rawLabel = (input.label ?? '').trim()
   const label = rawLabel ? sanitizeText(rawLabel).slice(0, MAX_LABEL_LENGTH) : null
 
   const row = await prisma.phoneDelegation.upsert({
     where: { userId_phoneNumber: { userId, phoneNumber } },
-    update: { label, scopes, scope: effectiveScope },
-    create: { userId, phoneNumber, label, scopes, scope: effectiveScope }
+    update: { label, scopes, scope: effectiveScope, moodScope },
+    create: { userId, phoneNumber, label, scopes, scope: effectiveScope, moodScope }
   })
 
   return {
@@ -60,6 +70,7 @@ export async function upsertPhoneDelegation(
     phoneNumber: row.phoneNumber,
     label: row.label,
     scopes: row.scopes as NoteVisibility[],
+    moodScope: row.moodScope,
     createdAt: row.createdAt.toISOString()
   }
 }

@@ -87,6 +87,8 @@ export interface PhoneQueryPromptInput {
   endDate: string
   rag: RagResult
   publicProfile: Record<string, unknown> | null
+  /** Delegation-controlled mood access: AVERAGE_ONLY / NONE tighten the answer */
+  moodScope?: string
 }
 
 /**
@@ -103,6 +105,19 @@ export function buildPhoneQuerySystemPrompt(input: PhoneQueryPromptInput): strin
     `Never fabricate moods, tasks, notes, dates, or analysis. If the data does not answer the question, say "I don't have information about that."`,
     'Summarize; never recite note text verbatim at length.'
   ]
+
+  // Mood access is enforced both by what reaches this prompt (the chunk text
+  // omits clamped dimensions) and by an explicit instruction, so the model
+  // never fills the gap with guessed mood values.
+  if (input.moodScope === 'AVERAGE_ONLY') {
+    sections.push(
+      'Mood data shared with this caller is limited to the overall mood average — never mention individual mood dimensions (gratitude, optimism, restedness, tolerance, self-esteem, trust).'
+    )
+  } else if (input.moodScope === 'NONE') {
+    sections.push(
+      'Mood data is not shared with this caller — if asked about mood, say you cannot share that information.'
+    )
+  }
 
   if (input.publicProfile) {
     const profile = input.publicProfile

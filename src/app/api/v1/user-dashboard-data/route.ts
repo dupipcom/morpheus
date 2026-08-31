@@ -46,6 +46,8 @@ export async function GET(req: NextRequest) {
 
     let delegationScope: string | null = null
     let delegationScopes: string[] = []
+    // Mood-data access granted by the delegation; self-view keeps everything.
+    let moodScope: string = 'ALL_DIMENSIONS'
 
     if (targetUserId !== currentUserId) {
       const delegation = await prisma.delegation.findUnique({
@@ -57,7 +59,8 @@ export async function GET(req: NextRequest) {
         },
         select: {
           scope: true,
-          scopes: true
+          scopes: true,
+          moodScope: true
         }
       })
 
@@ -67,6 +70,7 @@ export async function GET(req: NextRequest) {
 
       delegationScopes = getDelegationScopes(delegation.scopes, delegation.scope)
       delegationScope = resolveEffectiveDelegationScope(delegationScopes, delegation.scope)
+      moodScope = delegation.moodScope
     }
 
     const where: Record<string, unknown> = { userId: targetUserId }
@@ -95,10 +99,26 @@ export async function GET(req: NextRequest) {
       transformDayForAnalytics(day as unknown as DayRecord)
     )
 
+    // Mood-access clamp for delegate viewers (server-side, authoritative):
+    // AVERAGE_ONLY keeps the overall average only; NONE strips mood entirely.
+    // The money/productivity charts consume moodAverage, so it survives at
+    // AVERAGE_ONLY by design.
+    if (moodScope === 'AVERAGE_ONLY') {
+      for (const day of transformedDays) {
+        day.mood = null
+      }
+    } else if (moodScope === 'NONE') {
+      for (const day of transformedDays) {
+        day.mood = null
+        day.moodAverage = null
+      }
+    }
+
     return NextResponse.json({
       userId: targetUserId,
       delegationScope,
       delegationScopes,
+      moodScope,
       days: transformedDays
     })
   } catch (error) {

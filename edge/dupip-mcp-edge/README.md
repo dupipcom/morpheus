@@ -6,14 +6,20 @@ Dupip users keep their lives in the app (days, moods, tasks, notes). The Dupip
 Personal Assistant gives that life a phone number: a friend dials in, the
 assistant greets them **by name and by the name of the person whose number they
 dialed**, answers questions about the user's week/month/year **at the access
-level the caller is entitled to** (owner / delegated scopes / public only), or
-takes a voicemail that lands in the user's `/app/chat` as playable audio +
-transcript + summary.
+level the caller is entitled to** (owner / delegated scopes / public only),
+answers **anonymous callers** from an AI-generated professional summary of the
+user's public profile + recent public notes, or takes a voicemail that lands in
+the user's `/app/chat` as playable audio + transcript + summary. While data is
+being fetched the assistant says so out loud ("Please wait while I obtain data
+from …"), and delegations carry a **mood-data access level** (every dimension /
+average only / none) enforced in the phone answers **and** in the app's
+delegated dashboard views.
 
 Built end-to-end on the Telnyx platform: AI Assistant + Conversation Workflow,
-a custom **MCP server** (4 tools), **Dynamic Webhook Variables** served by a
+a custom **MCP server** (5 tools), **Dynamic Webhook Variables** served by a
 **Telnyx Edge Function** that uses **KV** and a **Stateful Actor**, and
-**Telnyx Inference** for the voice model, STT, and summaries.
+**Telnyx Inference** for the voice model, STT, summaries, and public-profile
+summaries.
 
 ---
 
@@ -27,8 +33,9 @@ a custom **MCP server** (4 tools), **Dynamic Webhook Variables** served by a
 | Assistant | `assistant-f01f7462-229b-49d1-b828-e4358b328e3d` ("Dupip Personal Assistant") |
 | Web app (voicemails, phone delegation panel) | `https://www.dupip.com` → `/app/chat` → Voicemails, `/app/feel` → third-party |
 
-Demo caller numbers: `+44 7537 154448` (delegated, labeled **"Mom"**) and
-`+55 84 99448 6969` (not delegated — exercises the unknown-caller path).
+Demo caller numbers: `+44 7537 154448` (delegated, labeled **"UK number"**) and
+`+55 84 99448 6969` (not delegated — exercises the anonymous public-profile
+path).
 
 ---
 
@@ -45,17 +52,21 @@ flowchart TD
         W["Conversation Workflow"]
         G["greeting_disclosure<br/>speak — verbatim greeting + disclosure"]
         R["identify_intent<br/>prompt — no tools, pure classifier"]
-        Q["answer_questions_about_the_user<br/>prompt — tool: phone_query_user_data"]
-        V["take_a_voicemail<br/>prompt — tools: phone_record_message (+auth)"]
+        Q["answer_questions_about_the_user<br/>prompt — tool: phone_query_user_data<br/>speaks a wait line first"]
+        AP["answer_public_profile<br/>prompt — tool: query_user_public_profile<br/>anonymous callers"]
+        V["take_a_voicemail<br/>prompt — tool: phone_record_message (+auth)<br/>speaks a save-wait line"]
         BYE["goodbye<br/>prompt — tool: hangup"]
         G -->|"default"| R
-        R -->|"expression edge:<br/>caller_known == false"| V
+        R -->|"expression edge:<br/>caller_known == false"| AP
         R -->|"llm: asks a question"| Q
         R -->|"llm: wants to leave a message"| V
         R -->|"llm: done / goodbye"| BYE
         Q -->|"llm: follow-up"| R
         Q -->|"llm: now a message"| V
         Q -->|"llm: done"| BYE
+        AP -->|"llm: wants to leave a message"| V
+        AP -->|"llm: another question"| R
+        AP -->|"llm: done"| BYE
         V -->|"llm: done"| BYE
     end
 
@@ -77,13 +88,16 @@ flowchart TD
         T2["phone_auth_by_callerid"]
         T3["phone_query_user_data"]
         T4["phone_record_message"]
-        LADDER["Access ladder: OWNER → DELEGATE<br/>(user or phone delegation, scoped)<br/>→ PUBLIC · AI_ENABLED privacy invariant"]
+        T5["query_user_public_profile"]
+        LADDER["Access ladder: OWNER → DELEGATE<br/>(user or phone delegation, scoped)<br/>→ PUBLIC · mood access level<br/>(all dims / average only / none)<br/>· privacy invariant"]
+        SUM["GET /api/v1/profile/{userName}/summary<br/>AI professional summary · 30-day snapshot"]
         S3[("iDrive e2 S3<br/>voicemail audio")]
-        UI["/app/chat Voicemails · /app/feel phone delegation panel"]
-        MCP --> T1 & T2 & T3 & T4
+        UI["/app/chat Voicemails · /app/feel<br/>merged delegation panel (users + numbers)"]
+        MCP --> T1 & T2 & T3 & T4 & T5
         T3 --> LADDER
         T4 --> S3
         T4 --> UI
+        T5 --> SUM
     end
 
     subgraph INFRA["Telnyx Inference"]
@@ -111,8 +125,8 @@ flowchart TD
 2. Edge verifies the signature, reads **KV** (`caller/{e164}` 30-min TTL, `target/{e164}` 24-h TTL) in parallel; on a miss it calls morpheus `/api/v1/mcp/edge/phone-auth` inside the 10 s webhook window (fail-open to voicemail-only if morpheus is unreachable — the call must never drop).
 3. **Stateful Actor** records the call per caller (single-threaded RMW → exact `call_count`).
 4. Edge returns `dynamic_variables` — all **strings** (the platform silently rejects responses containing non-string values).
-5. The greeting speaks the **target user's name**; the `expression` edge routes on `caller_known == "false"` deterministically to voicemail; LLM edges route intent.
-6. Mid-call, tools hit the **MCP server** with `_meta.telnyx_conversation_id`; morpheus re-derives the true caller from the conversations API (never trusts the LLM), re-validates the access ladder, and queries days/notes through the RAG pipeline.
+5. The greeting speaks the **target user's name**; the `expression` edge routes on `caller_known == "false"` deterministically to the **public-profile node**; LLM edges route intent. Before each MCP tool call the assistant speaks a wait line ("Please wait while I obtain data from …" / "Got it, please wait while we save your voicemail.") so the caller is never left in silence.
+6. Mid-call, tools hit the **MCP server** with `_meta.telnyx_conversation_id`; morpheus re-derives the true caller from the conversations API (never trusts the LLM), re-validates the access ladder (scopes **and** the delegation's mood-data access level), and queries days/notes through the RAG pipeline. Anonymous callers get `query_user_public_profile` — an AI-generated professional summary built from strictly PUBLIC profile fields + PUBLIC notes, cached for 30 days (`PublicProfileSummary`).
 
 ---
 
@@ -120,8 +134,8 @@ flowchart TD
 
 | Requirement | Implementation |
 |---|---|
-| **1. Conversation Workflow** | 5 nodes: 1 speak (verbatim greeting + recording disclosure), 4 prompts; 1 default edge, **1 variable-comparison expression edge** (`caller_known == "false"`), 7 LLM-condition edges |
-| **2. MCP Server (≥3 tools)** | **4 tools**: `web_auth`, `phone_auth_by_callerid`, `phone_query_user_data`, `phone_record_message` — registered on the assistant with a per-assistant allowlist |
+| **1. Conversation Workflow** | 6 nodes: 1 speak (verbatim greeting + recording disclosure), 5 prompts; 1 default edge, **1 variable-comparison expression edge** (`caller_known == "false"` → the public-profile node), 10 LLM-condition edges |
+| **2. MCP Server (≥3 tools)** | **5 tools**: `web_auth`, `phone_auth_by_callerid`, `phone_query_user_data`, `phone_record_message`, `query_user_public_profile` — registered on the assistant with a per-assistant allowlist |
 | **3. Dynamic Webhook Variables** | Edge Function returns 9 variables: identity, access level, call count, target name, feature flag — they drive the greeting **and** the deterministic routing edge |
 | **4a. Edge Functions** | `dupip-mcp-edge`, shipped with `telnyx-edge ship` — `https://dupip-mcp-edge-afd30602-9.telnyxcompute.com` |
 | **4b. KV** | caller cache (30 min) **and** target cache (24 h) = cached responses; `flags/voicemail_flow_enabled` = feature flag |
@@ -132,7 +146,10 @@ flowchart TD
 **Stretch goals hit:** variable-comparison edges ✓ · KV feature flags ✓ · custom
 dynamic variables ✓ · S3-compatible object storage for recordings ✓ (iDrive e2)
 · secondary assistant bound to a second number ✓ (`+1 380 209 4448`,
-"Dupip - Talk to your friend").
+"Dupip - Talk to your friend") · per-delegation **mood-data access levels**
+(all dimensions / average only / none — enforced in phone answers and in-app
+delegated views) ✓ · AI-generated **public-profile summaries** for anonymous
+callers (30-day cached, best-effort link enrichment) ✓.
 
 ---
 
@@ -213,24 +230,30 @@ npx prisma generate && npx prisma db push   # run against the prod DB too
    Function → KV + Actor → MCP server in our Next.js app. I'll call it from a
    number we delegated in the third-party panel."
 2. **(1:00) Dynamic variables** — call `+1 929 447 4448` from the delegated
-   number. Point at the greeting: *"Hi Mom, you've reached Angelo Reale
+   number. Point at the greeting: *"Hi UK number, you've reached Angelo Reale
    Caldeira de Lemos's personal assistant…"* — name + caller name resolved by
    the Edge Function on the initialization webhook; show the edge logs
    (`resolved in …ms via phone-auth`, `response dynamic_variables={…}`).
-3. **(3:00) Deterministic routing (expression edge)** — call from the
-   non-delegated number: greeting says "Hi friend…", and the router goes
-   straight to voicemail — `caller_known == "false"` is a variable-comparison
-   edge, not an LLM guess.
+3. **(3:00) Deterministic routing (expression edge) + anonymous workflow** —
+   call from the non-delegated number: greeting says "Hi friend…", and the
+   `caller_known == "false"` variable-comparison edge routes the caller to the
+   public-profile node — ask *"who is Angelo? what's his bio?"* → the
+   assistant says "Please wait while I obtain data from Angelo's public
+   profile", calls `query_user_public_profile`, and answers from the 30-day
+   cached professional summary.
 4. **(4:30) MCP in the conversation** — back on the delegated call, ask *"how
-   was my week?"* → `phone_query_user_data` fires (visible in Live Calls);
-   the answer comes from real days/notes at the delegated access level. Ask
+   was my week?"* → the assistant says "Please wait while I obtain data from
+   Angelo" and `phone_query_user_data` fires (visible in Live Calls); the
+   answer comes from real days/notes at the delegated access level. Ask
    something out of scope → the assistant says it can't see that (privacy
-   ladder).
-5. **(6:30) Voicemail → app** — leave a message; the assistant calls
-   `phone_record_message`; refresh `/app/chat` → Voicemails: transcript +
-   summary appear, then the audio player fills in (recording pulled from the
-   Telnyx recordings API by `call_session_id` — the assistant connection has
-   no event webhook, so we attach lazily).
+   ladder). Set the delegation's mood access to *only mood average* in
+   `/app/feel` → ask about mood dimensions → the answer uses the average only.
+5. **(6:30) Voicemail → app** — leave a message; the assistant says *"Got it,
+   please wait while we save your voicemail"* and calls `phone_record_message`;
+   refresh `/app/chat` → Voicemails: transcript + summary appear, then the
+   audio player fills in (recording pulled from the Telnyx recordings API by
+   `call_session_id` — the assistant connection has no event webhook, so we
+   attach lazily).
 6. **(8:00) Edge primitives** — Mission Control: the Actor's `call_count`
    incremented per caller across calls; the KV flag `voicemail_flow_enabled`
    toggles the flow without a redeploy.
@@ -262,7 +285,10 @@ npx prisma generate && npx prisma db push   # run against the prod DB too
   LLM-supplied arguments (prompt-injection resistant).
 - **Privacy ladder** — OWNER → DELEGATE (user or phone delegation, scope-mapped)
   → PUBLIC, re-validated on every tool call; AI-enabled notes only surface for
-  the owner or an explicit AI_ENABLED/PRIVATE grant.
+  the owner or an explicit grant. Delegations add a second axis: a **mood-data
+  access level** (every dimension / average only / none) clamped server-side in
+  the phone RAG dimensions *and* in the dashboard's delegated views — the
+  client's chart toggles are never trusted.
 - **Error handling** — webhook fail-open (call proceeds as voicemail-only,
   never drops), best-effort KV writes (a KV credential hiccup can't downgrade
   a successful lookup), idempotent voicemail rows on `telnyx_conversation_id`,
@@ -277,9 +303,15 @@ npx prisma generate && npx prisma db push   # run against the prod DB too
 
 - *"What if the edge is down?"* — fail-open: `caller_known=false` → voicemail
   path; calls never drop. Variables fall back to declared defaults.
-- *"How does a stranger get answers?"* — they don't: PUBLIC tier = public
-  notes + public profile only; AI-enabled notes are opt-in-gated (privacy
+- *"How does a stranger get answers?"* — only about the public profile: the
+  assistant answers from an AI-generated professional summary built from
+  strictly PUBLIC profile fields + PUBLIC notes, cached for 30 days. Private,
+  FRIENDS, and legacy AI_ENABLED notes never enter that prompt (privacy
   invariant covered by negative tests).
+- *"Can a delegate see my mood data?"* — only what you grant: every
+  delegation (user or phone number) carries a mood-data access level — all
+  dimensions, only the overall average, or none (the default). It's enforced
+  in phone answers and in the dashboard's delegated views, server-side.
 - *"Why not a session map in the MCP server?"* — serverless statelessness:
   fresh server + transport per request, no `Mcp-Session-Id` churn.
 - *"How do recordings reach S3 without an event webhook?"* — the assistant's
@@ -291,6 +323,11 @@ npx prisma generate && npx prisma db push   # run against the prod DB too
   response; portal edits reset node tool configs and declared variables
   (re-PATCH via API); KV runtime tokens can expire (treat KV writes as
   best-effort).
+- *"Does the summary crawl LinkedIn?"* — honestly, no: profile links are
+  enriched best-effort with og-metadata (SSRF-guarded fetch, 6 s timeout), and
+  LinkedIn usually blocks bots — the summary still generates from the public
+  bio + public notes, and the 30-day snapshot cache is the reliability story,
+  not the crawler.
 
 ## Submission checklist
 
