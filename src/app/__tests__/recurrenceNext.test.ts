@@ -99,6 +99,75 @@ test('taskOccursOnDate: rrule occurrence check on exact date', () => {
   assert.equal(taskOccursOnDate(TASK, '2026-08-17', false), true) // daily
 })
 
+test('taskOccursOnDate: weekly BYDAY visible for the whole occurrence week', () => {
+  // 2026-08-31 is a Monday; the occurrence window runs through 2026-09-06
+  const weekly = { ...TASK, rrule: 'FREQ=WEEKLY;BYDAY=MO', dtstart: '2026-08-31' }
+  for (const date of ['2026-08-31', '2026-09-02', '2026-09-06']) {
+    assert.equal(taskOccursOnDate(weekly, date, false), true, date)
+  }
+  assert.equal(taskOccursOnDate(weekly, '2026-08-30', false), false) // before first occurrence
+  assert.equal(taskOccursOnDate(weekly, '2026-09-07', false), true) // next week's entry
+})
+
+test('taskOccursOnDate: completed weekly task stays visible until the next occurrence', () => {
+  const completed = {
+    ...TASK,
+    rrule: 'FREQ=WEEKLY;BYDAY=MO',
+    dtstart: '2026-08-31',
+    status: 'COMPLETED' as const,
+    completedOn: '2026-09-02', // Wednesday
+  }
+  assert.equal(taskOccursOnDate(completed, '2026-09-02', false), true)
+  assert.equal(taskOccursOnDate(completed, '2026-09-06', false), true) // rest of the week
+  assert.equal(taskOccursOnDate(completed, '2026-08-31', false), true) // earlier in its window
+  assert.equal(taskOccursOnDate(completed, '2026-09-07', false), false) // child row takes over
+})
+
+test('taskOccursOnDate: edited old task (picker rule, no dtstart) visible in the current week', () => {
+  const edited = {
+    rrule: 'RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO',
+    dtstart: null,
+    status: 'OPEN' as const,
+    createdAt: new Date('2025-11-03T10:00:00Z'),
+  }
+  assert.equal(taskOccursOnDate(edited, '2026-08-31', false), true)
+  assert.equal(taskOccursOnDate(edited, '2026-09-01', false), true) // whole week
+  assert.equal(taskOccursOnDate(edited, '2026-09-07', false), true) // subsequent Monday
+})
+
+test('taskOccursOnDate: exhausted series completed shows only on its completion day', () => {
+  const exhausted = {
+    ...TASK,
+    rrule: 'FREQ=WEEKLY;BYDAY=MO;UNTIL=20260907T000000Z',
+    dtstart: '2026-08-31',
+    status: 'COMPLETED' as const,
+    completedOn: '2026-09-07',
+  }
+  assert.equal(taskOccursOnDate(exhausted, '2026-09-07', false), true)
+  assert.equal(taskOccursOnDate(exhausted, '2026-09-08', false), false)
+})
+
+test('taskOccursOnDate: finite series ends after its last occurrence (delete-onwards cap)', () => {
+  // UNTIL=2026-09-01 caps the series at the Aug 31 occurrence — the window
+  // must not linger after it (no next occurrence to hand over to)
+  const capped = {
+    ...TASK,
+    rrule: 'FREQ=WEEKLY;BYDAY=MO;UNTIL=20260901T000000Z',
+    dtstart: '2026-08-31',
+  }
+  assert.equal(taskOccursOnDate(capped, '2026-08-31', false), true)
+  assert.equal(taskOccursOnDate(capped, '2026-09-01', false), false)
+  assert.equal(taskOccursOnDate(capped, '2026-09-07', false), false)
+})
+
+test('taskOccursOnDate: legacy WEEKLY without BYDAY still appears every day', () => {
+  const legacy = { ...TASK, rrule: 'FREQ=WEEKLY', dtstart: null, createdAt: new Date('2026-01-01T00:00:00Z') }
+  assert.equal(taskOccursOnDate(legacy, '2026-09-02', false), true)
+  const completedLegacy = { ...legacy, status: 'COMPLETED' as const, completedOn: '2026-09-02' }
+  assert.equal(taskOccursOnDate(completedLegacy, '2026-09-02', false), true)
+  assert.equal(taskOccursOnDate(completedLegacy, '2026-09-03', false), false)
+})
+
 test('getWeekRange: Sunday belongs to the week starting Monday', () => {
   const range = getWeekRange('2026-08-16') // Sunday
   assert.equal(range.weekStart, '2026-08-10')

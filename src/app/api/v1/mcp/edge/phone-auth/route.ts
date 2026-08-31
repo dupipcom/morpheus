@@ -31,7 +31,12 @@ export async function POST(request: NextRequest) {
 
   const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
   const verified = body.verified === true
-  const agentTarget = typeof body.agentTarget === 'string' ? body.agentTarget.trim() : ''
+  const rawAgentTarget = typeof body.agentTarget === 'string' ? body.agentTarget.trim() : ''
+  // Some platform events arrive without telnyx_agent_target — fall back to the
+  // primary assistant number so {{target_user_name}} still resolves (and the
+  // greeting never degrades to "the user").
+  const agentTarget =
+    rawAgentTarget || (process.env.MCP_EDGE_DEFAULT_AGENT_TARGET ?? '').trim()
 
   if (!phone && !agentTarget) {
     return NextResponse.json({ error: 'phone or agentTarget is required' }, { status: 400 })

@@ -206,10 +206,12 @@ export async function updateTaskOccurrenceDates(
  * Materialize the next occurrence of a recurring task as a new Task row with
  * status and counters reset (OPEN, no jobs, completedOn null, times copied),
  * and mark the completed occurrence COMPLETED so it stops appearing on future
- * dates (taskOccursOnDate keeps it visible on its own completion day).
- * Idempotent: a retried acceptance reuses the existing child row.
+ * dates (taskOccursOnDate keeps it visible as done for the rest of its
+ * occurrence window).
+ * Idempotent: a retried acceptance (or a status-menu completion) reuses the
+ * existing child row.
  */
-async function materializeOccurrence(task: Task, occurrenceDate: string): Promise<void> {
+export async function materializeOccurrence(task: Task, occurrenceDate: string): Promise<void> {
   const next = nextOccurrenceAfter(task, occurrenceDate)
 
   await prisma.$transaction(async (tx) => {
@@ -248,6 +250,28 @@ async function materializeOccurrence(task: Task, occurrenceDate: string): Promis
       data: { status: 'COMPLETED', completedOn: occurrenceDate }
     })
   })
+}
+
+/**
+ * Remove the materialized child row created for the occurrence after
+ * `completedOn` — used when a status-menu completion is undone. The child is
+ * only deleted while nothing has attached to it yet (no jobs); once it has
+ * activity it lives on as an independent series head.
+ */
+export async function removeMaterializedOccurrence(
+  task: { id: string; rrule: string | null; dtstart: string | null; createdAt?: Date | null },
+  completedOn: string
+): Promise<void> {
+  const next = nextOccurrenceAfter(task, completedOn)
+  if (!next) return
+
+  const child = await prisma.task.findFirst({
+    where: { recurringTaskId: task.id, dtstart: next },
+    select: { id: true }
+  })
+  if (child && (await prisma.job.count({ where: { taskId: child.id } })) === 0) {
+    await prisma.task.delete({ where: { id: child.id } })
+  }
 }
 
 /**

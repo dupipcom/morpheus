@@ -5,6 +5,10 @@ import { ApiError, toResponse } from '@/lib/services/errors'
 import { getViewerRole } from '@/lib/services/ownership'
 import { resolveListBudget, resolveTaskFinancials } from '@/lib/services/finance/premiumService'
 import { reverseJobEarnings } from '@/lib/services/job/earningsService'
+import {
+  materializeOccurrence,
+  removeMaterializedOccurrence
+} from '@/lib/services/task'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 
@@ -298,6 +302,27 @@ export async function PUT(
       where: { id: taskId },
       data: updateData
     })
+
+    // Recurring tasks completed via the status menu materialize their next
+    // occurrence (same as job-driven completion) so the series reopens at the
+    // next repetition; un-completing removes the materialized child when
+    // nothing has attached to it yet (mirrors the job route's cleanup).
+    // Only status transitions trigger either path — a name-only edit of an
+    // already-completed task must not touch the materialized child.
+    if (existingTask.rrule && body.status !== undefined) {
+      if (body.status === 'COMPLETED' && existingTask.status !== 'COMPLETED') {
+        await materializeOccurrence(
+          updatedTask,
+          (updatedTask.completedOn as string) ?? new Date().toISOString().slice(0, 10)
+        )
+      } else if (
+        body.status !== 'COMPLETED' &&
+        existingTask.status === 'COMPLETED' &&
+        existingTask.completedOn
+      ) {
+        await removeMaterializedOccurrence(existingTask, existingTask.completedOn)
+      }
+    }
 
     return NextResponse.json({ task: updatedTask })
   } catch (error) {

@@ -35,8 +35,7 @@ import { clampDimensionsForMoodScope } from '@/lib/services/agent/validation'
 import { buildPhoneQuerySystemPrompt } from '@/lib/services/agent/prompt'
 import { extractProfileData } from '@/lib/services/visibility'
 import { filterProfileFields } from '@/lib/utils/profileUtils'
-import { DEEPSEEK_CHAT_MODEL, getDeepseekOpenAI } from '@/lib/deepseek'
-import { telnyxChatCompletion } from './telnyxClient'
+import { phoneChatCompletion } from './llmProvider'
 import type { PhoneAccessLevel } from './types'
 import type { MoodScope, NoteVisibility } from '@/generated/prisma/client'
 import {
@@ -247,28 +246,15 @@ export async function queryUserDataForPhone(input: PhoneQueryInput): Promise<Pho
     { role: 'user', content: `Question from the caller: ${input.query}` }
   ] as Array<{ role: 'system' | 'user'; content: string }>
 
-  let answer: string
-  try {
-    answer = await telnyxChatCompletion({ messages, maxTokens: 600 })
-  } catch {
-    // DeepSeek fallback — a phone answer must not hard-fail when inference is down
-    const completion = await getDeepseekOpenAI().chat.completions.create({
-      model: DEEPSEEK_CHAT_MODEL,
-      messages,
-      max_tokens: 600,
-      temperature: 0.3
-    })
-    const content = completion.choices[0]?.message?.content
-    if (typeof content !== 'string' || !content.trim()) {
-      throw new Error('Answer generation failed')
-    }
-    answer = content.trim()
-  }
+  // Configurable phone LLM (default: DeepSeek flash — cheap/fast — with a
+  // Telnyx fallback; see llmProvider.ts for the env knobs).
+  const generated = await phoneChatCompletion(messages, { maxTokens: 600 })
 
-  const words = answer.split(/\s+/)
-  if (words.length > MAX_ANSWER_WORDS) {
-    answer = words.slice(0, MAX_ANSWER_WORDS).join(' ')
-  }
+  const words = generated.split(/\s+/)
+  const answer =
+    words.length > MAX_ANSWER_WORDS
+      ? words.slice(0, MAX_ANSWER_WORDS).join(' ')
+      : generated
 
   return {
     answer,

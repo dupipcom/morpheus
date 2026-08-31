@@ -40,7 +40,7 @@ Returns a task with jobs/candidates and simplified financials if the current use
 
 ## PUT `[taskId]`
 Updates a task. Requires OWNER/MANAGER/COLLABORATOR. Sanitizes `name`.
-Setting `status: "COMPLETED"` records `completedOn` (criterion: complete by status); un-completing clears it.
+Setting `status: "COMPLETED"` records `completedOn` (criterion: complete by status); un-completing clears it. Recurring tasks completed via this route also materialize the next occurrence (same as job-driven completion, idempotent); un-completing removes the materialized child row when nothing has attached to it yet.
 
 ## DELETE `[taskId]?scope=&date=`
 Deletes a task with a scope. Requires OWNER/MANAGER.
