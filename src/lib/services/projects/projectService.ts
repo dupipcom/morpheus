@@ -42,9 +42,31 @@ export async function generateProjectUsername(name: string): Promise<string> {
   })
 }
 
+/** A handle must be a lowercase slug — letters, digits and dashes only. */
+const HANDLE_PATTERN = /^[a-z0-9][a-z0-9-]{0,63}$/
+
+/**
+ * Whether a @handle is free in the shared /@ namespace
+ * (Project.username + Profile.username + Organization.username).
+ * Returns false for invalid handle shapes (no cross-check needed).
+ */
+export async function isUsernameAvailable(username: string): Promise<boolean> {
+  const candidate = (username || '').trim().toLowerCase()
+  if (!HANDLE_PATTERN.test(candidate)) return false
+
+  const [project, profile, organization] = await Promise.all([
+    prisma.project.findUnique({ where: { username: candidate }, select: { id: true } }),
+    prisma.profile.findUnique({ where: { username: candidate }, select: { id: true } }),
+    prisma.organization.findUnique({ where: { username: candidate }, select: { id: true } })
+  ])
+  return !project && !profile && !organization
+}
+
 /**
  * Create a project. Always unpublished (publicVisible: false — opt-in
  * publishing) with the creator as OWNER and optional collaborators.
+ * An explicit `username` must be a valid, available handle; otherwise the
+ * handle is generated from the name.
  */
 export async function createProject(input: CreateProjectInput) {
   const {
@@ -52,7 +74,19 @@ export async function createProject(input: CreateProjectInput) {
     links, supportUrl, collaborators, ownerType, orgId
   } = input
 
-  const username = await generateProjectUsername(name)
+  let username: string
+  if (input.username) {
+    const candidate = input.username.trim().toLowerCase()
+    if (!HANDLE_PATTERN.test(candidate)) {
+      throw new ApiError(400, 'INVALID_HANDLE', 'Handle must be lowercase letters, digits and dashes (max 64)')
+    }
+    if (!(await isUsernameAvailable(candidate))) {
+      throw new ApiError(409, 'HANDLE_TAKEN', 'That handle is already taken')
+    }
+    username = candidate
+  } else {
+    username = await generateProjectUsername(name)
+  }
 
   return prisma.project.create({
     data: {

@@ -107,12 +107,13 @@ export const AddProjectForm = ({
           {orgs.length > 0 && (
             <div>
               <Label htmlFor="project-owner">{t('project.ownerLabel', { defaultValue: 'Owner' })}</Label>
-              <Select value={ownerOrgId} onValueChange={setOwnerOrgId}>
+              {/* Radix SelectItems reject empty values — "me" is the no-org sentinel */}
+              <Select value={ownerOrgId} onValueChange={(v) => setOwnerOrgId(v === 'me' ? '' : v)}>
                 <SelectTrigger id="project-owner" className="w-full">
                   <SelectValue placeholder={t('project.ownerMe', { defaultValue: 'Me' })} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{t('project.ownerMe', { defaultValue: 'Me' })}</SelectItem>
+                  <SelectItem value="me">{t('project.ownerMe', { defaultValue: 'Me' })}</SelectItem>
                   {orgs.map((o) => (
                     <SelectItem key={o.id} value={o.id}>@{o.username}</SelectItem>
                   ))}

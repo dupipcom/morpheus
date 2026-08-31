@@ -392,12 +392,14 @@ export const AddListForm = ({
             </div>
             <div>
               <Label htmlFor="list-project">{t('forms.addListForm.projectLabel', { defaultValue: 'Project' })}</Label>
-              <Select value={projectId} onValueChange={setProjectId}>
+              {/* Radix SelectItems reject empty values — use a "none" sentinel
+                  and map it back to the empty-string state on change */}
+              <Select value={projectId} onValueChange={(v) => setProjectId(v === 'none' ? '' : v)}>
                 <SelectTrigger id="list-project" className="w-full">
                   <SelectValue placeholder={t('forms.addListForm.projectPlaceholder', { defaultValue: 'None' })} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{t('forms.addListForm.noProject', { defaultValue: 'None' })}</SelectItem>
+                  <SelectItem value="none">{t('forms.addListForm.noProject', { defaultValue: 'None' })}</SelectItem>
                   {projects.map((p) => (
                     <SelectItem key={p.id} value={p.id}>{p.name} (@{p.username})</SelectItem>
                   ))}

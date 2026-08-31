@@ -71,12 +71,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const {
-      name, bio, photoDocumentId, coverDocumentId, links, supportUrl, collaborators,
+      name, username, bio, photoDocumentId, coverDocumentId, links, supportUrl, collaborators,
       ownerType, orgId
     } = body as Record<string, unknown>
 
     if (typeof name !== 'string' || !name.trim()) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+    }
+
+    if (username !== undefined && username !== null && typeof username !== 'string') {
+      return NextResponse.json({ error: 'Username must be a string' }, { status: 400 })
     }
 
     if (bio !== undefined && typeof bio !== 'string') {
@@ -137,6 +141,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const project = await createProject({
       userInternalId: user.id,
       name: sanitizeText(name.trim()),
+      username: typeof username === 'string' && username.trim() ? username.trim() : null,
       bio: typeof bio === 'string' ? sanitizeHTML(bio) : null,
       photoDocumentId: typeof photoDocumentId === 'string' ? photoDocumentId : null,
       coverDocumentId: typeof coverDocumentId === 'string' ? coverDocumentId : null,
