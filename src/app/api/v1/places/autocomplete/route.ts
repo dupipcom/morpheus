@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { ApiError, toResponse } from '@/lib/services/errors'
 
-const PLACES_AUTOCOMPLETE_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json'
+// Places API (New) autocomplete — the legacy maps.googleapis.com
+// place/autocomplete endpoint rejects HTTP-referer-restricted API keys and is
+// discontinued by Google, so the proxy speaks the New API (POST place:autocomplete).
+const PLACES_AUTOCOMPLETE_URL = 'https://places.googleapis.com/v1/places:autocomplete'
+// New API requires an explicit field mask. For :autocomplete the valid paths
+// are the suggestion subfields (place place-field paths like `places.id` are
+// rejected by mask validation on this endpoint).
+const PLACES_FIELD_MASK = 'suggestions.placePrediction.placeId,suggestions.placePrediction.text'
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_INPUT_LENGTH = 200
 const MAX_SESSION_TOKEN_LENGTH = 100
@@ -68,6 +75,15 @@ function enforceRateLimit(userId: string): void {
   rateTimestamps.set(userId, recent)
 }
 
+/**
+ * The API key is HTTP-referer restricted, so the server-side upstream call
+ * must echo the browser's referer (it has none of its own). Falls back to
+ * Origin. Missing both → Google rejects the key on the referer check.
+ */
+function getUpstreamReferer(request: NextRequest): string | null {
+  return request.headers.get('referer') || request.headers.get('origin')
+}
+
 // GET /api/v1/places/autocomplete?input=&sessionToken=
 export async function GET(request: NextRequest) {
   try {
@@ -92,26 +108,53 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ predictions: cached })
     }
 
-    const upstreamParams = new URLSearchParams({ input, key: apiKey })
-    if (sessionToken) upstreamParams.set('sessiontoken', sessionToken)
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': apiKey,
+      'X-Goog-FieldMask': PLACES_FIELD_MASK,
+    }
+    const referer = getUpstreamReferer(request)
+    if (referer) headers['Referer'] = referer
 
-    const response = await fetch(`${PLACES_AUTOCOMPLETE_URL}?${upstreamParams.toString()}`, {
+    const body: { input: string; sessionToken?: string } = { input }
+    if (sessionToken) body.sessionToken = sessionToken
+
+    const response = await fetch(PLACES_AUTOCOMPLETE_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
     if (!response.ok) {
-      console.error('Places autocomplete upstream status:', response.status)
+      const errData = (await response.json().catch(() => null)) as {
+        error?: { status?: string; message?: string }
+      } | null
+      console.error(
+        'Places autocomplete upstream error:',
+        response.status,
+        errData?.error?.status,
+        errData?.error?.message
+      )
       throw new ApiError(502, 'UPSTREAM_ERROR', 'Upstream error')
     }
 
     const data = (await response.json()) as {
-      status?: string
-      predictions?: Array<{ place_id?: string; description?: string }>
+      suggestions?: Array<{
+        placePrediction?: {
+          placeId?: string
+          text?: { text?: string }
+          structuredFormat?: { mainText?: { text?: string } }
+        }
+      }>
     }
-    if (data.status && data.status !== 'OK') {
-      console.error('Places autocomplete upstream status:', data.status)
-    }
-    const predictions: PlacePrediction[] = (data.predictions || [])
-      .map((p) => ({ placeId: p.place_id || '', description: p.description || '' }))
+    const predictions: PlacePrediction[] = (data.suggestions || [])
+      .map((s) => {
+        const p = s.placePrediction
+        return {
+          placeId: p?.placeId || '',
+          description: p?.text?.text || p?.structuredFormat?.mainText?.text || ''
+        }
+      })
       .filter((p) => p.placeId && p.description)
       .slice(0, MAX_PREDICTIONS)
 

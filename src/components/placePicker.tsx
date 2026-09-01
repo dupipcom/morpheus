@@ -124,6 +124,8 @@ export const PlacePicker = ({ value, onChange, compact = false, inlineResults = 
           setResults([])
           setOpen(false)
           setError(null)
+        } else {
+          setError(t('components.placePicker.detailsError', { defaultValue: 'Could not load this place.' }))
         }
       } catch {
         setError(t('components.placePicker.detailsError', { defaultValue: 'Could not load this place.' }))
@@ -202,7 +204,16 @@ export const PlacePicker = ({ value, onChange, compact = false, inlineResults = 
       {value ? (
         <div className="flex items-center gap-2 rounded-md border border-border/60 bg-muted/40 px-3 py-1.5 text-sm">
           <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
-          <span className="flex-1 truncate">{chipLabel}</span>
+          <span className="flex-1 min-w-0 truncate">
+            {value.name && value.address ? (
+              <>
+                {value.name}
+                <span className="text-muted-foreground"> · {value.address}</span>
+              </>
+            ) : (
+              chipLabel
+            )}
+          </span>
           <button
             type="button"
             onClick={() => onChange(null)}
@@ -264,6 +275,10 @@ export const PlacePicker = ({ value, onChange, compact = false, inlineResults = 
                               i === highlighted ? 'bg-muted' : 'hover:bg-muted'
                             )}
                             onMouseEnter={() => setHighlighted(i)}
+                            // Keep focus in the input so the wrapper's blur
+                            // check never closes the list before the click
+                            // fires (Safari doesn't focus buttons on mousedown).
+                            onMouseDown={(e) => e.preventDefault()}
                             onClick={() => pickResult(r)}
                           >
                             {r.description}
@@ -320,6 +335,9 @@ export const PlacePicker = ({ value, onChange, compact = false, inlineResults = 
                             i === highlighted ? 'bg-muted' : 'hover:bg-muted'
                           )}
                           onMouseEnter={() => setHighlighted(i)}
+                          // Keep focus in the input so the popover never
+                          // dismisses the list before the click fires.
+                          onMouseDown={(e) => e.preventDefault()}
                           onClick={() => pickResult(r)}
                         >
                           {r.description}

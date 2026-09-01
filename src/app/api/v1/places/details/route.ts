@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { ApiError, toResponse } from '@/lib/services/errors'
 
-const PLACES_DETAILS_URL = 'https://maps.googleapis.com/maps/api/place/details/json'
-const PLACE_DETAILS_FIELDS = 'geometry,name,formatted_address'
+// Places API (New) place details — the legacy maps.googleapis.com
+// place/details endpoint rejects HTTP-referer-restricted API keys and is
+// discontinued by Google, so the proxy speaks the New API (GET /v1/places/{id}).
+const PLACES_DETAILS_URL = 'https://places.googleapis.com/v1/places'
+// New API requires an explicit field mask. Validated against the live API:
+// the paths are the bare Place field names (`id,displayName,...` — the
+// `places.`-prefixed forms from the docs are rejected by mask validation).
+const PLACES_FIELD_MASK = 'id,displayName,formattedAddress,location'
 const FETCH_TIMEOUT_MS = 10_000
-const MAX_PLACE_ID_LENGTH = 200
+// New API place IDs are long encodings (150+ chars common) — generous cap.
+const MAX_PLACE_ID_LENGTH = 500
 const MAX_SESSION_TOKEN_LENGTH = 100
 const CACHE_CAP = 200
 const CACHE_TTL_MS = 5 * 60 * 1000
@@ -58,6 +65,15 @@ function cacheSet(key: string, location: PlaceLocation): void {
   cache.set(key, { location, expiresAt: now + CACHE_TTL_MS })
 }
 
+/**
+ * The API key is HTTP-referer restricted, so the server-side upstream call
+ * must echo the browser's referer (it has none of its own). Falls back to
+ * Origin. Missing both → Google rejects the key on the referer check.
+ */
+function getUpstreamReferer(request: NextRequest): string | null {
+  return request.headers.get('referer') || request.headers.get('origin')
+}
+
 // GET /api/v1/places/details?placeId=&sessionToken=
 export async function GET(request: NextRequest) {
   try {
@@ -69,7 +85,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl
     const placeId = (searchParams.get('placeId') || '').trim()
     if (placeId.length < 1 || placeId.length > MAX_PLACE_ID_LENGTH) {
-      throw new ApiError(400, 'INVALID_PLACE_ID', 'placeId is required')
+      throw new ApiError(400, 'INVALID_PLACE_ID', 'placeId must be between 1 and 500 characters')
     }
     const sessionToken = (searchParams.get('sessionToken') || '').slice(0, MAX_SESSION_TOKEN_LENGTH)
 
@@ -80,35 +96,47 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ location: cached })
     }
 
-    const upstreamParams = new URLSearchParams({
-      place_id: placeId,
-      fields: PLACE_DETAILS_FIELDS,
-      key: apiKey,
-    })
-    if (sessionToken) upstreamParams.set('sessiontoken', sessionToken)
+    const upstreamUrl = new URL(`${PLACES_DETAILS_URL}/${encodeURIComponent(placeId)}`)
+    if (sessionToken) upstreamUrl.searchParams.set('sessionToken', sessionToken)
 
-    const response = await fetch(`${PLACES_DETAILS_URL}?${upstreamParams.toString()}`, {
+    const headers: Record<string, string> = {
+      'X-Goog-Api-Key': apiKey,
+      'X-Goog-FieldMask': PLACES_FIELD_MASK,
+    }
+    const referer = getUpstreamReferer(request)
+    if (referer) headers['Referer'] = referer
+
+    const response = await fetch(upstreamUrl.toString(), {
+      headers,
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
+    if (response.status === 404) {
+      console.error('Places details upstream: place not found')
+      throw new ApiError(404, 'PLACE_NOT_FOUND', 'Place not found')
+    }
     if (!response.ok) {
-      console.error('Places details upstream status:', response.status)
+      const errData = (await response.json().catch(() => null)) as {
+        error?: { status?: string; message?: string }
+      } | null
+      console.error(
+        'Places details upstream error:',
+        response.status,
+        errData?.error?.status,
+        errData?.error?.message
+      )
       throw new ApiError(502, 'UPSTREAM_ERROR', 'Upstream error')
     }
 
     const data = (await response.json()) as {
-      status?: string
-      result?: {
-        geometry?: { location?: { lat?: number; lng?: number } }
-        name?: string
-        formatted_address?: string
-      }
+      displayName?: { text?: string }
+      formattedAddress?: string
+      location?: { latitude?: number; longitude?: number }
     }
 
-    const result = data.result
-    const lat = result?.geometry?.location?.lat
-    const lng = result?.geometry?.location?.lng
+    const lat = data.location?.latitude
+    const lng = data.location?.longitude
     if (typeof lat !== 'number' || typeof lng !== 'number') {
-      console.error('Places details upstream status:', data.status || 'NO_RESULT')
+      console.error('Places details upstream: missing location for placeId')
       throw new ApiError(404, 'PLACE_NOT_FOUND', 'Place not found')
     }
 
@@ -116,8 +144,8 @@ export async function GET(request: NextRequest) {
       lat,
       lng,
       placeId,
-      name: result?.name || undefined,
-      address: result?.formatted_address || undefined,
+      name: data.displayName?.text || undefined,
+      address: data.formattedAddress || undefined,
     }
 
     cacheSet(placeId, location)

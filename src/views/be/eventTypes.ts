@@ -26,7 +26,7 @@ export interface EventManage extends EventSummary {
   isOnline?: boolean
   onlineUrl?: string | null
   venueName?: string | null
-  location?: { name?: string; address?: string; lat?: number; lng?: number } | null
+  location?: { name?: string; address?: string; lat?: number; lng?: number; placeId?: string } | null
   capacity?: number | null
   visibility?: string
   ownerType?: string
@@ -44,7 +44,7 @@ export interface EventDetailPayload {
   timezone?: string | null
   isOnline?: boolean
   onlineUrl?: string | null
-  location?: { name?: string; address?: string; lat?: number; lng?: number } | null
+  location?: { name?: string; address?: string; lat?: number; lng?: number; placeId?: string } | null
   venueName?: string | null
   cover?: string | null
   flier?: string | null

@@ -12,12 +12,18 @@ function getInternalBaseUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 }
 
-function buildInternalFetchHeaders(): Record<string, string> {
+function buildInternalFetchHeaders(cookieHeader?: string): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/json',
   }
   if (process.env.INTERNAL_FETCH_SECRET) {
     headers['x-internal-fetch-secret'] = process.env.INTERNAL_FETCH_SECRET
+  }
+  if (cookieHeader) {
+    // Forward the viewer's cookies so the internal route sees the same session
+    // the browser has (Clerk reads the session cookie). Without this the fetch
+    // runs anonymously and signed-in-only blocks (RSVP/like state) are missing.
+    headers['Cookie'] = cookieHeader
   }
   return headers
 }
@@ -26,10 +32,10 @@ function buildInternalFetchHeaders(): Record<string, string> {
  * Fetch an endpoint of the same app (using the internal secret to bypass the
  * public router), returning the parsed JSON body or null on any failure.
  */
-async function internalGetJson<T>(path: string): Promise<T | null> {
+async function internalGetJson<T>(path: string, cookieHeader?: string): Promise<T | null> {
   try {
     const response = await fetch(`${getInternalBaseUrl()}${path}`, {
-      headers: buildInternalFetchHeaders(),
+      headers: buildInternalFetchHeaders(cookieHeader),
     })
 
     if (!response.ok) {
@@ -56,4 +62,4 @@ async function internalGetJson<T>(path: string): Promise<T | null> {
  * React.cache()-wrapped version: identical calls within the same render pass
  * are deduped (e.g. the profile fetch between generateMetadata and the page).
  */
-export const cachedInternalGet: <T>(path: string) => Promise<T | null> = cache(internalGetJson)
+export const cachedInternalGet: <T>(path: string, cookieHeader?: string) => Promise<T | null> = cache(internalGetJson)

@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { I18nProvider } from '@/lib/contexts/i18n'
 import type { Locale } from '@/lib/i18n'
 import { cachedInternalGet } from '@/lib/public/internalFetch'
@@ -9,8 +10,13 @@ import type { EventDetailPayload } from '@/views/be/eventTypes'
 // Event fetch is cached by cachedInternalGet (React.cache) to avoid duplicate
 // requests between generateMetadata and the page component
 const getEvent = async (publicUrl: string): Promise<EventDetailPayload | null> => {
+  // Forward the viewer's cookies: the internal fetch runs on the server with
+  // no session otherwise, and the payload would lose the signed-in viewer
+  // block (RSVP/like state used to highlight the action buttons).
+  const cookieHeader = (await cookies()).toString()
   const data = await cachedInternalGet<{ event?: EventDetailPayload }>(
-    `/api/v1/events/public/${publicUrl}`
+    `/api/v1/events/public/${publicUrl}`,
+    cookieHeader
   )
   return data?.event ?? null
 }
