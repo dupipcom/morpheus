@@ -6,8 +6,10 @@ import { ApiError, toResponse } from '@/lib/services/errors'
 // place/autocomplete endpoint rejects HTTP-referer-restricted API keys and is
 // discontinued by Google, so the proxy speaks the New API (POST place:autocomplete).
 const PLACES_AUTOCOMPLETE_URL = 'https://places.googleapis.com/v1/places:autocomplete'
-// New API requires an explicit field mask; placeId/text are used for the list.
-const PLACES_FIELD_MASK = 'places.id,places.displayName,places.formattedAddress'
+// New API requires an explicit field mask. For :autocomplete the valid paths
+// are the suggestion subfields (place place-field paths like `places.id` are
+// rejected by mask validation on this endpoint).
+const PLACES_FIELD_MASK = 'suggestions.placePrediction.placeId,suggestions.placePrediction.text'
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_INPUT_LENGTH = 200
 const MAX_SESSION_TOKEN_LENGTH = 100

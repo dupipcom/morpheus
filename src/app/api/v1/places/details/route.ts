@@ -6,9 +6,10 @@ import { ApiError, toResponse } from '@/lib/services/errors'
 // place/details endpoint rejects HTTP-referer-restricted API keys and is
 // discontinued by Google, so the proxy speaks the New API (GET /v1/places/{id}).
 const PLACES_DETAILS_URL = 'https://places.googleapis.com/v1/places'
-// New API requires an explicit field mask; id/name/address/coords are the
-// canonical PlaceLocation shape used by placePicker.
-const PLACES_FIELD_MASK = 'places.id,places.displayName,places.formattedAddress,places.location'
+// New API requires an explicit field mask. Validated against the live API:
+// the paths are the bare Place field names (`id,displayName,...` — the
+// `places.`-prefixed forms from the docs are rejected by mask validation).
+const PLACES_FIELD_MASK = 'id,displayName,formattedAddress,location'
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_PLACE_ID_LENGTH = 200
 const MAX_SESSION_TOKEN_LENGTH = 100

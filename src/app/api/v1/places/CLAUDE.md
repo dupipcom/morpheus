@@ -26,6 +26,10 @@ which rejects HTTP-referer-restricted API keys outright.
 **Params:** `input` (required, 1–200 chars after trim → else 400), `sessionToken` (optional,
 truncated to 100 chars, forwarded as `sessionToken`).
 
+**Field mask:** `suggestions.placePrediction.placeId,suggestions.placePrediction.text` — verified
+against the live API: on `:autocomplete` only the suggestion subfield paths validate (`places.*`
+paths are rejected by mask validation).
+
 **Response:** `{ predictions: [{ placeId, description }] }` — up to 5 predictions
 (`placePrediction.placeId` + `placePrediction.text.text` upstream).
 
@@ -35,7 +39,8 @@ truncated to 100 chars, forwarded as `sessionToken`).
 ## Details
 Proxies the [Places API (New) Place Details](https://developers.google.com/maps/documentation/places/web-service/place-details)
 endpoint (`GET https://places.googleapis.com/v1/places/{placeId}`) with
-`X-Goog-FieldMask: places.id,places.displayName,places.formattedAddress,places.location`.
+`X-Goog-FieldMask: id,displayName,formattedAddress,location` — the bare field names, verified
+against the live API (the docs' `places.`-prefixed forms are rejected by mask validation).
 
 **Params:** `placeId` (required, ≤ 200 chars → else 400), `sessionToken` (optional, forwarded as
 `sessionToken`).
