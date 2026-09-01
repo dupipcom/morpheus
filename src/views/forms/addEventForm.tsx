@@ -113,7 +113,7 @@ export const AddEventForm = ({
     location: isOnline
       ? null
       : venue
-        ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng }
+        ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng, placeId: venue.placeId }
         : null,
     venueName: isOnline ? null : venue?.name ?? null,
     capacity: capacity ? parseInt(capacity, 10) || null : null,
