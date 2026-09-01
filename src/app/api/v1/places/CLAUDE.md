@@ -18,29 +18,48 @@ when the session is missing. `GET` requests from `<img>` tags send cookies, so `
 renders fine against the staticmap route.
 
 ## Autocomplete
-Proxies the [Place Autocomplete](https://developers.google.com/maps/documentation/places/web-service/autocomplete)
-JSON API.
+Proxies the [Places API (New) Autocomplete](https://developers.google.com/maps/documentation/places/web-service/place-autocomplete)
+endpoint (`POST https://places.googleapis.com/v1/places:autocomplete`) — NOT the legacy
+`maps.googleapis.com/maps/api/place/autocomplete/json`, which Google has discontinued and
+which rejects HTTP-referer-restricted API keys outright.
 
 **Params:** `input` (required, 1–200 chars after trim → else 400), `sessionToken` (optional,
-truncated to 100 chars, forwarded as `sessiontoken`).
+truncated to 100 chars, forwarded as `sessionToken`).
 
-**Response:** `{ predictions: [{ placeId, description }] }` — up to 5 predictions.
+**Response:** `{ predictions: [{ placeId, description }] }` — up to 5 predictions
+(`placePrediction.placeId` + `placePrediction.text.text` upstream).
 
-**Errors:** 400 invalid/missing `input`, 401, 429 rate limited, 502 upstream failure,
-503 `GOOGLE_PLACES_API_KEY` unset.
+**Errors:** 400 invalid/missing `input`, 401, 429 rate limited, 502 upstream failure
+(upstream status/message logged server-side), 503 `GOOGLE_PLACES_API_KEY` unset.
 
 ## Details
-Proxies the [Place Details](https://developers.google.com/maps/documentation/places/web-service/details)
-JSON API with `fields=geometry,name,formatted_address`.
+Proxies the [Places API (New) Place Details](https://developers.google.com/maps/documentation/places/web-service/place-details)
+endpoint (`GET https://places.googleapis.com/v1/places/{placeId}`) with
+`X-Goog-FieldMask: places.id,places.displayName,places.formattedAddress,places.location`.
 
 **Params:** `placeId` (required, ≤ 200 chars → else 400), `sessionToken` (optional, forwarded as
-`sessiontoken`).
+`sessionToken`).
 
 **Response:** `{ location: { lat, lng, placeId, name, address } }` — the canonical location JSON
 used by `PlaceLocation` everywhere (placePicker, notes, jobs, events).
 
-**Errors:** 400 missing/invalid `placeId`, 401, 404 place not found, 502 upstream failure,
-503 key unset.
+**Errors:** 400 missing/invalid `placeId`, 401, 404 place not found (upstream 404 or missing
+geometry), 502 upstream failure, 503 key unset.
+
+## API key & referer forwarding
+
+`GOOGLE_PLACES_API_KEY` is **HTTP-referer restricted** in Google Cloud Console. Google only
+accepts referer-restricted keys from a browser context, so every upstream call in these four
+routes echoes the incoming request's `Referer` (fallback `Origin`) header — server-side
+requests have no referer of their own and would be rejected with
+`API_KEY_HTTP_REFERRER_BLOCKED` otherwise. Requirements:
+
+- The key must have **Places API (New)** (and Maps Static API / Geocoding API for
+  staticmap/geocode) enabled.
+- The key's HTTP referer allow-list must include the origins the app actually runs on
+  (e.g. `https://www.dupip.com/*`, `https://beta.dupip.com/*`, `http://localhost:3000/*`).
+  If the list doesn't cover the calling origin, the proxy returns 502 with the upstream
+  error logged. (An IP-restricted or unrestricted server-side key would also work.)
 
 ## Staticmap
 Proxies the [Static Maps](https://developers.google.com/maps/documentation/maps-static/start)

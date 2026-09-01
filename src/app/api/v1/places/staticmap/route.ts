@@ -79,7 +79,13 @@ export async function GET(request: NextRequest) {
       key: apiKey,
     })
 
+    // The API key is HTTP-referer restricted: echo the browser's referer so
+    // Google accepts the server-side call (server requests have none of their own).
+    const headers: Record<string, string> = {}
+    const referer = request.headers.get('referer') || request.headers.get('origin')
+    if (referer) headers['Referer'] = referer
     const response = await fetch(`${STATIC_MAP_URL}?${upstreamParams.toString()}`, {
+      headers,
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
     if (!response.ok) {
