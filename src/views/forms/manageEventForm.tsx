@@ -102,7 +102,8 @@ export const ManageEventForm = ({
             lat: event.location.lat,
             lng: event.location.lng,
             name: event.location.name,
-            address: event.location.address
+            address: event.location.address,
+            placeId: event.location.placeId
           }
         : null
     )
@@ -127,7 +128,7 @@ export const ManageEventForm = ({
     location: isOnline
       ? null
       : venue
-        ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng }
+        ? { name: venue.name, address: venue.address, lat: venue.lat, lng: venue.lng, placeId: venue.placeId }
         : null,
     venueName: isOnline ? null : venue?.name ?? null,
     capacity: capacity ? parseInt(capacity, 10) || null : null,

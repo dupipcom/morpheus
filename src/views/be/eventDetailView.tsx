@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { EventCard } from '@/components/eventCard'
 import { CommentsSection } from '@/components/commentsSection'
-import { Heart, CalendarDays, MapPin, Globe, Image as ImageIcon } from 'lucide-react'
+import { Heart, CalendarDays, MapPin, Globe } from 'lucide-react'
 import { attachmentFileUrl } from '@/components/attachmentPicker'
 import { ManageEventForm } from '@/views/forms/manageEventForm'
 import type { EventDetailPayload, EventManage, EventSummary } from './eventTypes'
@@ -51,9 +51,10 @@ export function EventDetailView({
   const [likeCount, setLikeCount] = useState<number>(event.counts?.likes ?? 0)
   const [busy, setBusy] = useState(false)
 
-  // Proximity suggestions: bounding-box search server-side around the venue.
   const lat = event.location?.lat
   const lng = event.location?.lng
+
+  // Proximity suggestions: bounding-box search server-side around the venue.
   const { data: nearbyData } = useSWR<{ events: EventSummary[] }>(
     lat != null && lng != null
       ? `/api/v1/events/public?near=${lat},${lng},50&limit=6`
@@ -106,6 +107,18 @@ export function EventDetailView({
   }
 
   const startsAt = event.startsAt ? new Date(event.startsAt) : null
+  const venueLabel = !event.isOnline ? event.venueName || event.location?.name || null : null
+  const venueAddress = !event.isOnline ? event.location?.address || null : null
+  // Google Maps deep link: prefer the geopos when present, fall back to the
+  // stored address/venue name. The geopos also feeds the future events map view.
+  const mapsUrl = (() => {
+    if (event.isOnline) return null
+    if (lat != null && lng != null) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`
+    }
+    const query = venueAddress || venueLabel
+    return query ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}` : null
+  })()
 
   return (
     <div className="space-y-6">
@@ -136,22 +149,28 @@ export function EventDetailView({
                 )}
               </span>
             ) : (
-              (event.venueName || event.location?.name) && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" /> {event.venueName || event.location?.name}
+              (venueLabel || venueAddress) && (
+                <span className="flex items-start gap-1">
+                  <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <span>
+                    {venueLabel}
+                    {venueLabel && venueAddress && (
+                      <span className="text-muted-foreground"> · {venueAddress}</span>
+                    )}
+                    {!venueLabel && venueAddress && <span>{venueAddress}</span>}
+                    {mapsUrl && (
+                      <a
+                        href={mapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 text-primary hover:underline"
+                      >
+                        {t('events.public.openInMaps', { defaultValue: 'Open in Google Maps' })}
+                      </a>
+                    )}
+                  </span>
                 </span>
               )
-            )}
-            {event.flier && (
-              <a
-                href={attachmentFileUrl(event.flier)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-primary hover:underline"
-              >
-                <ImageIcon className="h-4 w-4" />
-                {t('events.public.flier', { defaultValue: 'Flier' })}
-              </a>
             )}
           </div>
 
@@ -193,6 +212,16 @@ export function EventDetailView({
               </Button>
             )}
           </div>
+
+          {/* Flier renders inline below the header/buttons, above the map */}
+          {event.flier && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={attachmentFileUrl(event.flier)}
+              alt={t('events.public.flierAlt', { defaultValue: 'Event flier' })}
+              className="w-full rounded-md"
+            />
+          )}
 
           {/* Location map (staticmap route requires a signed-in session) */}
           {isSignedIn && lat != null && lng != null && (
