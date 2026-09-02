@@ -2,7 +2,6 @@ import { deepseek } from '@ai-sdk/deepseek'
 import OpenAI from 'openai'
 
 export const DEEPSEEK_CHAT_MODEL = 'deepseek-chat'
-export const DEEPSEEK_EMBED_MODEL = 'deepseek-embed'
 export const DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1'
 
 /**
@@ -15,8 +14,9 @@ let openaiCompatClient: OpenAI | null = null
 
 /**
  * Lazy OpenAI-compatible client for the DeepSeek endpoints the AI SDK provider
- * does not cover: /embeddings (deepseek-embed) and Chat Completions with
- * response_format json_object (hint route).
+ * does not cover: Chat Completions with response_format json_object (hint
+ * route, RAG LLM ranker). DeepSeek has no embeddings API — RAG retrieval is
+ * lexical pre-filter + LLM ranking (see services/agent/ranker.ts).
  *
  * Constructed lazily so modules can be imported without the env var being set.
  */

@@ -12,7 +12,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { chunkRawText } from './chunker'
-import { cosineSimilarity, embedTexts } from './embeddings'
+import { lexicalScore } from './ranker'
 import type { DocChunk } from './types'
 
 const PSYCH_DOC_PATH = path.join(
@@ -82,38 +82,9 @@ export async function loadPsychDocChunks(): Promise<DocChunk[]> {
   return chunks
 }
 
-const STOPWORDS = new Set([
-  'a', 'an', 'the', 'of', 'to', 'in', 'is', 'are', 'and', 'or', 'on', 'with', 'for',
-  'this', 'that', 'these', 'those', 'from', 'by', 'at', 'as', 'it', 'its', 'be', 'was',
-  'were', 'my', 'me', 'i', 'you', 'your', 'yours', 'he', 'she', 'they', 'we', 'our',
-  'do', 'does', 'did', 'have', 'has', 'had', 'not', 'no', 'but', 'what', 'when',
-  'where', 'which', 'who', 'how', 'why', 'can', 'could', 'should', 'would', 'will',
-  'about', 'than', 'then', 'so', 'if', 'into', 'over', 'under', 'up', 'down', 'out',
-  'all', 'any', 'some', 'more', 'most', 'there', 'their', 'them', 'us', 'am'
-])
-
-/** Cheap keyword overlap score; heading hits count double */
-export function lexicalScore(query: string, chunk: DocChunk): number {
-  const terms = query
-    .toLowerCase()
-    .split(/[^a-z]+/)
-    .filter((term) => term.length > 2 && !STOPWORDS.has(term))
-  if (terms.length === 0) return 0
-
-  const text = chunk.text.toLowerCase()
-  const heading = (chunk.heading || '').toLowerCase()
-  let score = 0
-  for (const term of terms) {
-    if (text.includes(term)) score += 1
-    if (heading.includes(term)) score += 2
-  }
-  return score
-}
-
 /**
- * Pick the doc chunks most relevant to the query: lexical pre-filter to bound
- * embedding cost, then cosine re-ranking. Falls back to lexical ranking when
- * embeddings are unavailable; returns [] when the doc cannot be read at all.
+ * Pick the doc chunks most relevant to the query by lexical ranking (heading
+ * hits count double). Returns [] when the doc cannot be read at all.
  */
 export async function pickDocChunksForQuery(
   query: string,
@@ -123,27 +94,12 @@ export async function pickDocChunksForQuery(
   try {
     const all = await loadPsychDocChunks()
     const candidates = all
-      .map((chunk) => ({ chunk, score: lexicalScore(query, chunk) }))
+      .map((chunk) => ({ chunk, score: lexicalScore(query, chunk.text, chunk.heading) }))
       .filter((entry) => entry.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, candidateCount)
 
-    if (candidates.length === 0) return []
-
-    const embeddings = await embedTexts([query, ...candidates.map((entry) => entry.chunk.text)])
-    if (!embeddings) {
-      return candidates.slice(0, topN).map((entry) => entry.chunk)
-    }
-
-    const [queryEmbedding, ...candidateEmbeddings] = embeddings
-    const ranked = candidates
-      .map((entry, index) => ({
-        chunk: entry.chunk,
-        score: cosineSimilarity(queryEmbedding, candidateEmbeddings[index])
-      }))
-      .sort((a, b) => b.score - a.score)
-
-    return ranked.slice(0, topN).map((entry) => entry.chunk)
+    return candidates.slice(0, topN).map((entry) => entry.chunk)
   } catch (error) {
     console.error('psych_doc_chunk_failure', {
       error: error instanceof Error ? error.message : 'Unknown error'
