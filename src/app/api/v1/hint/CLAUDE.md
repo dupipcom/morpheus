@@ -7,7 +7,7 @@
 Requires Clerk auth. When `userId` targets another user, the current user must have a `Delegation` from that user.
 
 ## Purpose
-Generates (or returns cached) cognitive-psychology insights across mood and task dimensions using DeepSeek (`deepseek-chat`) with a per-request in-memory RAG context (user data chunks + cognitive-psychology reference excerpts embedded via `deepseek-embed`).
+Generates (or returns cached) cognitive-psychology insights across mood and task dimensions using DeepSeek (`deepseek-chat`) with a per-request in-memory RAG context (user data chunks + cognitive-psychology reference excerpts ranked lexically and via DeepSeek LLM relevance ranking — no embeddings API).
 
 ## Behavior
 - `locale` defaults to `en`.

@@ -6,7 +6,7 @@ Business logic layer (`src/lib/services/`). Routes stay thin: auth → resolve u
 
 | Directory | Doc | Purpose | Key exports |
 |---|---|---|---|
-| `agent/` | `agent/CLAUDE.md` | AI assistant RAG (dashboard filters, chunking, embeddings) | `buildRagForQuery`, `buildAssistantSystemPrompt`, `buildHintMessages`, `resolveAgentContext` |
+| `agent/` | `agent/CLAUDE.md` | AI assistant RAG (dashboard filters, chunking, LLM ranking) | `buildRagForQuery`, `buildAssistantSystemPrompt`, `buildHintMessages`, `resolveAgentContext` |
 | `auth/` | `auth/CLAUDE.md` | Auth helpers | `getAuthenticatedUser`, `getUserListRole`, `authorizeListAccess` (thin wrappers over `ownership/`) |
 | `caldav/` | `caldav/CLAUDE.md` | Stalwart freebusy for meet-me availability | `fetchCalendarAvailability` |
 | `day/` | `day/CLAUDE.md` | Day model progress/transform services | `updateDayProgress`, `transformDayForAnalytics` |
