@@ -10,7 +10,7 @@ import type { Prisma } from '@/generated/prisma/client'
 import { chunkCompactDays, MAX_CHUNKS } from './chunker'
 import { buildDaySelectForDimensions, buildDayWhere, compactDay } from './daySelect'
 import type { AgentDayRecord } from './daySelect'
-import { retrieveTopK } from './embeddings'
+import { retrieveTopK } from './ranker'
 import { pickDocChunksForQuery } from './psychDoc'
 import type {
   AgentDimension,
@@ -94,9 +94,9 @@ export async function fetchCompactNotes(
 
 /**
  * Build the per-request RAG context: chunk the compact days, retrieve the
- * top-K most relevant chunks (cosine on deepseek-embed), and pull bounded
- * psychology-doc excerpts. Falls back to the most recent chunks when
- * embeddings are unavailable so the chat keeps working.
+ * top-K most relevant chunks (lexical pre-filter + DeepSeek LLM ranking), and
+ * pull bounded psychology-doc excerpts. Falls back to the most recent chunks
+ * when retrieval is unavailable so the chat keeps working.
  */
 export async function buildRagForQuery(
   compactDays: CompactDay[],
@@ -114,7 +114,7 @@ export async function buildRagForQuery(
   )
   let userChunks: DayChunk[] = []
   let docChunks: DocChunk[] = []
-  let usedEmbeddings = false
+  let usedRanker = false
 
   if (allChunks.length > 0) {
     const topIndices =
@@ -124,7 +124,7 @@ export async function buildRagForQuery(
 
     if (topIndices) {
       userChunks = topIndices.map((index) => allChunks[index])
-      usedEmbeddings = true
+      usedRanker = true
     } else {
       // Recency fallback: most recent chunks still give useful context
       userChunks = [...allChunks]
@@ -133,9 +133,9 @@ export async function buildRagForQuery(
     }
   }
 
-  if (usedEmbeddings && query.trim().length > 0) {
+  if (usedRanker && query.trim().length > 0) {
     docChunks = await pickDocChunksForQuery(query, docChunkTopK)
   }
 
-  return { userChunks, docChunks, usedEmbeddings, dimensionList: dimensions }
+  return { userChunks, docChunks, usedRanker, dimensionList: dimensions }
 }

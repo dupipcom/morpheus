@@ -95,12 +95,16 @@ export const AddTaskForm = ({
     try {
       const parsedPremium = premium.trim() === '' ? null : parseFloat(premium)
 
+      // Un-publishing a task that was a job clears the job fields (nulls);
+      // editing a task that was never a job leaves them untouched (undefined,
+      // dropped by JSON.stringify) so the API doesn't reject them.
+      const clearingJobPost = isEditMode && editTask?.visibility === 'PUBLIC' && !publishAsJob
       const jobFields = {
         visibility: publishAsJob ? 'PUBLIC' : undefined,
-        jobDescription: publishAsJob ? jobDescription : null,
-        requirements: publishAsJob ? requirements : null,
-        openings: publishAsJob ? Math.max(1, Number(openings) || 1) : null,
-        applyBy: publishAsJob && applyBy ? applyBy : null,
+        jobDescription: publishAsJob ? jobDescription : clearingJobPost ? null : undefined,
+        requirements: publishAsJob ? requirements : clearingJobPost ? null : undefined,
+        openings: publishAsJob ? Math.max(1, Number(openings) || 1) : clearingJobPost ? null : undefined,
+        applyBy: publishAsJob && applyBy ? applyBy : clearingJobPost ? null : undefined,
       }
 
       if (isEditMode && editTask?.id) {

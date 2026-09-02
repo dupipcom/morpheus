@@ -99,6 +99,6 @@ export interface DocChunk {
 export interface RagResult {
   userChunks: DayChunk[]
   docChunks: DocChunk[]
-  usedEmbeddings: boolean // false → embedding fallback (recency) was taken
+  usedRanker: boolean // false → relevance ranking was unavailable (recency fallback)
   dimensionList: AgentDimension[]
 }

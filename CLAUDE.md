@@ -151,12 +151,12 @@ Tasks are central to the application:
 
 ### AI Integration
 
-- **Provider**: DeepSeek (`deepseek-chat` + `deepseek-embed`; key via `DEEPSEEK_API_KEY` env var)
-- **Packages**: `ai`, `@ai-sdk/deepseek`, `@ai-sdk/rsc`, `openai` (OpenAI-compatible client for embeddings and JSON-mode chat)
+- **Provider**: DeepSeek (`deepseek-chat`; key via `DEEPSEEK_API_KEY` env var). No embeddings API — RAG retrieval uses lexical pre-filter + LLM relevance ranking
+- **Packages**: `ai`, `@ai-sdk/deepseek`, `@ai-sdk/rsc`, `openai` (OpenAI-compatible client for JSON-mode chat)
 - **Component**: `agentChat.tsx` for AI interactions, streaming via `continueConversation` in `agentActions.ts`
 - **Model selection**: a select next to the chat input picks the chat model (`deepseek-chat` default; OpenAI `gpt-5-mini` preserved as an option but currently disabled in the UI)
 - **Config**: `src/lib/deepseek.ts`
-- **RAG**: `src/lib/services/agent/` — per-request in-memory vector space: dashboard filters (date range + dimensions) drive a minimal MongoDB select, compact days are chunked to token budgets, embedded with `deepseek-embed` (cosine top-K, recency fallback), plus bounded excerpts from the cognitive-psychology reference doc. Shared by the chat assistant and `GET /api/v1/hint`.
+- **RAG**: `src/lib/services/agent/` — per-request in-memory context: dashboard filters (date range + dimensions) drive a minimal MongoDB select, compact days are chunked to token budgets, pre-filtered lexically and re-ranked with one DeepSeek JSON-mode LLM call (top-K, recency fallback), plus bounded excerpts from the cognitive-psychology reference doc. Shared by the chat assistant and `GET /api/v1/hint`.
 
 ## Important Notes
 

@@ -2,17 +2,17 @@
 
 ## Purpose
 
-DeepSeek-assistant RAG pipeline shared by the chat server action (`agentActions.ts`) and `GET /api/v1/hint`. Dashboard filters (date range + dimensions) drive a minimal MongoDB `Day` select; compact days are chunked to token budgets, embedded with `deepseek-embed` (cosine top-K), with recency fallback so chat keeps working when embeddings are unavailable. Everything is in-memory per request and discarded — nothing persisted (Vercel serverless).
+DeepSeek-assistant RAG pipeline shared by the chat server action (`agentActions.ts`) and `GET /api/v1/hint`. Dashboard filters (date range + dimensions) drive a minimal MongoDB `Day` select; compact days are chunked to token budgets and ranked with a lexical pre-filter plus a single DeepSeek JSON-mode LLM relevance-ranking call (top-K), with recency fallback so chat keeps working when retrieval is unavailable. Everything is in-memory per request and discarded — nothing persisted (Vercel serverless).
 
 ## Files
 
 - `chunker.ts` — token-budget chunking: compact days grouped week/month/year (coarsened past `MAX_CHUNKS`), notes and raw text split with paragraph-aware breaks
 - `daySelect.ts` — dimension → Prisma select/where mapping, payload compaction, "honest" profit calc, single-line day serialization
-- `embeddings.ts` — `deepseek-embed` batched embeddings + cosine similarity + top-K retrieval (per-request vector space)
+- `ranker.ts` — lexical pre-filter + single DeepSeek JSON-mode LLM ranking call + top-K retrieval (per-request, no vector store)
 - `index.ts` — barrel export of all modules
 - `prompt.ts` — system-prompt builders for the two DeepSeek consumers (assistant chat, hint JSON-mode)
-- `psychDoc.ts` — cognitive-psychology reference doc: heading-split at module load (mtime-keyed cache), lexical pre-filter + cosine re-rank
-- `rag.ts` — orchestrator: fetch compact days/notes → chunk → embed → top-K, recency fallback
+- `psychDoc.ts` — cognitive-psychology reference doc: heading-split at module load (mtime-keyed cache), lexical ranking
+- `rag.ts` — orchestrator: fetch compact days/notes → chunk → lexical pre-filter → LLM rank → top-K, recency fallback
 - `types.ts` — shared types + dimension constants
 - `validation.ts` — server-side validation of the client filter context + delegation-scope resolution
 
@@ -29,7 +29,7 @@ DeepSeek-assistant RAG pipeline shared by the chat server action (`agentActions.
 | `compactDay` / `dayChunkText` | trim a raw Day row to selected dimensions; single-line serialization |
 | `calculateDayProfit` | "honest" profit from ticker `{earnings, premium}` |
 | `chunkCompactDays` / `chunkNotes` / `chunkRawText` | chunkers with `estimateTokens`, `MAX_CHUNKS`, `MAX_CHUNK_TOKENS` |
-| `embedTexts` / `cosineSimilarity` / `retrieveTopK` | DeepSeek embedding batch + cosine ranking; null on failure → caller fallback |
+| `lexicalScore` / `retrieveTopK` | keyword overlap score + lexical pre-filter → LLM re-rank; null on no match → caller recency fallback |
 | `fetchCompactDays` / `fetchCompactNotes` | minimal `Day` payload and AI-opted-in notes for the resolved context |
 | `buildRagForQuery` / `RagResult` | per-request RAG pipeline; recency fallback |
 | `loadPsychDocChunks` / `pickDocChunksForQuery` | reference-doc loading and query ranking |
@@ -45,7 +45,7 @@ DeepSeek-assistant RAG pipeline shared by the chat server action (`agentActions.
 ## Cross-References
 
 - `src/app/api/v1/hint/CLAUDE.md`, `src/app/api/v1/user-dashboard-data/CLAUDE.md`
-- `src/lib/deepseek.ts` (embedding/chat clients)
+- `src/lib/deepseek.ts` (chat client)
 - Sibling `src/lib/services/day` (`MoodKey` types), `src/lib/services/visibility/noteAccess`
 
 ## Notes
