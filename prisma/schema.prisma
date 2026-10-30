@@ -1117,10 +1117,17 @@ model Event {
   documentIds   String[] @default([]) @db.ObjectId
   categories    Category[]
   tags          String[] @default([])
+  // Scraper provenance + free-form genre tags (Instagram-scraper pipeline).
+  // `source` is a nullable free-form tag (e.g. "scraper-natal"); nullable so
+  // manual events and existing rows stay null and unscraped. `genres` mirrors
+  // `tags` (String[] @default([])) — free-form, no enum.
+  source        String?
+  genres        String[] @default([])
 
   @@index([status, startsAt])
   @@index([ownerType, orgId])
   @@index([startsAt])
+  @@index([source, startsAt])
 }
 
 model EventRsvp {
